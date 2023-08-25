@@ -4,7 +4,7 @@ import numpy as np
 import insightface
 import datetime
 from imutils.video import VideoStream
-
+import time
 
 class FaceDetector:
     def __init__(self, root_dir):
@@ -68,10 +68,10 @@ class FaceDetector:
             try:
                 frame = video_stream.read()
                 if frame is None:
-                    print("Unable to read frame")
+                    # If unable to read frame, skip to the next iteration
                     continue
             except Exception as e:
-                print(f"Unable to read frame: {e}")
+                print(f"Error while reading frame: {e}")
                 continue
 
             try:
@@ -89,7 +89,7 @@ class FaceDetector:
                     distances = np.linalg.norm(self.known_face_encodings - embedding, axis=1)
                     best_match_index = np.argmin(distances)
                     
-                    if distances[best_match_index] < 600:
+                    if distances[best_match_index] < 40:
                         name = self.known_face_names[best_match_index]
                     else:
                         name = "Unknown"
