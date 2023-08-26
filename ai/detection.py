@@ -5,6 +5,8 @@ import insightface
 import datetime
 from imutils.video import VideoStream
 import time
+from collections import Counter
+
 
 class FaceDetector:
     def __init__(self, root_dir):
@@ -17,7 +19,9 @@ class FaceDetector:
             raise
 
         try:
-            self.known_face_encodings, self.known_face_names = self.load_face_encodings(root_dir)
+            self.known_face_encodings, self.known_face_names = self.load_face_encodings(
+                root_dir
+            )
         except Exception as e:
             print(f"Error loading face encodings: {e}")
             raise
@@ -64,7 +68,25 @@ class FaceDetector:
         return known_face_encodings, known_face_names
 
     def detect_and_display_faces(self, video_stream):
+        prev_face_size = None  # Track the size of the previous face
+
+        # Adjust these thresholds as needed
+        STRICT_THRESHOLD = 80
+        RELAXED_THRESHOLD = 30
+
+        result_counter = Counter()
+        start_time = time.time()
+
         while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= 2:  # 2 seconds have passed
+                most_common_result = result_counter.most_common(1)
+                if most_common_result:
+                    cv2.imwrite("/wanted/" + str(datetime.datetime.now()) + ".jpg", frame)
+                    print(most_common_result[0])
+                start_time = time.time()  # reset the start time
+                result_counter.clear()  # reset the counter
+
             try:
                 frame = video_stream.read()
                 if frame is None:
@@ -86,28 +108,40 @@ class FaceDetector:
             if faces:
                 for face in faces:
                     embedding = face.embedding
-                    distances = np.linalg.norm(self.known_face_encodings - embedding, axis=1)
+                    distances = np.linalg.norm(
+                        self.known_face_encodings - embedding, axis=1
+                    )
                     best_match_index = np.argmin(distances)
-                    
-                    if distances[best_match_index] < 40:
+
+                    # Determine current face size
+                    current_face_size = (face.bbox[2] - face.bbox[0]) * (
+                        face.bbox[3] - face.bbox[1]
+                    )
+
+                    # Decide which threshold to use based on face size
+                    if prev_face_size and current_face_size < 0.7 * prev_face_size:
+                        threshold = RELAXED_THRESHOLD
+                    else:
+                        threshold = STRICT_THRESHOLD
+
+                    # Update previous face size
+                    prev_face_size = current_face_size
+
+                    if distances[best_match_index] < threshold:
                         name = self.known_face_names[best_match_index]
                     else:
                         name = "Unknown"
 
-                    yield {
+                    result = {
                         "time": str(datetime.datetime.now()).split(".")[0],
                         "user_id": name,
                     }
-            else:
-                yield {
-                    "time": str(datetime.datetime.now()).split(".")[0],
-                    "user_id": "No face detected",
-                }
+                    result_counter[name] += 1
 
 
 if __name__ == "__main__":
     root_dir = "media"
-    camera_urls = ["http://192.168.0.162:12345/video_feed"]
+    camera_urls = ["rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/"]
 
     face_detector = FaceDetector(root_dir)
     face_detector.add_camera(camera_urls)
