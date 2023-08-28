@@ -6,7 +6,7 @@ import datetime
 from imutils.video import VideoStream
 import time
 from collections import Counter
-
+import random
 
 class FaceDetector:
     def __init__(self, root_dir):
@@ -39,6 +39,18 @@ class FaceDetector:
                 print(f"Error opening video capture for {url}: {e}")
                 continue
 
+    def augment_image(self, image):
+        # Random rotation
+        angle = random.randint(-25, 25)
+        rotated = cv2.warpAffine(image, cv2.getRotationMatrix2D((image.shape[1]//2, image.shape[0]//2), angle, 1), (image.shape[1], image.shape[0]))
+
+        # Random brightness adjustment
+        alpha = 1.0 + random.uniform(-0.1, 0.1)
+        beta = random.randint(-20, 20)
+        augmented = cv2.convertScaleAbs(rotated, alpha=alpha, beta=beta)
+
+        return augmented
+
     def load_face_encodings(self, root_dir):
         known_face_encodings = []
         known_face_names = []
@@ -53,7 +65,8 @@ class FaceDetector:
 
                         try:
                             image = cv2.imread(image_path)
-                            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                            augmented_image = self.augment_image(image)
+                            image = cv2.cvtColor(augmented_image, cv2.COLOR_BGR2RGB)
                             faces = self.face_model.get(image)
                         except Exception as e:
                             print(f"Unable to process image {image_path}: {e}")
@@ -68,29 +81,26 @@ class FaceDetector:
         return known_face_encodings, known_face_names
 
     def detect_and_display_faces(self, video_stream):
-        prev_face_size = None  # Track the size of the previous face
-
-        # Adjust these thresholds as needed
-        STRICT_THRESHOLD = 80
-        RELAXED_THRESHOLD = 30
+        prev_face_size = None
+        STRICT_THRESHOLD = 50
+        RELAXED_THRESHOLD = 20
 
         result_counter = Counter()
         start_time = time.time()
 
         while True:
             elapsed_time = time.time() - start_time
-            if elapsed_time >= 2:  # 2 seconds have passed
+            if elapsed_time >= 2:
                 most_common_result = result_counter.most_common(1)
                 if most_common_result:
                     cv2.imwrite("/wanted/" + str(datetime.datetime.now()) + ".jpg", frame)
                     print(most_common_result[0])
-                start_time = time.time()  # reset the start time
-                result_counter.clear()  # reset the counter
+                start_time = time.time()
+                result_counter.clear()
 
             try:
                 frame = video_stream.read()
                 if frame is None:
-                    # If unable to read frame, skip to the next iteration
                     continue
             except Exception as e:
                 print(f"Error while reading frame: {e}")
@@ -113,18 +123,13 @@ class FaceDetector:
                     )
                     best_match_index = np.argmin(distances)
 
-                    # Determine current face size
-                    current_face_size = (face.bbox[2] - face.bbox[0]) * (
-                        face.bbox[3] - face.bbox[1]
-                    )
+                    current_face_size = (face.bbox[2] - face.bbox[0]) * (face.bbox[3] - face.bbox[1])
 
-                    # Decide which threshold to use based on face size
                     if prev_face_size and current_face_size < 0.7 * prev_face_size:
                         threshold = RELAXED_THRESHOLD
                     else:
                         threshold = STRICT_THRESHOLD
 
-                    # Update previous face size
                     prev_face_size = current_face_size
 
                     if distances[best_match_index] < threshold:
@@ -137,7 +142,6 @@ class FaceDetector:
                         "user_id": name,
                     }
                     result_counter[name] += 1
-
 
 if __name__ == "__main__":
     root_dir = "media"

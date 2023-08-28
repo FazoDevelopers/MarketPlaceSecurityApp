@@ -60,22 +60,9 @@ class FaceDetector:
                 continue
 
     def start_all_video_captures(self):
-        threads = []
         for video_capture in self.video_captures:
-            try:
-                thread = threading.Thread(
-                    target=self.detect_and_display_faces, args=(video_capture,)
-                )
-                thread.start()
-                threads.append(thread)
-            except Exception as e:
-                print(f"Ошибка при создании потока: {e}")
-
-        for thread in threads:
-            try:
-                thread.join()
-            except Exception as e:
-                print(f"Ошибка при ожидании завершения потока: {e}")
+            for result in self.detect_and_display_faces(video_capture):
+                yield result
 
     def create_emotion_model(self):
         try:
@@ -119,39 +106,59 @@ class FaceDetector:
         known_face_names = []
         if "media" not in os.listdir(os.getcwd()):
             os.makedirs("media")
+
+        print(f"Processing root directory: {root_dir}")
+        print("The dir: ", os.getcwd())
         for dir_name in os.listdir(root_dir):
+            print(root_dir)
             dir_path = os.path.join(root_dir, dir_name)
             if os.path.isdir(dir_path):
+                print(f"Processing directory: {dir_path}")
                 for file_name in os.listdir(dir_path):
                     if file_name.endswith(".jpg") or file_name.endswith(".png"):
                         image_path = os.path.join(dir_path, file_name)
+                        print(f"Processing image: {image_path}")
                         try:
                             image = cv2.imread(image_path)
+                            if image is None:
+                                print(f"Unable to read image: {image_path}")
+                                continue
+
                             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                             faces = self.face_model.get(image)
-                            if faces:
-                                face = faces[0]
-                                box = face.bbox.astype(int)
-                                face_image = image[box[1] : box[3], box[0] : box[2]]
-                                if face_image.size == 0:
-                                    continue
-                                face_image = cv2.resize(face_image, (640, 480))
-                                face_image = face_image / 255.0
-                                face_image = (
-                                    torch.tensor(face_image.transpose((2, 0, 1)))
-                                    .float()
-                                    .to(self.device)
-                                    .unsqueeze(0)
-                                )
-                                embedding = np.array(face.embedding)
-                                known_face_encodings.append(embedding)
-                                known_face_names.append(dir_name)
+                            if not faces:
+                                print(f"No faces detected in image: {image_path}")
+                                continue
+
+                            face = faces[0]
+                            box = face.bbox.astype(int)
+                            face_image = image[box[1] : box[3], box[0] : box[2]]
+                            if face_image.size == 0:
+                                continue
+
+                            face_image = cv2.resize(face_image, (640, 480))
+                            face_image = face_image / 255.0
+                            face_image = (
+                                torch.tensor(face_image.transpose((2, 0, 1)))
+                                .float()
+                                .to(self.device)
+                                .unsqueeze(0)
+                            )
+                            embedding = np.array(face.embedding)
+                            known_face_encodings.append(embedding)
+                            known_face_names.append(dir_name)
                         except Exception as e:
                             print(f"Unable to process image {image_path}: {e}")
                             continue
 
         known_face_encodings = np.array(known_face_encodings)
         print("Known face encodings shape:", known_face_encodings.shape)
+
+        if known_face_encodings.shape[0] == 0:
+            raise ValueError(
+                "No face encodings loaded. Please ensure valid images are present."
+            )
+
         index = faiss.IndexFlatL2(known_face_encodings.shape[1])
         index.add(known_face_encodings)
 
@@ -222,7 +229,7 @@ class FaceDetector:
                 }
 
 
-root_dir = "/media"
+root_dir = "/home/ocean/Projects/MarketSecurityApp/ai/media"
 detector = FaceDetector(root_dir=root_dir, model_weights="./model.h5")
 camera_urls = ["rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/"]
 detector.add_camera(camera_urls)
