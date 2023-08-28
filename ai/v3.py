@@ -3,16 +3,18 @@ import datetime
 import cv2
 import numpy as np
 import torch
-import tensorflow as tf
 import insightface
 import faiss
-
-import threading
 from imutils.video import VideoStream
+from flask import Flask, Response, request
+import json
+from threading import Thread
+
+app = Flask(__name__)
 
 
 class FaceDetector:
-    def __init__(self, root_dir, model_weights):
+    def __init__(self, root_dir):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         try:
             self.face_model = insightface.app.FaceAnalysis()
@@ -20,22 +22,6 @@ class FaceDetector:
             self.face_model.prepare(ctx_id=ctx_id)
         except Exception as e:
             print(f"Ошибка при инициализации моделей: {e}")
-            raise
-
-        self.emotion_labels = [
-            "jahldorlik",
-            "behuzur",
-            "xavotir",
-            "xursandchilik",
-            "gamgin",
-            "xayron",
-            "neytral",
-        ]
-        self.emotion_model = self.create_emotion_model()
-        try:
-            self.emotion_model.load_weights(model_weights)
-        except Exception as e:
-            print(f"Не удалось загрузить веса модели: {e}")
             raise
 
         try:
@@ -50,7 +36,7 @@ class FaceDetector:
 
     def add_camera(self, urls):
         for url in urls:
-            print(f"Adding cameras: {urls}")
+            print(f"Adding camera: {url}")
             try:
                 video_stream = VideoStream(url).start()
                 self.video_captures.append(video_stream)
@@ -60,46 +46,10 @@ class FaceDetector:
                 continue
 
     def start_all_video_captures(self):
-        for video_capture in self.video_captures:
-            for result in self.detect_and_display_faces(video_capture):
-                yield result
-
-    def create_emotion_model(self):
-        try:
-            gpus = tf.config.experimental.list_physical_devices("GPU")
-            if gpus:
-                tf.config.experimental.set_visible_devices(gpus[0], "GPU")
-                logical_gpus = tf.config.experimental.list_logical_devices("GPU")
-                print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-        except RuntimeError as e:
-            print(f"Ошибка при настройке GPU: {e}")
-
-        emotion_model = tf.keras.models.Sequential()
-        emotion_model.add(
-            tf.keras.layers.Conv2D(
-                64, (5, 5), activation="relu", input_shape=(48, 48, 1)
-            )
-        )
-        emotion_model.add(
-            tf.keras.layers.MaxPooling2D(pool_size=(5, 5), strides=(2, 2))
-        )
-        emotion_model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
-        emotion_model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
-        emotion_model.add(
-            tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(2, 2))
-        )
-        emotion_model.add(tf.keras.layers.Conv2D(128, (3, 3), activation="relu"))
-        emotion_model.add(tf.keras.layers.Conv2D(128, (3, 3), activation="relu"))
-        emotion_model.add(
-            tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(2, 2))
-        )
-        emotion_model.add(tf.keras.layers.Flatten())
-        emotion_model.add(tf.keras.layers.Dense(1024, activation="relu"))
-        emotion_model.add(tf.keras.layers.Dropout(0.2))
-        emotion_model.add(tf.keras.layers.Dense(1024, activation="relu"))
-        emotion_model.add(tf.keras.layers.Dropout(0.2))
-        emotion_model.add(tf.keras.layers.Dense(7, activation="softmax"))
-        return emotion_model
+        while True:
+            for video_capture in self.video_captures:
+                for result in self.detect_and_display_faces(video_capture):
+                    yield result
 
     def load_face_encodings(self, root_dir):
         known_face_encodings = []
@@ -165,7 +115,15 @@ class FaceDetector:
         return index, known_face_names
 
     def detect_and_display_faces(self, video_stream):
+        names = []
+        results_list = []
+        screenshot_interval = 0.3
+        last_screenshot_time = datetime.datetime.now()
+        last_yield_time = datetime.datetime.now()
+
         while True:
+            current_time = datetime.datetime.now()
+
             try:
                 frame = video_stream.read()
                 if frame is None:
@@ -174,6 +132,7 @@ class FaceDetector:
             except Exception as e:
                 print(f"Unable to read frame: {e}")
                 continue
+
             try:
                 faces = self.face_model.get(frame)
                 if faces is None:
@@ -200,45 +159,60 @@ class FaceDetector:
                     embedding = face.embedding
 
                     D, I = self.index.search(embedding.reshape(1, -1), 1)
-                    print(D[0, 0])
-
                     if D[0, 0] < 600:
                         name = self.known_face_names[I[0, 0]]
-                    else:
-                        name = False
+                        names.append(name)
+                        # results_list.append(
+                        #     {
+                        #         "time": str(datetime.datetime.now()).split(".")[0],
+                        #         "user_id": name
+                        #     }
+                        # )
+                        yield {"user": name}
+            if (
+                current_time - last_screenshot_time
+            ).total_seconds() > screenshot_interval:
+                screenshot_filename = os.path.join(
+                    "./wanted",
+                    f"screenshot_{current_time.strftime('%Y%m%d%H%M%S')}.jpg",
+                )
+                cv2.imwrite(screenshot_filename, frame)
+                last_screenshot_time = current_time
 
-                    face_gray = cv2.cvtColor(
-                        frame[box[1] : box[3], box[0] : box[2]], cv2.COLOR_BGR2GRAY
-                    )
-                    face_gray = cv2.resize(face_gray, (48, 48))
-                    face_gray = face_gray / 255.0
-                    face_gray = np.reshape(face_gray, (1, 48, 48, 1))
-                    emotion = self.emotion_labels[
-                        np.argmax(self.emotion_model.predict(face_gray, verbose=0))
-                    ]
-                    yield {
-                        "time": str(datetime.datetime.now()).split(".")[0],
-                        "user_id": name,
-                        "emotion": emotion,
-                    }
-            else:
-                yield {
-                    "time": str(datetime.datetime.now()).split(".")[0],
-                    "user_id": False,
-                    "emotion": None,
-                }
+
+class BackgroundCameraTask(Thread):
+    def __init__(self, detector):
+        self.detector = detector
+        super().__init__()
+
+    def run(self):
+        for result in self.detector.start_all_video_captures():
+            print(result)
+
+
+background_task = None
 
 
 root_dir = "/home/ocean/Projects/MarketSecurityApp/media"
-detector = FaceDetector(root_dir=root_dir, model_weights="./model.h5")
-camera_urls = ["rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/"]
+detector = FaceDetector(root_dir=root_dir)
+camera_urls = [
+    "rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/",
+    "rtsp://your_second_camera_url_here",
+]
 detector.add_camera(camera_urls)
 
 
+@app.route("/camera", methods=["GET"])
 def print_results():
-    for result in detector.start_all_video_captures():
-        print(result)
+    def generator():
+        for result in detector.start_all_video_captures():
+            print(result)
+            yield json.dumps(result)
+
+    return Response(generator(), mimetype="text/event-stream")
 
 
 if __name__ == "__main__":
-    print_results()
+    background_task = BackgroundCameraTask(detector)
+    background_task.start()
+    app.run(host="0.0.0.0", port=11223)

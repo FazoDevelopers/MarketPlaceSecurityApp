@@ -8,3 +8,58 @@ Create venv using command: python3 -m venv venv
 install required packages using command: pip install -r requirements.txt
 
 cd into ai package run detection.py using command: python detection.py
+
+
+
+
+FOR RUNNING APPLICATION ON GPU:
+
+# Download and install NVIDIA driver if not installed already
+sudo apt install nvidia-driver-535
+sudo apt install nvidia-utils-535
+
+sudo reboot
+
+
+___________________________________________________________________________________________________
+
+# Example success log:
+ocean@ocean:~$ nvidia-smi
+Mon Aug 28 19:15:31 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.86.10              Driver Version: 535.86.10    CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce GTX 1650        On  | 00000000:01:00.0  On |                  N/A |
+|  0%   43C    P8              N/A /  75W |    477MiB /  4096MiB |      4%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|    0   N/A  N/A      1931      G   /usr/lib/xorg/Xorg                          157MiB |
+|    0   N/A  N/A      2064      G   /usr/bin/gnome-shell                         98MiB |
+|    0   N/A  N/A      3123      G   ...1462745,13966641196140216241,262144      117MiB |
+|    0   N/A  N/A      3545      G   ...sion,SpareRendererForSitePerProcess       40MiB |
+|    0   N/A  N/A      4513      G   ...--disable-features=BackForwardCache       60MiB |
++---------------------------------------------------------------------------------------+
+
+# Continue installing drivers >>> CUDA, cuDNN
+
+# Update and upgrade the system (safe)
+sudo apt update
+sudo apt upgrade
+
+# Download and install CUDA Toolkit
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cuda
+
+# Package and driver versions are fixed. Latest or older versions can be installed. (Success if versions match each other)

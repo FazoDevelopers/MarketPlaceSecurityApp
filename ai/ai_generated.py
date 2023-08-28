@@ -161,12 +161,13 @@ class FaceDetector:
                     if D[0, 0] < 600:
                         name = self.known_face_names[I[0, 0]]
                         names.append(name)
-                        results_list.append(
-                            {
-                                "time": str(datetime.datetime.now()).split(".")[0],
-                                "user_id": name
-                            }
-                        )
+                        # results_list.append(
+                        #     {
+                        #         "time": str(datetime.datetime.now()).split(".")[0],
+                        #         "user_id": name
+                        #     }
+                        # )
+                        yield {"user": name}
             if (
                 current_time - last_screenshot_time
             ).total_seconds() > screenshot_interval:
@@ -176,12 +177,12 @@ class FaceDetector:
                 )
                 cv2.imwrite(screenshot_filename, frame)
                 last_screenshot_time = current_time
-            if (current_time - last_yield_time).total_seconds() > 2:
-                if results_list:
-                    most_common_result = max(results_list, key=results_list.count)
-                    yield most_common_result
-                    results_list.clear()
-                    last_yield_time = current_time
+            # if (current_time - last_yield_time).total_seconds() > 2:
+                # if results_list:
+                #     most_common_result = max(results_list, key=results_list.count)
+                #     yield most_common_result
+                #     results_list.clear()
+                #     last_yield_time = current_time
 
 
 # root_dir = os.getcwd() + "/media"
@@ -203,3 +204,8 @@ def print_results():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=11223)
+
+
+
+# write full full full updated code, rewrite unchanged parts as well, do you even understand whatta fuck is "full"???? it means "Write full updated code, without missing any letter of the code"
+# if chat gpt doesnt write full updated code
