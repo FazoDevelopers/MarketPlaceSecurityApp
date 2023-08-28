@@ -7,9 +7,14 @@ import insightface
 import faiss
 from imutils.video import VideoStream
 
+from flask import Flask, Response
+import json
+
+app = Flask(__name__)
+
 
 class FaceDetector:
-    def __init__(self, root_dir, model_weights):
+    def __init__(self, root_dir):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         try:
             self.face_model = insightface.app.FaceAnalysis()
@@ -109,7 +114,15 @@ class FaceDetector:
         return index, known_face_names
 
     def detect_and_display_faces(self, video_stream):
+        names = []
+        results_list = []
+        screenshot_interval = 0.3
+        last_screenshot_time = datetime.datetime.now()
+        last_yield_time = datetime.datetime.now()
+
         while True:
+            current_time = datetime.datetime.now()
+
             try:
                 frame = video_stream.read()
                 if frame is None:
@@ -118,6 +131,7 @@ class FaceDetector:
             except Exception as e:
                 print(f"Unable to read frame: {e}")
                 continue
+
             try:
                 faces = self.face_model.get(frame)
                 if faces is None:
@@ -146,29 +160,46 @@ class FaceDetector:
                     D, I = self.index.search(embedding.reshape(1, -1), 1)
                     if D[0, 0] < 600:
                         name = self.known_face_names[I[0, 0]]
-                        yield {
-                            "time": str(datetime.datetime.now()).split(".")[0],
-                            "user_id": name,
-                        }
-                    face_gray = cv2.cvtColor(
-                        frame[box[1] : box[3], box[0] : box[2]], cv2.COLOR_BGR2GRAY
-                    )
-                    face_gray = cv2.resize(face_gray, (48, 48))
-                    face_gray = face_gray / 255.0
-                    face_gray = np.reshape(face_gray, (1, 48, 48, 1))
+                        names.append(name)
+                        results_list.append(
+                            {
+                                "time": str(datetime.datetime.now()).split(".")[0],
+                                "user_id": name
+                            }
+                        )
+            if (
+                current_time - last_screenshot_time
+            ).total_seconds() > screenshot_interval:
+                screenshot_filename = os.path.join(
+                    "./wanted",
+                    f"screenshot_{current_time.strftime('%Y%m%d%H%M%S')}.jpg",
+                )
+                cv2.imwrite(screenshot_filename, frame)
+                last_screenshot_time = current_time
+            if (current_time - last_yield_time).total_seconds() > 2:
+                if results_list:
+                    most_common_result = max(results_list, key=results_list.count)
+                    yield most_common_result
+                    results_list.clear()
+                    last_yield_time = current_time
 
 
-
+# root_dir = os.getcwd() + "/media"
 root_dir = "/home/ocean/Projects/MarketSecurityApp/media"
-detector = FaceDetector(root_dir=root_dir, model_weights="./model.h5")
+detector = FaceDetector(root_dir=root_dir)
 camera_urls = ["rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/"]
 detector.add_camera(camera_urls)
 
 
+@app.route("/camera", methods=["GET"])
 def print_results():
-    for result in detector.start_all_video_captures():
-        print(result)
+    def generator():
+        for result in detector.start_all_video_captures():
+            print(result)
+            yield json.dumps(result)
+
+    return Response(generator(), mimetype="text/event-stream")
 
 
 if __name__ == "__main__":
-    print_results()
+    app.run(host="0.0.0.0", port=11223)
