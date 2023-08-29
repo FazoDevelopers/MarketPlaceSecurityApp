@@ -3,22 +3,21 @@ No multithreading established
 
 Create a folder called "media" tp the root directory itself
 
-Create venv using command: python3 -m venv venv
+#Create venv using command
+run command:  python3 -m venv venv
+# install required packages using command
+run command:  pip install -r requirements.txt
+# cd into ai package run detection.py using command
+run command:  python detection.py
 
-install required packages using command: pip install -r requirements.txt
 
-cd into ai package run detection.py using command: python detection.py
-
-
-
-
-FOR RUNNING APPLICATION ON GPU:
+# FOR RUNNING APPLICATION ON GPU: ________________________________________________________________
 
 # Download and install NVIDIA driver if not installed already
-sudo apt install nvidia-driver-535
-sudo apt install nvidia-utils-535
+run command:  sudo apt install nvidia-driver-535
+run command:  sudo apt install nvidia-utils-535
 
-sudo reboot
+run command:  sudo reboot
 
 
 ___________________________________________________________________________________________________
@@ -53,13 +52,22 @@ Mon Aug 28 19:15:31 2023
 # Continue installing drivers >>> CUDA, cuDNN
 
 # Update and upgrade the system (safe)
-sudo apt update
-sudo apt upgrade
+run command:  sudo apt update
+run command:  sudo apt upgrade
 
 # Download and install CUDA Toolkit
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
-sudo apt-get update
-sudo apt-get -y install cuda
+run command:  wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+run command:  sudo dpkg -i cuda-keyring_1.1-1_all.deb
+run command:  sudo apt-get update
+run command:  sudo apt-get -y install cuda
 
-# Package and driver versions are fixed. Latest or older versions can be installed. (Success if versions match each other)
+# [INFO] Package and driver versions are fixed. Latest or older versions can be installed. (Success if versions match each other)
+# To install cuDNN on system, create account on NVIDIA official website and download from 
+open URL:  https://developer.nvidia.com/rdp/cudnn-download
+
+After downloading .deb file
+cd into .deb path
+run command:  sudo dpkg -i <downloaded .deb filename>.deb
+run command:  sudo apt install libcudnn8
+run command:  sudo apt update
+run command:  cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2

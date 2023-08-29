@@ -1,29 +1,38 @@
-import os
 import zipfile
+import os
 import shutil
-from tqdm import tqdm
 
-def move_files_from_zip_one_by_one(zip_file_path, dest_root):
-    """
-    Move files from a ZIP archive to dest_root one by one, preserving directory structure.
-    """
-    with zipfile.ZipFile(zip_file_path, 'r') as z:
-        # Wrap z.namelist() with tqdm for progress bar
-        for name in tqdm(z.namelist(), desc="Processing files", unit="file"):
-            # Create directory if it ends with '/'
-            if name.endswith('/'):
-                full_dest_dir = os.path.join(dest_root, name)
-                os.makedirs(full_dest_dir, exist_ok=True)
-            else:
-                src_path = z.extract(name, "/tmp/extracted_files")
-                dest_path = os.path.join(dest_root, name)
-                dest_folder = os.path.dirname(dest_path)
-                
-                os.makedirs(dest_folder, exist_ok=True)
-                shutil.move(src_path, dest_path)  # This will automatically remove the src_path file
 
-if __name__ == "__main__":
-    source_zip = "/home/ocean/Projects/MarketSecurityApp/ai/some.zip"
-    destination_directory = "/home/ocean/Games/"
+def unzip_and_delete(zip_path, destination="."):
+    # Check if the provided path is a valid zip file
+    if zipfile.is_zipfile(zip_path):
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            # Extract all the contents of the zip file
+            zip_ref.extractall(destination)
 
-    move_files_from_zip_one_by_one(source_zip, destination_directory)
+            # Get a list of the names of all files and directories in the zip file
+            zip_names = zip_ref.namelist()
+
+            # Filter out only directories from the list
+            directories = [name for name in zip_names if name.endswith("/")]
+
+            for directory in directories:
+                # Create the source path (where the directory was extracted to)
+                source = os.path.join(destination, directory)
+
+                # Create the target path (where we want to move the directory to)
+                target = os.path.join(
+                    destination, os.path.basename(directory.rstrip("/"))
+                )
+
+                # Move the directory to the target location
+                shutil.move(source, target)
+
+        # Delete the original zip file
+        os.remove(zip_path)
+    else:
+        print(f"'{zip_path}' is not a valid zip file.")
+
+
+# Example usage:
+unzip_and_delete('/home/ocean/Projects/MarketSecurityApp/ai/r.zip', '/home/ocean/Projects/MarketSecurityApp/ai/new')

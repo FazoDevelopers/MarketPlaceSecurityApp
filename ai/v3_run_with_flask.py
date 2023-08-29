@@ -6,16 +6,19 @@ import torch
 import insightface
 import faiss
 from imutils.video import VideoStream
-from flask import Flask, Response, request
-import json
+from flask import Flask
 from threading import Thread
+from flask_socketio import SocketIO, emit
+
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 
 class FaceDetector:
     def __init__(self, root_dir):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"_______________ {self.device}")
         try:
             self.face_model = insightface.app.FaceAnalysis()
             ctx_id = 0
@@ -116,10 +119,8 @@ class FaceDetector:
 
     def detect_and_display_faces(self, video_stream):
         names = []
-        results_list = []
         screenshot_interval = 0.3
         last_screenshot_time = datetime.datetime.now()
-        last_yield_time = datetime.datetime.now()
 
         while True:
             current_time = datetime.datetime.now()
@@ -202,17 +203,14 @@ camera_urls = [
 detector.add_camera(camera_urls)
 
 
-@app.route("/camera", methods=["GET"])
-def print_results():
-    def generator():
-        for result in detector.start_all_video_captures():
-            print(result)
-            yield json.dumps(result)
-
-    return Response(generator(), mimetype="text/event-stream")
+@socketio.on("request_data")
+def send_data():
+    for result in detector.start_all_video_captures():
+        print(result)
+        emit("response_data", result)
 
 
 if __name__ == "__main__":
     background_task = BackgroundCameraTask(detector)
     background_task.start()
-    app.run(host="0.0.0.0", port=11223)
+    socketio.run(app, host="0.0.0.0", port=11223)
