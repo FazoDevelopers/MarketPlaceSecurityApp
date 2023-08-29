@@ -163,19 +163,13 @@ class FaceDetector:
                     if D[0, 0] < 600:
                         name = self.known_face_names[I[0, 0]]
                         names.append(name)
-                        # results_list.append(
-                        #     {
-                        #         "time": str(datetime.datetime.now()).split(".")[0],
-                        #         "user_id": name
-                        #     }
-                        # )
-                        yield {"user": name}
+                        yield {"user": name, "datetime": str(datetime.datetime.now())}
             if (
                 current_time - last_screenshot_time
             ).total_seconds() > screenshot_interval:
                 screenshot_filename = os.path.join(
-                    "./wanted",
-                    f"screenshot_{current_time.strftime('%Y%m%d%H%M%S')}.jpg",
+                    "./media",
+                    f"{name}_{current_time.strftime('%Y_%m_%d_%H_%M_%S')}.jpg",
                 )
                 cv2.imwrite(screenshot_filename, frame)
                 last_screenshot_time = current_time
@@ -214,3 +208,6 @@ if __name__ == "__main__":
     background_task = BackgroundCameraTask(detector)
     background_task.start()
     socketio.run(app, host="0.0.0.0", port=11223)
+
+
+# rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/
