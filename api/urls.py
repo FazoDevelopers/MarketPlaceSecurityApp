@@ -1,16 +1,27 @@
 from django.urls import path
 
-from api.views import CameraAPIView
+from api.views import CameraAPIView, CriminalsAPIView
+
 
 urlpatterns = [
     path(
-        "", CameraAPIView.as_view({"get": "list", "post": "create"}), name="camera-list"
+        "camera/",
+        CameraAPIView.as_view({"get": "list", "post": "create"}),
     ),
     path(
-        "<int:pk>/",
+        "camera/<int:pk>/",
         CameraAPIView.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
         ),
-        name="camera-detail",
+    ),
+    path(
+        "criminals/",
+        CriminalsAPIView.as_view({"get": "list", "post": "create"}),
+    ),
+    path(
+        "criminals/<int:pk>/",
+        CriminalsAPIView.as_view(
+            {"get": "retrieve", "put": "update", "delete": "destroy"}
+        ),
     ),
 ]
