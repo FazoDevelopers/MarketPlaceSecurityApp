@@ -6,13 +6,17 @@ import torch
 import insightface
 import faiss
 from imutils.video import VideoStream
-from flask import Flask
+from flask import Flask, render_template
 from threading import Thread
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS, cross_origin
+
+from models import camera_urls
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 socketio = SocketIO(app)
+CORS(app)
 
 
 class FaceDetector:
@@ -193,12 +197,21 @@ class BackgroundCameraTask(Thread):
             socketio.emit("response_data", result)
 
 
-root_dir = "/home/ocean/Projects/MarketSecurityApp/media"
-detector = FaceDetector(root_dir=root_dir)
-camera_urls = [
-    "rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/",
-    "http://192.168.0.178:4747/video",
-]
+@app.route("/get", methods=["GET"])
+@cross_origin() 
+def get():
+    return render_template("index.html")
+
+@app.route("/hello")
+@cross_origin()
+def hello():
+    return "asdkjlhasdfljkhkjlasdf"
+
+root_dir = ""
+b = str(os.path.abspath(__file__)).split("/")[:-2]
+for i in b:
+    root_dir += i + "/"
+detector = FaceDetector(root_dir=root_dir + "media")
 detector.add_camera(camera_urls)
 
 camera_threads = []
@@ -207,7 +220,6 @@ for video_capture in detector.video_captures:
     camera_thread.start()
     camera_threads.append(camera_thread)
 
-# The send_data function is removed since it's not used anymore.
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=11223)
