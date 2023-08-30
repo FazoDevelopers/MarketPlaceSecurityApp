@@ -42,7 +42,9 @@ class FaceDetector:
             print(f"Adding camera: {url}")
             try:
                 video_stream = VideoStream(url).start()
-                self.video_captures.append(video_stream)
+                self.video_captures.append(
+                    {"video_stream": video_stream, "camera_url": url}
+                )
                 print(f"Захват видео для {url} открыт успешно")
             except Exception as e:
                 print(f"Ошибка при открытии видеозахвата для {url}: {e}")
@@ -51,7 +53,7 @@ class FaceDetector:
     def start_all_video_captures(self):
         while True:
             for video_capture in self.video_captures:
-                for result in self.detect_and_display_faces(video_capture):
+                for result in self.detect_and_display_faces(**video_capture):
                     yield result
 
     def load_face_encodings(self, root_dir):
@@ -117,7 +119,7 @@ class FaceDetector:
 
         return index, known_face_names
 
-    def detect_and_display_faces(self, video_stream):
+    def detect_and_display_faces(self, video_stream, camera_url):
         names = []
         screenshot_interval = 0.3
         last_screenshot_time = datetime.datetime.now()
@@ -163,51 +165,49 @@ class FaceDetector:
                     if D[0, 0] < 600:
                         name = self.known_face_names[I[0, 0]]
                         names.append(name)
-                        yield {"user": name, "datetime": str(datetime.datetime.now())}
+                        yield {
+                            "user": name,
+                            "datetime": str(datetime.datetime.now()),
+                            "url": camera_url,
+                        }
             if (
                 current_time - last_screenshot_time
             ).total_seconds() > screenshot_interval:
                 screenshot_filename = os.path.join(
                     "./media",
-                    f"{name}_{current_time.strftime('%Y_%m_%d_%H_%M_%S')}.jpg",
+                    f"{current_time.strftime('%Y_%m_%d_%H_%M_%S')}.jpg",
                 )
                 cv2.imwrite(screenshot_filename, frame)
                 last_screenshot_time = current_time
 
 
 class BackgroundCameraTask(Thread):
-    def __init__(self, detector):
+    def __init__(self, detector, video_stream):
         self.detector = detector
+        self.video_stream = video_stream
         super().__init__()
 
     def run(self):
-        for result in self.detector.start_all_video_captures():
+        for result in self.detector.detect_and_display_faces(**self.video_stream):
             print(result)
-
-
-background_task = None
+            socketio.emit("response_data", result)
 
 
 root_dir = "/home/ocean/Projects/MarketSecurityApp/media"
 detector = FaceDetector(root_dir=root_dir)
 camera_urls = [
     "rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/",
-    "rtsp://your_second_camera_url_here",
+    "http://192.168.0.178:4747/video",
 ]
 detector.add_camera(camera_urls)
 
+camera_threads = []
+for video_capture in detector.video_captures:
+    camera_thread = BackgroundCameraTask(detector, video_capture)
+    camera_thread.start()
+    camera_threads.append(camera_thread)
 
-@socketio.on("request_data")
-def send_data():
-    for result in detector.start_all_video_captures():
-        print(result)
-        emit("response_data", result)
-
+# The send_data function is removed since it's not used anymore.
 
 if __name__ == "__main__":
-    background_task = BackgroundCameraTask(detector)
-    background_task.start()
     socketio.run(app, host="0.0.0.0", port=11223)
-
-
-# rtsp://admin:Z12345678r@192.168.0.201/Streaming/channels/2/
