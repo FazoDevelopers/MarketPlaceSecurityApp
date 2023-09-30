@@ -1,10 +1,10 @@
-import React from "react";
-import Navbar from "./components/Navbar";
+import CameraMain from "./components/CameraMain";
+import AdminMain from "./pages/AdminMain";
 
 export default function App() {
   return (
     <>
-      <Navbar />
+      <AdminMain />
     </>
   );
 }
