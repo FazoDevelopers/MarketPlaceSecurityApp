@@ -8,8 +8,9 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./MapCamera.css";
+import "./MainStyle.css";
 import CriminalCard from "./CriminalCard";
+import DetectHumanCard from "./DetectHumanCard";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
@@ -77,7 +78,6 @@ function CameraMain() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      // Change to the next position index
       setCurrentPositionIndex(
         (prevIndex) => (prevIndex + 1) % positions.length
       );
@@ -87,7 +87,6 @@ function CameraMain() {
   }, [positions.length]);
 
   useEffect(() => {
-    // Update the map center and zoom when the current position changes
     const newPosition = positions[currentPositionIndex];
     if (
       newPosition &&
@@ -95,16 +94,21 @@ function CameraMain() {
       newPosition.location.length === 2
     ) {
       setCenterPositions(newPosition.location);
-      setZoom(12); // You can set the desired zoom level here.
     }
   }, [currentPositionIndex, positions]);
 
   useEffect(() => {
-    // Remove the current position from the positions array
     const newPositions = [...positions];
-    // newPositions.splice(currentPositionIndex, 1);
+    newPositions.splice(currentPositionIndex, 1);
     setPositions(newPositions);
   }, [currentPositionIndex]);
+
+  const handleZoomButtonClick = (position, zoomLevel) => {
+    if (position && position.location && position.location.length === 2) {
+      setCenterPositions(position.location);
+      setZoom(zoomLevel);
+    }
+  };
 
   return (
     <div>
@@ -114,10 +118,15 @@ function CameraMain() {
             <i className="fa-sharp fa-regular fa-radar fa-2x pr-3"></i>
             <p className="font-bebas text-2xl tracking-widest">Aniqlangan</p>
           </div>
+          <div
+            className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
+            style={{ minHeight: "80vh" }}
+          >
+            <DetectHumanCard />
+          </div>
         </div>
 
-        <div className="col-span-1 sm:col-span-4">
-          <p>Division 2</p>
+        <div className="col-span-1 sm:col-span-4 z-10">
           <MapContainer
             center={centerPositions}
             zoom={zoomCustom}
@@ -164,19 +173,25 @@ function CameraMain() {
               QIDIRUVDAGILAR
             </p>
           </div>
-          <div className="criminals_sidebar border-gray-500 border-8 mt-4 p-2 w-full h-screen overflow-x-scroll relative z-0">
+          <div
+            className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
+            style={{ minHeight: "80vh" }}
+          >
             {positions.map((position, index) => (
-              <CriminalCard
-                key={position.cam_id}
-                marginChange={index}
+              <div
+                key={index}
                 onClick={() => {
                   setCenterPositions(position.location);
                   setZoom(12);
                 }}
-                style={{
-                  backgroundColor: position.humanDetected ? "red" : "initial",
-                }}
-              />
+              >
+                <CriminalCard
+                  cardIndex={index}
+                  style={{
+                    backgroundColor: position.humanDetected ? "red" : "initial",
+                  }}
+                />
+              </div>
             ))}
           </div>
         </div>

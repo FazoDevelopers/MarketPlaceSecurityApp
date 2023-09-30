@@ -53,3 +53,6 @@
     border-radius: 50%;
     animation: borderResize 1s infinite;
 }
+.criminal_card_wrapper{
+    transition: all .4s!important;
+}
