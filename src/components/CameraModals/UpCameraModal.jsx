@@ -1,14 +1,13 @@
 import React from "react";
 import ClickableMap from "../ClickableMap";
-import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { isAddCameraModalState, isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 
-export default function AddCameraModal() {
+export default function UpCameraModal() {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
-    isAddCameraModalState
-  );
+  const [isUpCameraModal, setIsUpCameraModal] =
+    useRecoilState(isUpCameraModalState);
   return (
     <>
       <div className="fixed inset-0 z-50">
@@ -17,7 +16,7 @@ export default function AddCameraModal() {
           <div className="bg-stone-900 text-white p-20 rounded shadow-lg w-4/5 grid grid-cols-2 gap-20">
             <div className="flex flex-col">
               <h1 className="font-bebas text-5xl text-center mb-4">
-                KAMERA QO`SHISH
+                KAMERA TAHRIRLASH
               </h1>
               <div className="grid gap-10">
                 <div>
@@ -90,7 +89,7 @@ export default function AddCameraModal() {
                 type="button"
                 className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
                 onClick={() => {
-                  setIsAddCameraModal(false);
+                  setIsUpCameraModal(false);
                 }}
               >
                 <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH

@@ -1,11 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
+import {
+  isAddCameraModalState,
+  isDelCameraModalState,
+  isUpCameraModalState,
+} from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
+import UpCameraModal from "../CameraModals/UpCameraModal";
+import DelCameraModal from "../CameraModals/DelCameraModal";
 
 export default function MainCamera() {
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
+    isAddCameraModalState
+  );
+
+  const [isUpCameraModal, setIsUpCameraModal] =
+    useRecoilState(isUpCameraModalState);
+
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
+    isDelCameraModalState
+  );
+
   return (
     <>
-      <AddCameraModal />
+      {isAddCameraModal ? <AddCameraModal /> : null}
+      {isUpCameraModal ? <UpCameraModal /> : null}
+      {isDelCameraModal ? <DelCameraModal /> : null}
+
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
@@ -14,6 +36,9 @@ export default function MainCamera() {
           <button
             type="button"
             className="p-2 bg-green-500 text-white font-extrabold"
+            onClick={() => {
+              setIsAddCameraModal(true);
+            }}
           >
             <i className="fa-sharp fa-solid fa-plus p-1"></i>
             QO`SHISH

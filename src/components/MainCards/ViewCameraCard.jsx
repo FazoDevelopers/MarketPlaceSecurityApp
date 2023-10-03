@@ -1,6 +1,17 @@
 import React from "react";
+import { useRecoilState } from "recoil";
+import {
+  isDelCameraModalState,
+  isUpCameraModalState,
+} from "../../recoil/atoms";
 
 export default function ViewCameraCard() {
+  const [isUpCameraModal, setIsUpCameraModal] =
+    useRecoilState(isUpCameraModalState);
+
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
+    isDelCameraModalState
+  );
   return (
     <>
       <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
@@ -21,10 +32,22 @@ export default function ViewCameraCard() {
           obcaecati eaque
         </p>
         <div className="flex justify-between mt-4">
-          <button type="button" className="bg-red-800 px-5 py-2">
+          <button
+            type="button"
+            className="bg-red-800 px-5 py-2"
+            onClick={() => {
+              setIsDelCameraModal(true);
+            }}
+          >
             <i className="fa-solid fa-trash"></i> O`CHIRISH
           </button>
-          <button type="button" className="bg-green-800 px-5 py-2">
+          <button
+            type="button"
+            className="bg-green-800 px-5 py-2"
+            onClick={() => {
+              setIsUpCameraModal(true);
+            }}
+          >
             <i className="fa-solid fa-pen-to-square"></i> TAHRIRLASH
           </button>
         </div>
