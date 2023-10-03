@@ -9,8 +9,8 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../MainStyle.css";
-import CriminalCard from "../CriminalCard";
-import DetectHumanCard from "../DetectHumanCard";
+import CriminalCard from "../MainCards/CriminalCard";
+import DetectHumanCard from "../MainCards/DetectHumanCard";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
