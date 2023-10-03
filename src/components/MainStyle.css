@@ -60,3 +60,17 @@
 .criminal_card_wrapper:hover{
     z-index: 99!important;
 }
+
+
+.center-of-map:before {
+  position: absolute;
+  content: "\271B";
+  color: #000;
+  z-index: 990;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+}
