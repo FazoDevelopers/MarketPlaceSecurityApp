@@ -24,3 +24,19 @@ export const isDelCameraModalState = atom({
   key: "isDelCameraModal",
   default: false,
 });
+
+
+export const isAddCriminalModalState = atom({
+  key: "isAddCriminalModal",
+  default: false,
+});
+
+export const isUpCriminalModalState = atom({
+  key: "isUpCriminalModal",
+  default: false,
+});
+
+export const isDelCriminalModalState = atom({
+  key: "isDelCriminalModal",
+  default: false,
+});
