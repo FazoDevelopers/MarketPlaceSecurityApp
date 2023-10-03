@@ -1,4 +1,5 @@
 import React from "react";
+import ClickableMap from "../ClickableMap";
 
 export default function AddCameraModal() {
   return (
@@ -73,12 +74,7 @@ export default function AddCameraModal() {
             </div>
 
             <div className="grid content-between">
-              <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas
-                voluptatum facilis minima distinctio quam vel odio reprehenderit
-                voluptates sapiente. Corrupti officia accusantium distinctio
-                minima, labore vel mollitia consectetur eum doloremque.
-              </p>
+              <ClickableMap />
 
               <button
                 type="button"
