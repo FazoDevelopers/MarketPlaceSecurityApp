@@ -1,7 +1,11 @@
 import React from "react";
 import ClickableMap from "../ClickableMap";
+import { latState, lngState } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
 
 export default function AddCameraModal() {
+  const [lat, setLat] = useRecoilState(latState);
+  const [lng, setLng] = useRecoilState(lngState);
   return (
     <>
       <div className="fixed inset-0 z-50">
@@ -29,7 +33,10 @@ export default function AddCameraModal() {
                   </span>
                   <input
                     type="text"
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none appearance-none cursor-not-allowed"
+                    value={`Latitude: ${lat}, Longitude: ${lng}`}
+                    disabled
+                    readOnly
                   />
                 </div>
 
