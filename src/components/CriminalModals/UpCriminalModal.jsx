@@ -1,12 +1,11 @@
 import React from "react";
-import ClickableMap from "../ClickableMap";
+import { useRecoilState } from "recoil";
 import {
-  isAddCriminalModalState,
   isUpCriminalModalState,
   latState,
-  lngState,
+  lngState
 } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
+import ClickableMap from "../ClickableMap";
 
 export default function UpCriminalModal() {
   const [lat, setLat] = useRecoilState(latState);

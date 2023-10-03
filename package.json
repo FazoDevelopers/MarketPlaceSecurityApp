@@ -21,7 +21,8 @@
     "react-lineto": "^3.3.0",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.16.0",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "swiper": "^10.3.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.3",

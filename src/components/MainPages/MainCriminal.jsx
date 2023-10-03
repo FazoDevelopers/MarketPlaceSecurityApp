@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import ViewCriminalCard from "../MainCards/ViewCriminalCard";
-import AddCriminalModal from "../CriminalModals/AddCriminalModal";
+import React from "react";
+import { useRecoilState } from "recoil";
 import {
   isAddCriminalModalState,
   isDelCriminalModalState,
   isUpCriminalModalState,
 } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
-import UpCriminalModal from "../CriminalModals/UpCriminalModal";
+import AddCriminalModal from "../CriminalModals/AddCriminalModal";
 import DelCriminalModal from "../CriminalModals/DelCriminalModal";
+import UpCriminalModal from "../CriminalModals/UpCriminalModal";
+import ViewCriminalCard from "../MainCards/ViewCriminalCard";
 
 export default function MainCriminal() {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
