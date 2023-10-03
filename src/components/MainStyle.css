@@ -56,3 +56,7 @@
 .criminal_card_wrapper{
     transition: all .4s!important;
 }
+
+.criminal_card_wrapper:hover{
+    z-index: 99!important;
+}

@@ -8,9 +8,9 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./MainStyle.css";
-import CriminalCard from "./CriminalCard";
-import DetectHumanCard from "./DetectHumanCard";
+import "../MainStyle.css";
+import CriminalCard from "../CriminalCard";
+import DetectHumanCard from "../DetectHumanCard";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();

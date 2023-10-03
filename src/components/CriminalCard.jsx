@@ -10,7 +10,7 @@ export default function CriminalCard({ cardIndex }) {
   return (
     <>
       <div
-        className="criminal_card_wrapper absolute p-2 overflow-hidden cursor-pointer hover:z-20 w-full opacity-95"
+        className="criminal_card_wrapper absolute p-2 overflow-hidden cursor-pointer hover:z-20 w-full"
         style={{
           marginTop: isPinned ? 0 : `${Number(cardIndex) * 100}px`,
           zIndex: isPinned ? 99 : "unset",
@@ -19,7 +19,7 @@ export default function CriminalCard({ cardIndex }) {
       >
         <div className="border-lime-500 border-8 py-2 px-3 bg-lime-600 text-white font-extrabold">
           <div className="flex justify-between align-middle">
-            <span className="font-bebas text-base">Namangan sh.</span>{" "}
+            <span className="font-bebas text-base">Namangan sh.</span>
             <i className="fa-solid fa-thumbtack" style={isPinned?{transform: "rotate(35deg)"}: null} onClick={pinCriminal}></i>
           </div>
           <p className="text-sm text-end font-orbitron">19:15:120 01.10.2023</p>
