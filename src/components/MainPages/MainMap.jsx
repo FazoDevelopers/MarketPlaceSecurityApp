@@ -26,7 +26,7 @@ function SetViewOnClick({ coords, zoomCustom }) {
   return null;
 }
 
-function CameraMain() {
+function MainMap() {
   const [centerPositions, setCenterPositions] = useState([
     40.99681833333333, 71.64040666666666,
   ]);
@@ -200,4 +200,4 @@ function CameraMain() {
   );
 }
 
-export default CameraMain;
+export default MainMap;
