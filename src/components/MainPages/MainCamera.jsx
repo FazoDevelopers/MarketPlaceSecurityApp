@@ -1,9 +1,11 @@
 import React from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
+import AddCameraModal from "../CameraModals/AddCameraModal";
 
 export default function MainCamera() {
   return (
     <>
+      <AddCameraModal />
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
