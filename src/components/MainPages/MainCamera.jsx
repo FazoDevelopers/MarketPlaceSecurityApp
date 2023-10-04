@@ -16,13 +16,18 @@ export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
   );
-
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
-
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
     isDelCameraModalState
   );
+  const [upCamDatas, setUpCamDatas] = useState(null);
+
+  const upCameraDatas = (data) => {
+    setUpCamDatas(data);
+  };
+
+  console.log(upCamDatas);
 
   const [apiData, setApiData] = useState([]);
 
@@ -30,9 +35,7 @@ export default function MainCamera() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${MAIN_URL}/api/camera/`);
-
-        console.log(response);
-        if (response.status === 200 && response.statusText === "OK") {
+        if (response.status === 200) {
           setApiData(response.data.results);
         } else {
           console.error("Request failed with status:", response.status);
@@ -47,9 +50,9 @@ export default function MainCamera() {
 
   return (
     <>
-      {isAddCameraModal ? <AddCameraModal /> : null}
-      {isUpCameraModal ? <UpCameraModal /> : null}
-      {isDelCameraModal ? <DelCameraModal /> : null}
+      {isAddCameraModal && <AddCameraModal />}
+      {isUpCameraModal && <UpCameraModal upCamDatas={upCamDatas} />}
+      {isDelCameraModal && <DelCameraModal />}
 
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -70,7 +73,11 @@ export default function MainCamera() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {apiData.map((item, index) => (
-            <ViewCameraCard key={index} data={item} />
+            <ViewCameraCard
+              key={index}
+              data={item}
+              upCameraDatas={upCameraDatas}
+            />
           ))}
         </div>
 

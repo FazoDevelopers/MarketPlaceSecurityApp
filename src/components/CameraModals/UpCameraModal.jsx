@@ -1,9 +1,14 @@
 import React from "react";
 import ClickableMap from "../ClickableMap";
-import { isAddCameraModalState, isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
+import {
+  isAddCameraModalState,
+  isUpCameraModalState,
+  latState,
+  lngState,
+} from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 
-export default function UpCameraModal() {
+export default function UpCameraModal({ upCamDatas }) {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
   const [isUpCameraModal, setIsUpCameraModal] =
@@ -16,7 +21,7 @@ export default function UpCameraModal() {
           <div className="bg-stone-900 text-white p-20 rounded shadow-lg w-4/5 grid grid-cols-2 gap-20">
             <div className="flex flex-col">
               <h1 className="font-bebas text-5xl text-center mb-4">
-                KAMERA TAHRIRLASH
+                #{upCamDatas.name} TAHRIRLASH
               </h1>
               <div className="grid gap-10">
                 <div>
@@ -26,6 +31,7 @@ export default function UpCameraModal() {
                   <input
                     type="text"
                     className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    defaultValue={upCamDatas.name}
                   />
                 </div>
 
@@ -57,11 +63,12 @@ export default function UpCameraModal() {
 
                 <div>
                   <span className="bg-lime-600 px-1 font-extrabold">
-                    KAMERA NOMI
+                    KAMERA URL
                   </span>
                   <input
                     type="text"
                     className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    defaultValue={upCamDatas.url}
                   />
                 </div>
               </div>
