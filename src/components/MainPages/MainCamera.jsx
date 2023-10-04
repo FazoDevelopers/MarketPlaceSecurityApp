@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
 import {
@@ -9,6 +9,8 @@ import {
 import { useRecoilState } from "recoil";
 import UpCameraModal from "../CameraModals/UpCameraModal";
 import DelCameraModal from "../CameraModals/DelCameraModal";
+import { MAIN_URL } from "../../variables"; // Import MAIN_URL from your variables.js file
+import axios from "axios"; // Import Axios
 
 export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
@@ -21,6 +23,27 @@ export default function MainCamera() {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
     isDelCameraModalState
   );
+
+  const [apiData, setApiData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${MAIN_URL}/api/camera/`);
+
+        console.log(response);
+        if (response.status === 200 && response.statusText === "OK") {
+          setApiData(response.data.results);
+        } else {
+          console.error("Request failed with status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -46,14 +69,9 @@ export default function MainCamera() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
-          <ViewCameraCard />
+          {apiData.map((item, index) => (
+            <ViewCameraCard key={index} data={item} />
+          ))}
         </div>
 
         <div className="flex justify-center my-5">

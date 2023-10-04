@@ -5,7 +5,7 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 
-export default function ViewCameraCard() {
+export default function ViewCameraCard({ data }) {
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
 
@@ -22,14 +22,14 @@ export default function ViewCameraCard() {
             className="w-full h-auto"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent p-3 font-bebas text-3xl">
-            #chorsu
+            #{data.name}
           </div>
         </div>
 
-        <h1 className="text-2xl font-bebas mt-3">HUDUD</h1>
+        <h1 className="text-2xl font-bebas mt-3">{data.name}</h1>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-          obcaecati eaque
+          Latitude: <b>{data.latitude}</b> <br />
+          Longitude: <b>{data.longitude}</b>
         </p>
         <div className="flex justify-between mt-4">
           <button
