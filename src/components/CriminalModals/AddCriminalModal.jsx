@@ -62,12 +62,6 @@ export default function AddCriminalModal() {
                 >
                   <i className="fa-solid fa-rotate-right pr-2"></i> TOZALASH
                 </button>
-                <button
-                  type="button"
-                  className="bg-green-800 px-4 py-2 border-2 border-green-600"
-                >
-                  <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
-                </button>
               </div>
             </div>
 
@@ -109,15 +103,24 @@ export default function AddCriminalModal() {
                 />
               </div>
 
-              <button
-                type="button"
-                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
-                onClick={() => {
-                  setIsAddCriminalModal(false);
-                }}
-              >
-                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
-              </button>
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                  onClick={() => {
+                    setIsAddCriminalModal(false);
+                  }}
+                >
+                  <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                </button>
+
+                <button
+                  type="button"
+                  className="bg-green-800 px-4 py-2 border-2 border-green-600"
+                >
+                  <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
+                </button>
+              </div>
             </div>
           </div>
         </div>

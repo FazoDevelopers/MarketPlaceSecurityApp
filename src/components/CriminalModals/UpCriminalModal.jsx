@@ -116,6 +116,8 @@ export default function UpCriminalModal() {
                   <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
                 </button>
               </div>
+
+            
             </div>
           </div>
         </div>
