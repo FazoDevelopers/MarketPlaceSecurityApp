@@ -36,27 +36,11 @@ export default function AddCriminalModal() {
 
                 <div>
                   <span className="bg-lime-600 px-1 font-extrabold">
-                    JINOYATCHI MANZILI
+                    JINOYATCHI NOMI
                   </span>
                   <input
                     type="text"
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none appearance-none cursor-not-allowed"
-                    value={`Latitude: ${lat}, Longitude: ${lng}`}
-                    disabled
-                    readOnly
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
-                    JOY RASMI
-                  </span>
-                  <input
-                    type="file"
-                    className="border-2 border-lime-600 p-3"
-                    onChange={(e) => {
-                      console.log(e.target.files[0]);
-                    }}
+                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                   />
                 </div>
 
@@ -88,7 +72,42 @@ export default function AddCriminalModal() {
             </div>
 
             <div className="grid content-between">
-              <ClickableMap />
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
 
               <button
                 type="button"

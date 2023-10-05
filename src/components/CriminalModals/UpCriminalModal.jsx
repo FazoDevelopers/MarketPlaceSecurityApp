@@ -1,10 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import {
-  isUpCriminalModalState,
-  latState,
-  lngState
-} from "../../recoil/atoms";
+import { isUpCriminalModalState, latState, lngState } from "../../recoil/atoms";
 import ClickableMap from "../ClickableMap";
 
 export default function UpCriminalModal() {
@@ -36,27 +32,11 @@ export default function UpCriminalModal() {
 
                 <div>
                   <span className="bg-lime-600 px-1 font-extrabold">
-                    JINOYATCHI MANZILI
+                    JINOYATCHI NOMI
                   </span>
                   <input
                     type="text"
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none appearance-none cursor-not-allowed"
-                    value={`Latitude: ${lat}, Longitude: ${lng}`}
-                    disabled
-                    readOnly
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
-                    JOY RASMI
-                  </span>
-                  <input
-                    type="file"
-                    className="border-2 border-lime-600 p-3"
-                    onChange={(e) => {
-                      console.log(e.target.files[0]);
-                    }}
+                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                   />
                 </div>
 
@@ -78,6 +58,57 @@ export default function UpCriminalModal() {
                 >
                   <i className="fa-solid fa-rotate-right pr-2"></i> TOZALASH
                 </button>
+              </div>
+            </div>
+
+            <div className="grid content-between">
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                  JOY RASMI
+                </span>
+                <input
+                  type="file"
+                  className="border-2 border-lime-600 p-3"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+              </div>
+
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                  onClick={() => {
+                    setIsUpCriminalModal(false);
+                  }}
+                >
+                  <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                </button>
                 <button
                   type="button"
                   className="bg-green-800 px-4 py-2 border-2 border-green-600"
@@ -85,20 +116,6 @@ export default function UpCriminalModal() {
                   <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
                 </button>
               </div>
-            </div>
-
-            <div className="grid content-between">
-              <ClickableMap />
-
-              <button
-                type="button"
-                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
-                onClick={() => {
-                  setIsUpCriminalModal(false);
-                }}
-              >
-                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
-              </button>
             </div>
           </div>
         </div>
