@@ -1,12 +1,42 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import ClickableMap from "../ClickableMap";
-import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
-import axios from "axios"; // Import Axios
-import { MAIN_URL } from "../../variables";
+import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
+import { MAIN_URL } from "../../variables";
+import ClickableMap from "../ClickableMap";
+
+const toastOptions = {
+  position: "top-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
+const prepareCameraData = (data, lat, lng) => {
+  return {
+    id: Math.floor(Math.random() * 100),
+    name: data.cameraName,
+    url: data.cameraUrl,
+    longitude: parseFloat(lng),
+    latitude: parseFloat(lat),
+  };
+};
+
+const handleSuccess = () => {
+  toast.success("Camera created successfully!", toastOptions);
+};
+
+const handleError = (error) => {
+  console.error("Error:", error);
+  toast.error("Create error!", toastOptions);
+};
 
 export default function AddCameraModal() {
   const [lat, setLat] = useRecoilState(latState);
@@ -17,14 +47,8 @@ export default function AddCameraModal() {
 
   const { control, handleSubmit } = useForm();
 
-  const onSubmit = async (data) => {
-    const cameraData = {
-      id: Math.floor(Math.random() * 100),
-      name: data.cameraName,
-      url: data.cameraUrl,
-      longitude: parseFloat(lng),
-      latitude: parseFloat(lat),
-    };
+  const onSubmit = async ({ cameraName, cameraUrl }) => {
+    const cameraData = prepareCameraData({ cameraName, cameraUrl }, lat, lng);
 
     try {
       const response = await axios.post(`${MAIN_URL}/api/camera/`, cameraData, {
@@ -34,21 +58,13 @@ export default function AddCameraModal() {
       });
 
       if (response.status === 201) {
-        toast.success("Camera created successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        handleSuccess();
         console.log(response);
       } else {
-        console.error("Error submitting data:", response.statusText);
+        handleError(response.statusText);
       }
     } catch (error) {
-      console.error("Error:", error);
+      handleError(error);
     }
     setIsAddCameraModal(false);
   };
