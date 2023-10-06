@@ -22,21 +22,39 @@ export default function MainCamera() {
     isDelCameraModalState
   );
   const [upCamDatas, setUpCamDatas] = useState(null);
+  const [indexPage, setIndexPage] = useState(1);
+  const [nextPageStatus, setNextPageStatus] = useState("");
+  const [prevPageStatus, setPrevPageStatus] = useState("");
+
+  const decreasePageIndex = () => {
+    if (prevPageStatus) {
+      setIndexPage((prev) => prev - 1);
+    }
+  };
+
+  const increasePageIndex = () => {
+    if (nextPageStatus) {
+      setIndexPage((prev) => prev + 1);
+    }
+  };
+
+  console.log(indexPage);
 
   const upCameraDatas = (data) => {
     setUpCamDatas(data);
   };
-
-  console.log(upCamDatas);
-
   const [apiData, setApiData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${MAIN_URL}/api/camera/`);
+        const response = await axios.get(
+          `${MAIN_URL}/api/camera/?page=${indexPage}`
+        );
         if (response.status === 200) {
           setApiData(response.data.results);
+          setNextPageStatus(response.data.next);
+          setPrevPageStatus(response.data.previous);
         } else {
           console.error("Request failed with status:", response.status);
         }
@@ -46,11 +64,11 @@ export default function MainCamera() {
     };
 
     fetchData();
-  }, []);
+  }, [indexPage]);
 
   return (
     <>
-      {isAddCameraModal && <AddCameraModal />}
+      {isAddCameraModal && <AddCameraModal pageIndex={indexPage} />}
       {isUpCameraModal && <UpCameraModal upCamDatas={upCamDatas} />}
       {isDelCameraModal && <DelCameraModal />}
 
@@ -72,9 +90,9 @@ export default function MainCamera() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {apiData.map((item, index) => (
+          {apiData.map((item) => (
             <ViewCameraCard
-              key={index}
+              key={item.id}
               data={item}
               upCameraDatas={upCameraDatas}
             />
@@ -84,15 +102,24 @@ export default function MainCamera() {
         <div className="flex justify-center my-5">
           <button
             type="button"
-            className="bg-green-800 px-5 py-2 font-extrabold m-3"
+            className={`${
+              !prevPageStatus ? "bg-green-800" : "bg-green-500"
+            } px-5 py-2 font-extrabold m-3`}
+            onClick={decreasePageIndex}
+            disabled={!prevPageStatus}
           >
-            <i className="fa-solid fa-chevron-left"></i> OLDINGI
+            <i className="fa-solid fa-chevron-left"></i> Oldingi
           </button>
+
           <button
             type="button"
-            className="bg-green-500 px-5 py-2 font-extrabold m-3"
+            className={`${
+              !nextPageStatus ? "bg-green-800" : "bg-green-500"
+            } px-5 py-2 font-extrabold m-3`}
+            onClick={increasePageIndex}
+            disabled={!nextPageStatus}
           >
-            KEYINGI <i className="fa-solid fa-chevron-right"></i>
+            Keyingi <i className="fa-solid fa-chevron-right"></i>
           </button>
         </div>
       </div>
