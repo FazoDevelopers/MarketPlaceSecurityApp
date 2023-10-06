@@ -22,9 +22,11 @@ export default function MainCamera() {
     isDelCameraModalState
   );
   const [upCamDatas, setUpCamDatas] = useState(null);
+  const [delCamDatas, setDelCamDatas] = useState(null); // New state variable for deletion data
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState("");
   const [prevPageStatus, setPrevPageStatus] = useState("");
+  const [apiData, setApiData] = useState([]);
 
   const decreasePageIndex = () => {
     if (prevPageStatus) {
@@ -38,12 +40,14 @@ export default function MainCamera() {
     }
   };
 
-  console.log(indexPage);
-
   const upCameraDatas = (data) => {
     setUpCamDatas(data);
   };
-  const [apiData, setApiData] = useState([]);
+
+  const deleteCamera = (data) => {
+    setDelCamDatas(data);
+    setIsDelCameraModal(true); 
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,18 +63,23 @@ export default function MainCamera() {
           console.error("Request failed with status:", response.status);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("fetch main:", error);
       }
     };
 
     fetchData();
-  }, [indexPage]);
+  }, [indexPage, apiData]);
 
   return (
     <>
       {isAddCameraModal && <AddCameraModal pageIndex={indexPage} />}
       {isUpCameraModal && <UpCameraModal upCamDatas={upCamDatas} />}
-      {isDelCameraModal && <DelCameraModal />}
+      {isDelCameraModal && (
+        <DelCameraModal
+          data={delCamDatas}
+          setIsDelCameraModal={setIsDelCameraModal}
+        />
+      )}
 
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -95,6 +104,7 @@ export default function MainCamera() {
               key={item.id}
               data={item}
               upCameraDatas={upCameraDatas}
+              deleteCamera={deleteCamera} // Pass deleteCamera function
             />
           ))}
         </div>

@@ -5,7 +5,7 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 
-export default function ViewCameraCard({ data, upCameraDatas }) {
+export default function ViewCameraCard({ data, upCameraDatas, deleteCamera }) {
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
@@ -27,19 +27,22 @@ export default function ViewCameraCard({ data, upCameraDatas }) {
 
       <h1 className="text-2xl font-bebas mt-3">{data.name}</h1>
       <p>
+        ID: {data.id} <br />
         Latitude: <b>{data.latitude}</b> <br />
         Longitude: <b>{data.longitude}</b>
       </p>
+
       <div className="flex justify-between mt-4">
         <button
           type="button"
           className="bg-red-800 px-5 py-2"
           onClick={() => {
-            setIsDelCameraModal(true);
+            deleteCamera(data);
           }}
         >
           <i className="fa-solid fa-trash"></i> O`CHIRISH
         </button>
+
         <button
           type="button"
           className="bg-green-800 px-5 py-2"
