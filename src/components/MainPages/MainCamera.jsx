@@ -46,7 +46,7 @@ export default function MainCamera() {
 
   const deleteCamera = (data) => {
     setDelCamDatas(data);
-    setIsDelCameraModal(true); 
+    setIsDelCameraModal(true);
   };
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function MainCamera() {
               key={item.id}
               data={item}
               upCameraDatas={upCameraDatas}
-              deleteCamera={deleteCamera} // Pass deleteCamera function
+              deleteCamera={deleteCamera}
             />
           ))}
         </div>
