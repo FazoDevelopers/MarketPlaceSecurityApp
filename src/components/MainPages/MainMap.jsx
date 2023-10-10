@@ -72,8 +72,8 @@ function CombinedComponent() {
           // Create a CriminalCard component with jsonData as a prop
           // const criminalCardComponent = <CriminalCard data={jsonData} />;
 
-          // Append the CriminalCard component to the div
           // divRef.current.innerHTML += `<h1>${jsonData.first_name}</h1>`;
+          console.log(divRef.current);
           divRef.current.innerHTML += `<div class="text-center">
             <h1 class="bg-red-500">${jsonData.first_name}</h1>
             <img src='http://192.168.1.155:5000/media/${jsonData.first_name}'/>
