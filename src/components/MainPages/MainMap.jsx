@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   Marker,
@@ -26,12 +26,17 @@ function SetViewOnClick({ coords, zoomCustom }) {
   return null;
 }
 
-function MainMap() {
+function CombinedComponent() {
+  const [socket, setSocket] = useState(null);
+  const divRef = useRef(null);
+  const timeouts = {};
+
   const [centerPositions, setCenterPositions] = useState([
     40.99681833333333, 71.64040666666666,
   ]);
   const [zoomCustom, setZoom] = useState(12);
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
+  const [cardData, setCardData] = useState();
 
   const [positions, setPositions] = useState([
     {
@@ -42,39 +47,72 @@ function MainMap() {
       photo: "https://picsum.photos/id/100/50/50",
       humanDetected: true,
     },
-    {
-      cam_id: "id_2",
-      location: [41.09681833333333, 71.74040666666666],
-      name: "Location 2",
-      address: "Address 2",
-      photo: "https://picsum.photos/id/101/50/50",
-      humanDetected: false,
-    },
-    {
-      cam_id: "id_3",
-      location: [41.19681833333333, 71.8404666666666],
-      name: "Location 3",
-      address: "Address 3",
-      photo: "https://picsum.photos/id/102/50/50",
-      humanDetected: true,
-    },
-    {
-      cam_id: "id_4",
-      location: [41.29681833333333, 71.94040666666666],
-      name: "Location 4",
-      address: "Address 4",
-      photo: "https://picsum.photos/id/103/50/50",
-      humanDetected: false,
-    },
-    {
-      cam_id: "id_5",
-      location: [41.39681833333333, 72.04040666666666],
-      name: "Location 5",
-      address: "Address 5",
-      photo: "https://picsum.photos/id/104/50/50",
-      humanDetected: true,
-    },
   ]);
+
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://192.168.1.155:8000");
+
+    setSocket(newSocket);
+
+    newSocket.addEventListener("open", (event) => {
+      console.log("Connected to the WebSocket");
+    });
+
+    newSocket.addEventListener("message", (event) => {
+      console.log("Received data:", event.data);
+
+      try {
+        const jsonData = JSON.parse(event.data);
+        console.log("Parsed data:", jsonData);
+        setCardData(jsonData);
+
+        if (divRef.current) {
+          console.log(jsonData);
+
+          // Create a CriminalCard component with jsonData as a prop
+          // const criminalCardComponent = <CriminalCard data={jsonData} />;
+
+          // Append the CriminalCard component to the div
+          // divRef.current.innerHTML += `<h1>${jsonData.first_name}</h1>`;
+          divRef.current.innerHTML += `<div class="text-center">
+            <h1 class="bg-red-500">${jsonData.first_name}</h1>
+            <img src='http://192.168.1.155:5000/media/${jsonData.first_name}'/>
+          <div/>`;
+          // divRef.current.appendChild(criminalCardComponent);
+
+          const timeout = setTimeout(() => {
+            if (divRef.current && divRef.current.firstChild) {
+              divRef.current.removeChild(divRef.current.firstChild);
+            }
+          }, 5000);
+          timeouts[jsonData.id] = timeout;
+        }
+      } catch (error) {
+        console.log("Data received is not JSON:", event.data);
+      }
+    });
+
+    newSocket.addEventListener("close", (event) => {
+      console.log("WebSocket closed:", event);
+    });
+
+    newSocket.addEventListener("error", (event) => {
+      console.error("WebSocket Error:", event);
+    });
+
+    divRef.current.addEventListener("childremove", (event) => {
+      const jsonDataId = event.target.firstChild.id;
+      clearTimeout(timeouts[jsonDataId]);
+      delete timeouts[jsonDataId];
+    });
+
+    return () => {
+      newSocket.close();
+      for (const timeoutId in timeouts) {
+        clearTimeout(timeouts[timeoutId]);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -96,12 +134,6 @@ function MainMap() {
       setCenterPositions(newPosition.location);
     }
   }, [currentPositionIndex, positions]);
-
-  useEffect(() => {
-    const newPositions = [...positions];
-    newPositions.splice(currentPositionIndex, 1);
-    setPositions(newPositions);
-  }, [currentPositionIndex]);
 
   const handleZoomButtonClick = (position, zoomLevel) => {
     if (position && position.location && position.location.length === 2) {
@@ -174,30 +206,14 @@ function MainMap() {
             </p>
           </div>
           <div
+            ref={divRef}
             className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
             style={{ minHeight: "80vh" }}
-          >
-            {positions.map((position, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  setCenterPositions(position.location);
-                  setZoom(12);
-                }}
-              >
-                <CriminalCard
-                  cardIndex={index}
-                  style={{
-                    backgroundColor: position.humanDetected ? "red" : "initial",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+          ></div>
         </div>
       </div>
     </div>
   );
 }
 
-export default MainMap;
+export default CombinedComponent;
