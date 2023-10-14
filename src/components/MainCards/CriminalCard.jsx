@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../MainStyle.css";
-export default function CriminalCard(data) {
+export default function CriminalCard({ data }) {
   console.log(data.first_name);
   const [isPinned, setIsPinned] = useState(false);
 
@@ -19,14 +19,14 @@ export default function CriminalCard(data) {
     >
       <div className="border-lime-500 border-8 py-2 px-3 bg-lime-600 text-white font-extrabold">
         <div className="flex justify-between align-middle">
-          {/* <span className="font-bebas text-base">{data.first_name}</span> */}
+          <span className="font-bebas text-base">{data.first_name}</span>
           <i
             className="fa-solid fa-thumbtack"
             style={isPinned ? { transform: "rotate(35deg)" } : null}
             onClick={pinCriminal}
           ></i>
         </div>
-        {/* <p className="text-sm text-end font-orbitron">{data.first_name}</p> */}
+        <p className="text-sm text-end font-orbitron">{data.first_name}</p>
       </div>
       <img
         src="https://picsum.photos/400/400"

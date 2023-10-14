@@ -28,11 +28,11 @@ export default function DetectHumanCard({ cardIndex }) {
           </div>
           <p className="text-sm text-end font-orbitron">19:15:120 01.10.2023</p>
         </div>
-        <img
+        {/* <img
           src="https://picsum.photos/400/400"
           className="object-cover"
           alt=""
-        />
+        /> */}
       </div>
     </>
   );
