@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  MapContainer,
-  Marker,
-  TileLayer,
-  Tooltip,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../MainStyle.css";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
+import { v4 as uuidv4 } from "uuid";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
@@ -28,96 +23,34 @@ function SetViewOnClick({ coords, zoomCustom }) {
 
 function CombinedComponent() {
   const [socket, setSocket] = useState(null);
-  const divRef = useRef(null);
-  const timeouts = {};
+  const [jsonData, setJsonData] = useState([]);
+  const [criminalData, setCriminalData] = useState([]);
 
-  const [centerPositions, setCenterPositions] = useState([
-    40.99681833333333, 71.64040666666666,
-  ]);
-  const [zoomCustom, setZoom] = useState(12);
-  const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
-  const [cardData, setCardData] = useState([]);
-  const [cardItem, setCardItem] = useState([]);
-     const [combinedState, setCombinedState] = useState([]);
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://192.168.1.132:8000");
+    setSocket(newSocket);
 
-  const [positions, setPositions] = useState([
-    {
-      cam_id: "id_1",
-      location: [40.99681833333333, 71.64040666666666],
-      name: "Location 1",
-      address: "Address 1",
-      // photo: "https://picsum.photos/id/100/50/50",
-      humanDetected: true,
-    },
-  ]);
+    newSocket.addEventListener("open", (event) => {
+      console.log("Connected to the WebSocket");
+    });
 
-useEffect(() => {
-  const newSocket = new WebSocket("ws://192.168.1.132:8000");
-  setSocket(newSocket);
-
-  newSocket.addEventListener("open", (event) => {
-    console.log("Connected to the WebSocket");
-  });
-
-  newSocket.addEventListener("message", (event) => {
-    try {
-      const jsonData = JSON.parse(event.data);
-
-      // Update the state with new data
-      setCardData(jsonData);
-
-      // Create a new card item and add it to the cardItem array
-      const newCardItem = <CriminalCard key={jsonData.age} data={jsonData} />;
-      setCardItem((prevCardItem) => [...prevCardItem, newCardItem]);
-
-      // Log the updated cardItem array (for debugging)
-      console.log("cardItem", cardItem);
-
-      if (divRef.current) {
-        // Remove child elements from divRef after a delay (if necessary)
-        const timeout = setTimeout(() => {
-          if (divRef.current && divRef.current.firstChild) {
-            divRef.current.removeChild(divRef.current.firstChild);
-          }
-        }, 10000);
+    newSocket.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        setJsonData(data);
+        setCriminalData((prevData) => [
+          ...prevData,
+          <CriminalCard key={uuidv4()} data={data} />,
+        ]);
+      } catch (error) {
+        console.error("Error while processing JSON data:", error);
       }
-    } catch (error) {
-      // Handle errors here, e.g., log the error
-      console.error("Error while processing JSON data:", error);
-    }
-  });
-
-  // Rest of your WebSocket and component setup code
-}, []);  // Empty dependency array to run this effect only once
-
+    });
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentPositionIndex(
-        (prevIndex) => (prevIndex + 1) % positions.length
-      );
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [positions.length]);
-
-  useEffect(() => {
-    const newPosition = positions[currentPositionIndex];
-    if (
-      newPosition &&
-      newPosition.location &&
-      newPosition.location.length === 2
-    ) {
-      setCenterPositions(newPosition.location);
-    }
-  }, [currentPositionIndex, positions]);
-
-  const handleZoomButtonClick = (position, zoomLevel) => {
-    if (position && position.location && position.location.length === 2) {
-      setCenterPositions(position.location);
-      setZoom(zoomLevel);
-    }
-  };
+    console.log("Updated criminalData:", criminalData);
+  }, [criminalData]);
 
   return (
     <div>
@@ -183,11 +116,10 @@ useEffect(() => {
             </p>
           </div>
           <div
-            ref={divRef}
             className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
             style={{ minHeight: "80vh" }}
           >
-            {cardItem}
+            {criminalData}
           </div>
         </div>
       </div>
