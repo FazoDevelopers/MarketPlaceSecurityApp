@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -21,10 +21,14 @@ function SetViewOnClick({ coords, zoomCustom }) {
   return null;
 }
 
+const zoomCustom = 10;
+
 function CombinedComponent() {
   const [socket, setSocket] = useState(null);
   const [jsonData, setJsonData] = useState([]);
   const [criminalData, setCriminalData] = useState([]);
+  const [positions, setPositions] = useState([]); // Store location data here
+  const [centerPositions, setCenterPositions] = useState([0, 0]); // Initial center
 
   useEffect(() => {
     const newSocket = new WebSocket("ws://192.168.1.132:8000");
@@ -37,6 +41,21 @@ function CombinedComponent() {
     newSocket.addEventListener("message", (event) => {
       try {
         const data = JSON.parse(event.data);
+
+        if (data.camera) {
+          const { latitude, longitude, name, image } = data.camera;
+          const newPosition = {
+            location: [latitude, longitude],
+            name: name,
+            photo: image,
+            humanDetected: true, // Modify this as per your logic
+          };
+
+          setPositions((prevPositions) => [...prevPositions, newPosition]);
+          setCenterPositions([latitude, longitude]);
+        }
+
+        // Keep the existing code to process JSON data and update CriminalCard
         setJsonData(data);
         setCriminalData((prevData) => [
           ...prevData,
@@ -47,10 +66,6 @@ function CombinedComponent() {
       }
     });
   }, []);
-
-  useEffect(() => {
-    console.log("Updated criminalData:", criminalData);
-  }, [criminalData]);
 
   return (
     <div>
@@ -69,18 +84,18 @@ function CombinedComponent() {
         </div>
 
         <div className="col-span-1 sm:col-span-4 z-10">
-          {/* <MapContainer
+          <MapContainer
             center={centerPositions}
-            zoom={zoomCustom}
+            zoom={zoomCustom} // Make sure to set `zoomCustom` to an appropriate value
             scrollWheelZoom={true}
           >
             <TileLayer
               className="filter grayscale brightness-50 contrast-150"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {positions.map((position) => (
+            {positions.map((position, index) => (
               <Marker
-                key={position.cam_id}
+                key={index}
                 position={position.location}
                 icon={
                   new L.DivIcon({
@@ -105,7 +120,7 @@ function CombinedComponent() {
               </Marker>
             ))}
             <SetViewOnClick coords={centerPositions} zoomCustom={zoomCustom} />
-          </MapContainer> */}
+          </MapContainer>
         </div>
 
         <div className="col-span-1 sm:col-span-1 text-white">
