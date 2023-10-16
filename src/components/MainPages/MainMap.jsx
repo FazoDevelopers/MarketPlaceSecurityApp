@@ -24,15 +24,12 @@ function SetViewOnClick({ coords, zoomCustom }) {
 const zoomCustom = 10;
 
 function CombinedComponent() {
-  const [socket, setSocket] = useState(null);
-  const [jsonData, setJsonData] = useState([]);
   const [criminalData, setCriminalData] = useState([]);
-  const [positions, setPositions] = useState([]); // Store location data here
-  const [centerPositions, setCenterPositions] = useState([0, 0]); // Initial center
+  const [positions, setPositions] = useState([]); 
+  const [centerPositions, setCenterPositions] = useState([42, 21]);
 
   useEffect(() => {
     const newSocket = new WebSocket("ws://192.168.1.132:8000");
-    setSocket(newSocket);
 
     newSocket.addEventListener("open", (event) => {
       console.log("Connected to the WebSocket");
@@ -48,15 +45,13 @@ function CombinedComponent() {
             location: [latitude, longitude],
             name: name,
             photo: image,
-            humanDetected: true, // Modify this as per your logic
+            humanDetected: true, 
           };
 
           setPositions((prevPositions) => [...prevPositions, newPosition]);
           setCenterPositions([latitude, longitude]);
         }
 
-        // Keep the existing code to process JSON data and update CriminalCard
-        setJsonData(data);
         setCriminalData((prevData) => [
           ...prevData,
           <CriminalCard key={uuidv4()} data={data} />,
@@ -65,6 +60,16 @@ function CombinedComponent() {
         console.error("Error while processing JSON data:", error);
       }
     });
+
+    newSocket.addEventListener("error", (event) => {
+      console.error("WebSocket connection error:", event);
+    });
+
+    newSocket.addEventListener("close", (event) => {
+      console.error("WebSocket connection closed:", event);
+    });
+
+
   }, []);
 
   return (
@@ -86,7 +91,7 @@ function CombinedComponent() {
         <div className="col-span-1 sm:col-span-4 z-10">
           <MapContainer
             center={centerPositions}
-            zoom={zoomCustom} // Make sure to set `zoomCustom` to an appropriate value
+            zoom={zoomCustom}
             scrollWheelZoom={true}
           >
             <TileLayer
