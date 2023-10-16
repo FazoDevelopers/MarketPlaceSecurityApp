@@ -142,14 +142,21 @@ export default function AddCameraModal() {
                 />
               </div>
             </div>
+          </div>
+          <div className="grid content-between">
+            <ClickableMap />
 
             <div className="flex justify-between mt-4">
               <button
                 type="button"
-                className="bg-red-800 px-4 py-2 border-2 border-red-600"
+                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                onClick={() => {
+                  setIsAddCameraModal(false);
+                }}
               >
-                <i className="fa-solid fa-rotate-right pr-2"></i> TOZALASH
+                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
               </button>
+
               <button
                 type="submit"
                 className="bg-green-800 px-4 py-2 border-2 border-green-600"
@@ -157,19 +164,6 @@ export default function AddCameraModal() {
                 <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
               </button>
             </div>
-          </div>
-          <div className="grid content-between">
-            <ClickableMap />
-
-            <button
-              type="button"
-              className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
-              onClick={() => {
-                setIsAddCameraModal(false);
-              }}
-            >
-              <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
-            </button>
           </div>
         </form>
       </div>

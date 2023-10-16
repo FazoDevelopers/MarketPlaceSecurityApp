@@ -54,15 +54,6 @@ export default function AddCriminalModal() {
                   />
                 </div>
               </div>
-
-              <div className="flex justify-between mt-4">
-                <button
-                  type="button"
-                  className="bg-red-800 px-4 py-2 border-2 border-red-600"
-                >
-                  <i className="fa-solid fa-rotate-right pr-2"></i> TOZALASH
-                </button>
-              </div>
             </div>
 
             <div className="grid content-between">

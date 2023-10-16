@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
+import UpCameraModal from "../CameraModals/UpCameraModal";
+import DelCameraModal from "../CameraModals/DelCameraModal";
+import { MAIN_URL } from "../../variables";
+import axios from "axios";
 import {
   isAddCameraModalState,
   isDelCameraModalState,
   isUpCameraModalState,
 } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
-import UpCameraModal from "../CameraModals/UpCameraModal";
-import DelCameraModal from "../CameraModals/DelCameraModal";
-import { MAIN_URL } from "../../variables"; // Import MAIN_URL from your variables.js file
-import axios from "axios"; // Import Axios
 
 export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
@@ -22,51 +22,57 @@ export default function MainCamera() {
     isDelCameraModalState
   );
   const [upCamDatas, setUpCamDatas] = useState(null);
-  const [delCamDatas, setDelCamDatas] = useState(null); // New state variable for deletion data
+  const [delCamDatas, setDelCamDatas] = useState(null);
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState("");
   const [prevPageStatus, setPrevPageStatus] = useState("");
   const [apiData, setApiData] = useState([]);
 
+  // For previous page pagination
   const decreasePageIndex = () => {
     if (prevPageStatus) {
       setIndexPage((prev) => prev - 1);
     }
   };
 
+  // For next page pagination
   const increasePageIndex = () => {
     if (nextPageStatus) {
       setIndexPage((prev) => prev + 1);
     }
   };
 
+  // For update camera datas
   const upCameraDatas = (data) => {
     setUpCamDatas(data);
   };
 
+  // For delete camera datas
   const deleteCamera = (data) => {
     setDelCamDatas(data);
     setIsDelCameraModal(true);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${MAIN_URL}/api/camera/?page=${indexPage}`
-        );
-        if (response.status === 200) {
-          setApiData(response.data.results);
-          setNextPageStatus(response.data.next);
-          setPrevPageStatus(response.data.previous);
-        } else {
-          console.error("Request failed with status:", response.status);
-        }
-      } catch (error) {
-        console.error("fetch main:", error);
-      }
-    };
+  // Fetch CAMERA data from API
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${MAIN_URL}/api/camera/?page=${indexPage}`
+      );
 
+      if (response.status === 200) {
+        setApiData(response.data.results);
+        setNextPageStatus(response.data.next);
+        setPrevPageStatus(response.data.previous);
+      } else {
+        console.error("Request failed with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching camera data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [indexPage, apiData]);
 
@@ -98,17 +104,26 @@ export default function MainCamera() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {apiData.map((item) => (
-            <ViewCameraCard
-              key={item.id}
-              data={item}
-              upCameraDatas={upCameraDatas}
-              deleteCamera={deleteCamera}
-            />
-          ))}
-        </div>
+        {/* MAPPING CAMERA DATA */}
+        {apiData.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {apiData.map((item) => (
+              <ViewCameraCard
+                key={item.id}
+                data={item}
+                upCameraDatas={upCameraDatas}
+                deleteCamera={deleteCamera}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center p-64 text-gray-600 uppercase font-bold">
+            <h1 className="text-8xl">Bo'sh</h1>
+            <h1 className="text-3xl font-bold">Kamera mavjud emas</h1>
+          </div>
+        )}
 
+        {/* PAGINATION */}
         <div className="flex justify-center my-5">
           <button
             type="button"
