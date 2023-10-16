@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -30,26 +30,31 @@ const prepareCameraData = (data, lat, lng) => {
 };
 
 const handleSuccess = () => {
-  toast.success("Camera created successfully!", toastOptions);
+  toast.success("Kamera muvafaqqiyatli qo'shildi!", toastOptions);
 };
 
 const handleError = (error) => {
   console.error("Error:", error);
-  toast.error("Create error!", toastOptions);
+  toast.error("Kamera qo'shishda xatolik!", toastOptions);
 };
 
 export default function AddCameraModal() {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
+
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
   );
 
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      cameraName: '',
+      cameraUrl: '',
+    },
+  });
 
-  const onSubmit = async ({ cameraName, cameraUrl }) => {
-    const cameraData = prepareCameraData({ cameraName, cameraUrl }, lat, lng);
-
+  const onSubmit = async (formData) => {
+    const cameraData = prepareCameraData(formData, lat, lng);
     try {
       const response = await axios.post(`${MAIN_URL}/api/camera/`, cameraData, {
         headers: {
@@ -57,17 +62,22 @@ export default function AddCameraModal() {
         },
       });
 
+
       if (response.status === 201) {
         handleSuccess();
         console.log(response);
+        setIsAddCameraModal(false);
+      }else if(response.status === 400){
+        console.log(400);
       } else {
         handleError(response.statusText);
       }
     } catch (error) {
       handleError(error);
     }
-    setIsAddCameraModal(false);
+    
   };
+
 
   return (
     <div className="fixed inset-0 z-50">

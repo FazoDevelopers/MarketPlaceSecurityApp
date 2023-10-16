@@ -9,6 +9,8 @@ import {
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UpCameraModal({ upCamDatas }) {
   const [lat, setLat] = useRecoilState(latState);
@@ -16,6 +18,18 @@ export default function UpCameraModal({ upCamDatas }) {
   const [isUpCameraModal, setIsUpCameraModal] = useRecoilState(isUpCameraModalState);
   const { control, handleSubmit } = useForm();
 
+
+const toastOptions = {
+  position: "top-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
+  // UPDATE CAMERA DATA
   const onSubmit = async (data) => {
     try {
       data = {
@@ -24,8 +38,14 @@ export default function UpCameraModal({ upCamDatas }) {
         latitude: parseFloat(lat),
       }
       const response = await axios.patch(`http://192.168.1.132:8000/api/camera/${upCamDatas.id}/`, data);
+      if(response.status===200){
+        toast.success("Kamera muvafaqqiyatli tahrirlandi!", toastOptions);
+      }else{
+        toast.error("Kamera tahrirlanishda xatolik!", toastOptions);
+      }
       console.log("Camera data updated:", response.data);
       console.log("Camera data:", data);
+      console.log(response.status);
       setIsUpCameraModal(false);
     } catch (error) {
       console.error("Error updating camera data:", error);

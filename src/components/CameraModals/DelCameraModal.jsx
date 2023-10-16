@@ -3,9 +3,11 @@ import { useRecoilState } from "recoil";
 import { isDelCameraModalState } from "../../recoil/atoms";
 import { MAIN_URL } from "../../variables";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function DelCameraModal({ data, setIsDelCameraModal }) {
-  const [isDelCameraModal, setIsDelCameraModa] = useRecoilState(
+export default function DelCameraModal({ data }) {
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
     isDelCameraModalState
   );
   const [delCardIndex, setDelCardIndex] = useState();
@@ -14,19 +16,26 @@ export default function DelCameraModal({ data, setIsDelCameraModal }) {
     try {
       const response = await axios.delete(`${MAIN_URL}/api/camera/${data.id}/`);
       console.log(response);
-      if (response.status === 200) {
+
+      if (response.status === 204) {
         console.log(response);
+        // Display a success toast
+        toast.success("Camera deleted successfully");
       } else {
         console.error("Request failed with status:", response.status);
+        // Display an error toast
+        toast.error("Failed to delete the camera");
       }
     } catch (error) {
       console.error("delete:", error);
+      // Display an error toast
+      toast.error("Failed to delete the camera");
     }
   };
 
-
   return (
     <>
+      <ToastContainer />
       <div className="fixed inset-0 z-50">
         <div className="absolute inset-0 bg-black opacity-50 blur -z-10"></div>
         <div className="flex items-center justify-center h-screen">

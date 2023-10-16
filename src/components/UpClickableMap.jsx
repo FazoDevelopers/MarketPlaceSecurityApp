@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
 import L from "leaflet";
 
-const center = [52.22977, 21.01178];
 
 const tileLayer = {
   url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
