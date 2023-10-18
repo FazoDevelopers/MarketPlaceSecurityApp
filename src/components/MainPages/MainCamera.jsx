@@ -62,7 +62,7 @@ export default function MainCamera() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData,apiData]);
+  }, [fetchData, apiData]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -19,11 +19,12 @@ const toastOptions = {
   progress: undefined,
 };
 
-const prepareCameraData = (data, lat, lng) => {
+const prepareCameraData = (data, lat, lng, placeImg) => {
   return {
     id: Math.floor(Math.random() * 100),
     name: data.cameraName,
     url: data.cameraUrl,
+    image: placeImg,
     longitude: parseFloat(lng),
     latitude: parseFloat(lat),
   };
@@ -41,6 +42,7 @@ const handleError = (error) => {
 export default function AddCameraModal() {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
+  const [placeImg, setPlaceImg] = useState(null);
 
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
@@ -53,14 +55,18 @@ export default function AddCameraModal() {
     },
   });
 
+
   const onSubmit = async (formData) => {
-    const cameraData = prepareCameraData(formData, lat, lng);
+    const cameraData = prepareCameraData(formData, lat, lng, placeImg);
+    console.log(cameraData);
     try {
-      const response = await axios.post(`${MAIN_URL}/api/camera/`, cameraData, {
+      const response = await axios.post(`http://192.168.1.132:5000/api/camera/`, cameraData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+
+      
 
 
       if (response.status === 201) {
@@ -130,7 +136,7 @@ export default function AddCameraModal() {
                   type="file"
                   className="border-2 border-lime-600 p-3"
                   onChange={(e) => {
-                    console.log(e.target.files[0]);
+                    setPlaceImg(e.target.files[0]);
                   }}
                 />
               </div>
