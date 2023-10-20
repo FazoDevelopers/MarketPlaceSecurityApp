@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
 import UpCameraModal from "../CameraModals/UpCameraModal";
@@ -13,9 +13,14 @@ import {
 import { useRecoilState } from "recoil";
 
 export default function MainCamera() {
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
-  const [isUpCameraModal, setIsUpCameraModal] = useRecoilState(isUpCameraModalState);
-  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(isDelCameraModalState);
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
+    isAddCameraModalState
+  );
+  const [isUpCameraModal, setIsUpCameraModal] =
+    useRecoilState(isUpCameraModalState);
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
+    isDelCameraModalState
+  );
   const [upCamDatas, setUpCamDatas] = useState(null);
   const [delCamDatas, setDelCamDatas] = useState(null);
   const [indexPage, setIndexPage] = useState(1);
@@ -35,19 +40,21 @@ export default function MainCamera() {
     }
   };
 
-  const upCameraDatas = useCallback((data) => {
+  const upCameraDatas = (data) => {
     setUpCamDatas(data);
-  }, []);
+  };
 
-  const deleteCamera = useCallback((data) => {
+  const deleteCamera = (data) => {
     setDelCamDatas(data);
     setIsDelCameraModal(true);
-  }, [setIsDelCameraModal]);
+  };
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${MAIN_URL}/api/camera/?page=${indexPage}`);
-
+      const response = await axios.get(
+        `${MAIN_URL}/api/camera/?page=${indexPage}`
+      );
+      console.log(response);
       if (response.status === 200) {
         setApiData(response.data.results);
         setNextPageStatus(response.data.next);
@@ -58,11 +65,11 @@ export default function MainCamera() {
     } catch (error) {
       console.error("Error fetching camera data:", error);
     }
-  }, [indexPage]);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, apiData]);
+  }, [apiData]);
 
   return (
     <>
@@ -77,7 +84,9 @@ export default function MainCamera() {
 
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">KAMERALAR</h1>
+          <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
+            KAMERALAR
+          </h1>
           <button
             type="button"
             className="p-2 bg-green-500 text-white font-extrabold"
@@ -90,6 +99,7 @@ export default function MainCamera() {
           </button>
         </div>
 
+        {/* MAPPING FETCH DATA */}
         {apiData.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {apiData.map((item) => (
@@ -103,11 +113,12 @@ export default function MainCamera() {
           </div>
         ) : (
           <div className="text-center p-64 text-gray-600 uppercase font-bold">
-            <h1 className="text-8xl">Bo'sh</h1>
+            <h1 className="text-8xl">Bo`sh</h1>
             <h1 className="text-3xl font-bold">Kamera mavjud emas</h1>
           </div>
         )}
 
+        {/* PAGINATION */}
         <div className="flex justify-center my-5">
           <button
             type="button"

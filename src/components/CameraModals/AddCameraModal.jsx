@@ -50,30 +50,30 @@ export default function AddCameraModal() {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      cameraName: '',
-      cameraUrl: '',
+      cameraName: "",
+      cameraUrl: "",
     },
   });
-
 
   const onSubmit = async (formData) => {
     const cameraData = prepareCameraData(formData, lat, lng, placeImg);
     console.log(cameraData);
     try {
-      const response = await axios.post(`http://192.168.1.132:5000/api/camera/`, cameraData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      
-
+      const response = await axios.post(
+        `http://192.168.1.132:8000/api/camera/`,
+        cameraData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 201) {
         handleSuccess();
         console.log(response);
         setIsAddCameraModal(false);
-      }else if(response.status === 400){
+      } else if (response.status === 400) {
         console.log(400);
       } else {
         handleError(response.statusText);
@@ -81,9 +81,7 @@ export default function AddCameraModal() {
     } catch (error) {
       handleError(error);
     }
-    
   };
-
 
   return (
     <div className="fixed inset-0 z-50">
