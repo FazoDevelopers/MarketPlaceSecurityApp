@@ -3,7 +3,6 @@ import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
 import UpCameraModal from "../CameraModals/UpCameraModal";
 import DelCameraModal from "../CameraModals/DelCameraModal";
-import { MAIN_URL } from "../../variables";
 import axios from "axios";
 import {
   isAddCameraModalState,
@@ -28,12 +27,14 @@ export default function MainCamera() {
   const [prevPageStatus, setPrevPageStatus] = useState("");
   const [apiData, setApiData] = useState([]);
 
+  // Previous page index
   const decreasePageIndex = () => {
     if (prevPageStatus) {
       setIndexPage((prev) => prev - 1);
     }
   };
 
+  // Next page index
   const increasePageIndex = () => {
     if (nextPageStatus) {
       setIndexPage((prev) => prev + 1);
@@ -49,11 +50,10 @@ export default function MainCamera() {
     setIsDelCameraModal(true);
   };
 
+  // fetch camera data from API
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${MAIN_URL}/api/camera/?page=${indexPage}`
-      );
+      const response = await axios.get(`/api/camera/?page=${indexPage}`);
       if (response.status === 200) {
         setApiData(response.data.results);
         setNextPageStatus(response.data.next);
@@ -72,10 +72,15 @@ export default function MainCamera() {
 
   return (
     <>
-      {isAddCameraModal && <AddCameraModal pageIndex={indexPage} />}
-      {isUpCameraModal && <UpCameraModal upCamDatas={upCamDatas} />}
+      {isAddCameraModal && (
+        <AddCameraModal fetch={fetchData} pageIndex={indexPage} />
+      )}
+      {isUpCameraModal && (
+        <UpCameraModal fetch={fetchData} upCamDatas={upCamDatas} />
+      )}
       {isDelCameraModal && (
         <DelCameraModal
+          fetch={fetchData}
           data={delCamDatas}
           setIsDelCameraModal={setIsDelCameraModal}
         />

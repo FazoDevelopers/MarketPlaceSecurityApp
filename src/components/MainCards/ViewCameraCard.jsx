@@ -15,11 +15,7 @@ export default function ViewCameraCard({ data, upCameraDatas, deleteCamera }) {
   return (
     <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
       <div className="relative">
-        <img
-          src="https://picsum.photos/100/100"
-          alt="Your Image"
-          className="w-full h-auto"
-        />
+        <img src={data.image} alt="Your Image" className="w-full h-auto" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent p-3 font-bebas text-3xl">
           #{data.name}
         </div>

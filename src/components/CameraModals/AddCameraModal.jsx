@@ -2,33 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import { toastOptions } from "../../config.js";
 import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
-import { MAIN_URL } from "../../variables";
 import ClickableMap from "../ClickableMap";
-
-const toastOptions = {
-  position: "top-right",
-  autoClose: 3000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-};
-
-const prepareCameraData = (data, lat, lng, placeImg) => {
-  return {
-    id: Math.floor(Math.random() * 100),
-    name: data.cameraName,
-    url: data.cameraUrl,
-    image: placeImg,
-    longitude: parseFloat(lng),
-    latitude: parseFloat(lat),
-  };
-};
 
 const handleSuccess = () => {
   toast.success("Kamera muvafaqqiyatli qo'shildi!", toastOptions);
@@ -39,7 +16,7 @@ const handleError = (error) => {
   toast.error("Kamera qo'shishda xatolik!", toastOptions);
 };
 
-export default function AddCameraModal() {
+export default function AddCameraModal(props) {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
   const [placeImg, setPlaceImg] = useState(null);
@@ -56,20 +33,17 @@ export default function AddCameraModal() {
   });
 
   const onSubmit = async (formData) => {
-    const cameraData = prepareCameraData(formData, lat, lng, placeImg);
+    const cameraData = new FormData();
+    cameraData.append("name", formData.cameraName);
+    cameraData.append("url", formData.cameraUrl);
+    cameraData.append("latitude", lat);
+    cameraData.append("longitude", lng);
+    cameraData.append("image", placeImg);
+    console.log(cameraData);
     try {
-      console.log(cameraData);
-      const response = await axios.post(
-        `http://192.168.1.132:8000/api/camera/`,
-        cameraData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await axios.post(`/api/camera/`, cameraData, {});
       if (response.status === 201) {
+        props.fetch();
         handleSuccess();
         console.log(response);
         setIsAddCameraModal(false);

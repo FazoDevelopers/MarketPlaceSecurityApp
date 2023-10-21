@@ -9,7 +9,7 @@ export default function App() {
       <div style={{ minHeight: "85vh" }} className="px-3">
         <AdminMain />
       </div>
-      <ToastContainer />
+      <ToastContainer theme="light" />
     </RecoilRoot>
   );
 }
