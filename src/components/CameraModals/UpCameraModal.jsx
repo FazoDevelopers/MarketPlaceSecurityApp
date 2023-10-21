@@ -1,35 +1,35 @@
-import React from "react";
 import UpClickableMap from "../UpClickableMap";
-import {
-  isAddCameraModalState,
-  isUpCameraModalState,
-  latState,
-  lngState,
-} from "../../recoil/atoms";
+import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../config.js";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
 export default function UpCameraModal(props) {
-  const [lat, setLat] = useRecoilState(latState);
-  const [lng, setLng] = useRecoilState(lngState);
+  const [lat] = useRecoilState(latState);
+  const [lng] = useRecoilState(lngState);
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
   const { control, handleSubmit } = useForm();
+  const [placeImg, setPlaceImg] = useState(null);
 
   // UPDATE CAMERA DATA
   const onSubmit = async (data) => {
+    console.log(data);
+    const cameraData = new FormData();
+    cameraData.append("name", data.name);
+    cameraData.append("url", data.url);
+    cameraData.append("latitude", lat);
+    cameraData.append("longitude", lng);
+    cameraData.append("image", placeImg);
+    console.log(cameraData);
     try {
-      data = {
-        ...data,
-        longitude: parseFloat(lng),
-        latitude: parseFloat(lat),
-      };
       const response = await axios.patch(
         `http://192.168.1.132:8000/api/camera/${props.upCamDatas.id}/`,
-        data
+        cameraData
       );
       if (response.status === 200) {
         props.fetch();
@@ -38,7 +38,7 @@ export default function UpCameraModal(props) {
         toast.error("Kamera tahrirlanishda xatolik!", toastOptions);
       }
       console.log("Camera data updated:", response.data);
-      console.log("Camera data:", data);
+      console.log("Camera data:", cameraData);
       console.log(response.status);
       setIsUpCameraModal(false);
     } catch (error) {
@@ -56,7 +56,6 @@ export default function UpCameraModal(props) {
               <h1 className="font-bebas text-5xl text-center mb-4">
                 #{props.upCamDatas.name} TAHRIRLASH
               </h1>
-
               <div className="mb-5">
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA NOMI
@@ -101,7 +100,7 @@ export default function UpCameraModal(props) {
                   type="file"
                   className="border-2 border-lime-600 p-3"
                   onChange={(e) => {
-                    console.log(e.target.files[0]);
+                    setPlaceImg(e.target.files[0]);
                   }}
                 />
               </div>
@@ -135,3 +134,8 @@ export default function UpCameraModal(props) {
     </form>
   );
 }
+
+UpCameraModal.propTypes = {
+  fetch: PropTypes.any.isRequired,
+  upCamDatas: PropTypes.any.isRequired,
+};

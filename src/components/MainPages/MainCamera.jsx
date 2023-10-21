@@ -72,6 +72,7 @@ export default function MainCamera() {
 
   return (
     <>
+      {/* MODAL OPEN CHECK */}
       {isAddCameraModal && (
         <AddCameraModal fetch={fetchData} pageIndex={indexPage} />
       )}

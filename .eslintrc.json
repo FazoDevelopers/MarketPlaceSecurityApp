@@ -1,0 +1,45 @@
+{
+  "extends": [
+    "eslint-config-airbnb",
+    "eslint-plugin-react/recommended",
+    "eslint-plugin-jsx-a11y/recommended"
+  ],
+  "plugins": ["react", "jsx-a11y"],
+  "rules": {
+    "react/jsx-filename-extension": [
+      2,
+      { "extensions": [".js", ".jsx", ".tsx"] }
+    ],
+    "import/no-extraneous-dependencies": [2, { "devDependencies": true }],
+    "react/prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "react/jsx-curly-brace-presence": 0,
+    "react/jsx-wrap-multilines": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "import/prefer-default-export": 0,
+    "react/jsx-indent": 0,
+    "no-unused-expressions": 0,
+    "react/jsx-no-bind": 0,
+    "react/button-has-type": 0,
+    "react/jsx-pascal-case": 0,
+    "no-unused-vars": "warn", // Add this line to enable no-unused-vars with a warning level
+    "react/jsx-indent-props": 0,
+    "react/jsx-tag-spacing": 0,
+    "react/jsx-closing-bracket-location": 0,
+    "react/forbid-prop-types": 0,
+    "react/require-default-props": 0,
+    "react/jsx-closing-tag-location": 0,
+    "react/no-did-update-set-state": 0,
+    "react/no-did-mount-set-state": 0,
+    "react/jsx-curly-newline": 0,
+    "react/jsx-props-no-multi-spaces": 0,
+    "react/jsx-max-props-per-line": 0,
+    "react/jsx-no-duplicate-props": 0,
+    "react/jsx-sort-props": 0,
+    "react/jsx-no-comment-textnodes": 0,
+    "react/no-array-index-key": 0
+  }
+}

@@ -6,19 +6,22 @@ import { toastOptions } from "../../config.js";
 import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 import ClickableMap from "../ClickableMap";
+import PropTypes from "prop-types";
 
+// ADD SUCCESS NOTIFICATION
 const handleSuccess = () => {
   toast.success("Kamera muvafaqqiyatli qo'shildi!", toastOptions);
 };
 
+// ADD ERROR NOTIFICATION
 const handleError = (error) => {
   console.error("Error:", error);
   toast.error("Kamera qo'shishda xatolik!", toastOptions);
 };
 
 export default function AddCameraModal(props) {
-  const [lat, setLat] = useRecoilState(latState);
-  const [lng, setLng] = useRecoilState(lngState);
+  const [lat] = useRecoilState(latState);
+  const [lng] = useRecoilState(lngState);
   const [placeImg, setPlaceImg] = useState(null);
 
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
@@ -32,6 +35,7 @@ export default function AddCameraModal(props) {
     },
   });
 
+  // SEND FORMDATA TO BACKEND
   const onSubmit = async (formData) => {
     const cameraData = new FormData();
     cameraData.append("name", formData.cameraName);
@@ -158,3 +162,7 @@ export default function AddCameraModal(props) {
     </div>
   );
 }
+
+AddCameraModal.propTypes = {
+  fetch: PropTypes.any.isRequired,
+};
