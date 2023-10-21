@@ -5,11 +5,10 @@ import {
   isUpCriminalModalState,
 } from "../../recoil/atoms";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css"; // Import Swiper CSS
+import "swiper/css";
+import "swiper/swiper-bundle.css";
 
-import "swiper/swiper-bundle.css"; // Import Swiper styles
-
-export default function ViewCriminalCard() {
+export default function ViewCriminalCard(props) {
   const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
     isUpCriminalModalState
   );
@@ -28,7 +27,7 @@ export default function ViewCriminalCard() {
     <>
       <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
         <div className="relative">
-          <Swiper
+          {/* <Swiper
             slidesPerView={1}
             spaceBetween={10}
             autoplay={{ delay: 2000, disableOnInteraction: false }}
@@ -42,15 +41,17 @@ export default function ViewCriminalCard() {
           {/* <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent p-3 font-bebas text-3xl">
             #chorsu
           </div> */}
+          <img
+            className="aspect-square w-full object-cover"
+            src={`http://192.168.1.132:8000/${props.data.image_url}`}
+            alt=""
+          />
         </div>
 
-        <h1 className="text-2xl mt-1">Ism: John</h1>
-        <h1 className="text-2xl mt-1">Familiya: Doe</h1>
-        <h1 className="text-2xl mt-1">Otasi: Donny</h1>
-        <p className="font-thin">
-          Sharh: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Veritatis obcaecati eaque
-        </p>
+        <h1 className="text-2xl mt-1">Ism: {props.data.first_name}</h1>
+        <h1 className="text-2xl mt-1">Familiya: {props.data.last_name}</h1>
+        <h1 className="text-2xl mt-1">Otasi: YUQ</h1>
+        <p className="font-thin">Sharh: {props.data.description}</p>
         <div className="flex justify-between mt-4">
           <button
             type="button"

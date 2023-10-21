@@ -12,7 +12,7 @@ export default function CriminalCard({ data }) {
     <div
       className="criminal_card_wrapper absolute p-2 overflow-hidden cursor-pointer hover:z-20 w-full"
       style={{
-        marginTop: isPinned ? 0 : `${Number("cardIndex") * 100}px`,
+        marginTop: isPinned ? 0 : `${Number(data.id) * 100}px`,
         zIndex: isPinned ? 99 : "unset",
         // transform: "perspective(600px) rotateX(-45deg)",
       }}
@@ -28,19 +28,12 @@ export default function CriminalCard({ data }) {
         </div>
         <p className="text-sm text-end font-orbitron">{data.first_name}</p>
       </div>
-      <img
-        src="https://picsum.photos/400/400"
-        className="object-cover"
-        alt=""
-      />
+      <img src={data.image} className="object-cover" alt="" />
       <div className="w-full border-gray-400 border-2 text-gray-400 bg-black p-2">
-        <p>Ism: Shohruh</p>
-        <p>Familiya: Abdusalomov</p>
-        <p>Otasi:</p>
-        <p className="text-sm">
-          Sharh: Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-          Illum, earum? Dolor perspiciatis digte?
-        </p>
+        <p>Ism: {data.first_name}</p>
+        <p>Familiya: {data.last_name}</p>
+        <p>Otasi: {data.dad_name}</p>
+        <p className="text-sm">Sharh: {data.description}</p>
       </div>
     </div>
   );

@@ -54,7 +54,6 @@ export default function MainCamera() {
       const response = await axios.get(
         `${MAIN_URL}/api/camera/?page=${indexPage}`
       );
-      console.log(response);
       if (response.status === 200) {
         setApiData(response.data.results);
         setNextPageStatus(response.data.next);
@@ -69,7 +68,7 @@ export default function MainCamera() {
 
   useEffect(() => {
     fetchData();
-  }, [apiData]);
+  }, []);
 
   return (
     <>

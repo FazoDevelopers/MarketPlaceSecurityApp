@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   isAddCriminalModalState,
@@ -9,19 +9,35 @@ import AddCriminalModal from "../CriminalModals/AddCriminalModal";
 import DelCriminalModal from "../CriminalModals/DelCriminalModal";
 import UpCriminalModal from "../CriminalModals/UpCriminalModal";
 import ViewCriminalCard from "../MainCards/ViewCriminalCard";
+import axios from "axios";
 
 export default function MainCriminal() {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
     isAddCriminalModalState
   );
-
   const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
     isUpCriminalModalState
   );
-
   const [isDelCriminalModal, setIsDelCriminalModal] = useRecoilState(
     isDelCriminalModalState
   );
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.1.132:8000/api/criminals/"
+      );
+      console.log(response.data.results);
+      setData(response.data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -47,14 +63,9 @@ export default function MainCriminal() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
-          <ViewCriminalCard />
+          {data?.map((item) => {
+            return <ViewCriminalCard key={item.id} data={item} />;
+          })}
         </div>
 
         <div className="flex justify-center my-5">

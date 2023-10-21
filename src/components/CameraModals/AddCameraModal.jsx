@@ -57,8 +57,8 @@ export default function AddCameraModal() {
 
   const onSubmit = async (formData) => {
     const cameraData = prepareCameraData(formData, lat, lng, placeImg);
-    console.log(cameraData);
     try {
+      console.log(cameraData);
       const response = await axios.post(
         `http://192.168.1.132:8000/api/camera/`,
         cameraData,

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../MainStyle.css";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
-import { v4 as uuidv4 } from "uuid";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
@@ -25,19 +30,20 @@ const zoomCustom = 10;
 
 function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
-  const [positions, setPositions] = useState([]); 
+  const [positions, setPositions] = useState([]);
   const [centerPositions, setCenterPositions] = useState([42, 21]);
 
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.132:8000");
+    const newSocket = new WebSocket("ws://192.168.1.132:5000/");
 
     newSocket.addEventListener("open", (event) => {
       console.log("Connected to the WebSocket");
     });
 
-    newSocket.addEventListener("message", (event) => {
+    newSocket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log(data);
 
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
@@ -45,7 +51,7 @@ function CombinedComponent() {
             location: [latitude, longitude],
             name: name,
             photo: image,
-            humanDetected: true, 
+            humanDetected: true,
           };
 
           setPositions((prevPositions) => [...prevPositions, newPosition]);
@@ -54,12 +60,12 @@ function CombinedComponent() {
 
         setCriminalData((prevData) => [
           ...prevData,
-          <CriminalCard key={uuidv4()} data={data} />,
+          <CriminalCard key={data.id} data={data} />,
         ]);
       } catch (error) {
         console.error("Error while processing JSON data:", error);
       }
-    });
+    };
 
     newSocket.addEventListener("error", (event) => {
       console.error("WebSocket connection error:", event);
@@ -68,8 +74,6 @@ function CombinedComponent() {
     newSocket.addEventListener("close", (event) => {
       console.error("WebSocket connection closed:", event);
     });
-
-
   }, []);
 
   return (
