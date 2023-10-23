@@ -4,9 +4,6 @@ import {
   isDelCriminalModalState,
   isUpCriminalModalState,
 } from "../../recoil/atoms";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/swiper-bundle.css";
 
 export default function ViewCriminalCard(props) {
   const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
@@ -17,33 +14,13 @@ export default function ViewCriminalCard(props) {
     isDelCriminalModalState
   );
 
-  const images = [
-    "https://picsum.photos/100/100",
-    "https://picsum.photos/100/101",
-    "https://picsum.photos/100/102",
-  ];
-
   return (
     <>
       <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
         <div className="relative">
-          {/* <Swiper
-            slidesPerView={1}
-            spaceBetween={10}
-            autoplay={{ delay: 2000, disableOnInteraction: false }}
-          >
-            {images.map((image) => (
-              <SwiperSlide key={image}>
-                <img src={image} alt="Your Image" className="w-full h-auto" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          {/* <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent p-3 font-bebas text-3xl">
-            #chorsu
-          </div> */}
           <img
             className="aspect-square w-full object-cover"
-            src={`http://192.168.1.132:8000/${props.data.image_url}`}
+            src={props.data.image_url}
             alt=""
           />
         </div>
@@ -58,6 +35,8 @@ export default function ViewCriminalCard(props) {
             className="bg-red-800 px-5 py-2"
             onClick={() => {
               setIsDelCriminalModal(true);
+              console.log(props.data);
+              props.deleteData(props.data);
             }}
           >
             <i className="fa-solid fa-trash"></i> O`CHIRISH

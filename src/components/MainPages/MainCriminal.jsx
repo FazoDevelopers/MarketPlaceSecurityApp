@@ -22,7 +22,15 @@ export default function MainCriminal() {
     isDelCriminalModalState
   );
   const [data, setData] = useState([]);
+  const [deleteCriminal, setDeleteCriminal] = useState(null);
+  console.log(deleteCriminal);
 
+  const deleteCriminalData = (data) => {
+    setDeleteCriminal(data);
+    setIsDelCriminalModal(true);
+  };
+
+  // fetch data from backend
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -41,9 +49,11 @@ export default function MainCriminal() {
 
   return (
     <>
-      {isAddCriminalModal ? <AddCriminalModal /> : null}
-      {isUpCriminalModal ? <UpCriminalModal /> : null}
-      {isDelCriminalModal ? <DelCriminalModal /> : null}
+      {isAddCriminalModal && <AddCriminalModal fetch={fetchData} />}
+      {isUpCriminalModal && <UpCriminalModal fetch={fetchData} />}
+      {isDelCriminalModal && (
+        <DelCriminalModal fetch={fetchData} data={deleteCriminal} />
+      )}
 
       <div className="container mx-auto text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -64,7 +74,13 @@ export default function MainCriminal() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {data?.map((item) => {
-            return <ViewCriminalCard key={item.id} data={item} />;
+            return (
+              <ViewCriminalCard
+                key={item.id}
+                data={item}
+                deleteData={deleteCriminalData}
+              />
+            );
           })}
         </div>
 
