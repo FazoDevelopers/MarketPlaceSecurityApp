@@ -73,7 +73,7 @@ export default function AddCriminalModal(props) {
                     <input
                       type="text"
                       {...register("criminalName", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                     />
@@ -91,7 +91,7 @@ export default function AddCriminalModal(props) {
                     <input
                       type="text"
                       {...register("criminalSurname", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                     />
@@ -109,7 +109,7 @@ export default function AddCriminalModal(props) {
                     <input
                       type="text"
                       {...register("criminalFather", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                     />
@@ -125,9 +125,9 @@ export default function AddCriminalModal(props) {
                       JINOYATCHI YOSHI
                     </span>
                     <input
-                      type="text"
+                      type="number"
                       {...register("criminalAge", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                     />
@@ -147,7 +147,7 @@ export default function AddCriminalModal(props) {
                     <input
                       type="file"
                       {...register("criminalImage", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       className="border-2 border-lime-600 p-3"
                     />
@@ -165,7 +165,7 @@ export default function AddCriminalModal(props) {
 
                     <textarea
                       {...register("criminalDescription", {
-                        required: "This field is required",
+                        required: "Bo'sh bo'lishi mumkin emas",
                       })}
                       id=""
                       cols="30"

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../config.js";
@@ -22,18 +21,16 @@ const handleError = (error) => {
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-  const [placeImg, setPlaceImg] = useState(null);
 
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
   );
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      cameraName: "",
-      cameraUrl: "",
-    },
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // SEND FORMDATA TO BACKEND
   const onSubmit = async (formData) => {
@@ -42,7 +39,7 @@ export default function AddCameraModal(props) {
     cameraData.append("url", formData.cameraUrl);
     cameraData.append("latitude", lat);
     cameraData.append("longitude", lng);
-    cameraData.append("image", placeImg);
+    cameraData.append("image", formData.cameraImage[0]);
     console.log(cameraData);
     try {
       const response = await axios.post(`/api/camera/`, cameraData, {});
@@ -78,17 +75,16 @@ export default function AddCameraModal(props) {
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA NOMI
                 </span>
-                <Controller
-                  name="cameraName"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="text"
-                      {...field}
-                      className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
-                    />
-                  )}
+                <input
+                  type="text"
+                  {...register("cameraName", {
+                    required: "Camera name is required",
+                  })}
+                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                 />
+                {errors.cameraName && (
+                  <p className="text-red-500">{errors.cameraName.message}</p>
+                )}
               </div>
 
               <div>
@@ -111,27 +107,25 @@ export default function AddCameraModal(props) {
                 <input
                   type="file"
                   className="border-2 border-lime-600 p-3"
-                  onChange={(e) => {
-                    setPlaceImg(e.target.files[0]);
-                  }}
+                  {...register("cameraImage")}
                 />
+                {errors.cameraImage && (
+                  <p className="text-red-500">{errors.cameraImage.message}</p>
+                )}
               </div>
 
               <div>
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA URL
                 </span>
-                <Controller
-                  name="cameraUrl"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="text"
-                      {...field}
-                      className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
-                    />
-                  )}
+                <input
+                  type="text"
+                  {...register("cameraUrl")}
+                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                 />
+                {errors.cameraUrl && (
+                  <p className="text-red-500">{errors.cameraUrl.message}</p>
+                )}
               </div>
             </div>
           </div>
