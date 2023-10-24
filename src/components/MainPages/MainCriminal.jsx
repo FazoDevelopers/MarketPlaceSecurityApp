@@ -23,11 +23,17 @@ export default function MainCriminal() {
   );
   const [data, setData] = useState([]);
   const [deleteCriminal, setDeleteCriminal] = useState(null);
+  const [updateCriminal, setUpdateCriminal] = useState(null);
   console.log(deleteCriminal);
 
   const deleteCriminalData = (data) => {
     setDeleteCriminal(data);
     setIsDelCriminalModal(true);
+  };
+
+  const updateCriminalData = (data) => {
+    setUpdateCriminal(data);
+    setIsUpCriminalModal(true);
   };
 
   // fetch data from backend
@@ -50,7 +56,9 @@ export default function MainCriminal() {
   return (
     <>
       {isAddCriminalModal && <AddCriminalModal fetch={fetchData} />}
-      {isUpCriminalModal && <UpCriminalModal fetch={fetchData} />}
+      {isUpCriminalModal && (
+        <UpCriminalModal fetch={fetchData} data={updateCriminal} />
+      )}
       {isDelCriminalModal && (
         <DelCriminalModal fetch={fetchData} data={deleteCriminal} />
       )}
@@ -79,6 +87,7 @@ export default function MainCriminal() {
                 key={item.id}
                 data={item}
                 deleteData={deleteCriminalData}
+                updateData={updateCriminalData}
               />
             );
           })}

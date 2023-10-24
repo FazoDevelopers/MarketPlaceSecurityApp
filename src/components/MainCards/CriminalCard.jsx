@@ -12,7 +12,7 @@ export default function CriminalCard({ data }) {
     <div
       className="criminal_card_wrapper absolute p-2 overflow-hidden cursor-pointer hover:z-20 w-full"
       style={{
-        marginTop: isPinned ? 0 : `${Number(data.id) * 100}px`,
+        marginTop: isPinned ? 0 : `${Number(data.key) * 100}px`,
         zIndex: isPinned ? 99 : "unset",
         // transform: "perspective(600px) rotateX(-45deg)",
       }}

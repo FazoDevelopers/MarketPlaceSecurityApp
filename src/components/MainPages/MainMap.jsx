@@ -60,7 +60,7 @@ function CombinedComponent() {
 
         setCriminalData((prevData) => [
           ...prevData,
-          <CriminalCard key={data.key} data={data} />,
+          <CriminalCard key={data.id} data={data} />,
         ]);
       } catch (error) {
         console.error("Error while processing JSON data:", error);

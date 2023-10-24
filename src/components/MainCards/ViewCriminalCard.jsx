@@ -46,6 +46,7 @@ export default function ViewCriminalCard(props) {
             className="bg-green-800 px-5 py-2"
             onClick={() => {
               setIsUpCriminalModal(true);
+              props.updateData(props.data);
             }}
           >
             <i className="fa-solid fa-pen-to-square"></i> TAHRIRLASH
