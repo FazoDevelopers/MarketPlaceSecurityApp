@@ -53,7 +53,7 @@ export default function UpCriminalModal(props) {
         {}
       );
       console.log(response);
-      if (response.status === 204 && response.statusText === "OK") {
+      if (response.statusText === "OK") {
         props.fetch();
         handleSuccess();
         console.log(response);

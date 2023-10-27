@@ -10,6 +10,7 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
+import { useForm } from "react-hook-form";
 
 export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
@@ -26,6 +27,13 @@ export default function MainCamera() {
   const [nextPageStatus, setNextPageStatus] = useState("");
   const [prevPageStatus, setPrevPageStatus] = useState("");
   const [apiData, setApiData] = useState([]);
+
+  // make useForm for react form hook
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // Previous page index
   const decreasePageIndex = () => {
@@ -92,16 +100,41 @@ export default function MainCamera() {
           <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
             KAMERALAR
           </h1>
-          <button
-            type="button"
-            className="p-2 bg-green-500 text-white font-extrabold"
-            onClick={() => {
-              setIsAddCameraModal(true);
-            }}
-          >
-            <i className="fa-sharp fa-solid fa-plus p-1"></i>
-            QO`SHISH
-          </button>
+          <div className="flex gap-5">
+            <div>
+              <input
+                type="text"
+                {...register("criminalSearch")}
+                className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+                placeholder="Qidirish"
+              />
+              <input
+                type="datetime-local"
+                {...register("searchFromDate")}
+                className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              />
+              <input
+                type="datetime-local"
+                {...register("searchToDate")}
+                className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              />
+              <button className="p-2 bg-green-600 text-white font-extrabold border-2 border-green-600">
+                <i className="fas fa-search"></i>
+                QIDIRISH
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="p-2 bg-green-500 text-white font-extrabold border-2 border-lime-600"
+              onClick={() => {
+                setIsAddCameraModal(true);
+              }}
+            >
+              <i className="fa-sharp fa-solid fa-plus p-1"></i>
+              QO`SHISH
+            </button>
+          </div>
         </div>
 
         {/* MAPPING FETCH DATA */}

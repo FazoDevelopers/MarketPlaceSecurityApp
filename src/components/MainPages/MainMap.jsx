@@ -32,6 +32,7 @@ function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
   const [positions, setPositions] = useState([]);
   const [centerPositions, setCenterPositions] = useState([42, 21]);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const newSocket = new WebSocket("ws://192.168.1.132:5000/");
@@ -44,6 +45,7 @@ function CombinedComponent() {
       try {
         const data = JSON.parse(event.data);
         console.log(data);
+        setIsConnected(true);
 
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
@@ -80,10 +82,17 @@ function CombinedComponent() {
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
         <div className="col-span-1 sm:col-span-1 text-white">
-          <div className="border-lime-600 border-8 py-2 px-3 bg-opacity-50 bg-lime-600 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto">
+          <div
+            className={`${
+              isConnected
+                ? "border-lime-600 bg-lime-600"
+                : "border-red-600 bg-red-600"
+            } border-8 py-2 px-3 bg-opacity-50 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto`}
+          >
             <i className="fa-sharp fa-regular fa-radar fa-2x pr-3"></i>
             <p className="font-bebas text-2xl tracking-widest">Aniqlangan</p>
           </div>
+
           <div
             className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
             style={{ minHeight: "80vh" }}
@@ -143,7 +152,13 @@ function CombinedComponent() {
             className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
             style={{ minHeight: "80vh" }}
           >
-            {criminalData}
+            {isConnected ? (
+              criminalData
+            ) : (
+              <div>
+                <h1 className="text-red-500 text-center">WebSocket ulanganiga ishonch hosil qiling!</h1>
+              </div>
+            )}
           </div>
         </div>
       </div>
