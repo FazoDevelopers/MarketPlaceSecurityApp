@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    --main-back-color: #000000
+}
+
+body{
+    background-color: var(--main-back-color);
+}
+
+*{
+    /* border: 1px solid red; */
+}
