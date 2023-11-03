@@ -34,50 +34,82 @@ function CombinedComponent() {
   const [centerPositions, setCenterPositions] = useState([42, 21]);
   const [isConnected, setIsConnected] = useState(false);
 
+  // Criminal Data Timer Hook
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.132:5000/");
+    const criminalDataTimer = setTimeout(() => {
+      setCriminalData((prevData) => prevData.slice(1));
+    }, 10000);
 
-    newSocket.addEventListener("open", (event) => {
+    return () => clearTimeout(criminalDataTimer);
+  }, [criminalData, setCriminalData]);
+
+  // Positions Timer Hook
+  useEffect(() => {
+    const positionsTimer = setTimeout(() => {
+      setPositions((prevPositions) => prevPositions.slice(1));
+    }, 10000);
+
+    return () => clearTimeout(positionsTimer);
+  }, [positions, setPositions]);
+
+  // WebSocket Hook
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://192.168.1.132:5000");
+
+    const handleOpen = (event) => {
       console.log("Connected to the WebSocket");
+      newSocket.send(JSON.stringify({ state: "web" }));
       setIsConnected(true);
-    });
+    };
 
-    newSocket.onmessage = (event) => {
+    const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         console.log(data);
 
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
-          console.log(data.camera);
           const newPosition = {
             location: [latitude, longitude],
-            name: name,
+            name,
             photo: image,
             humanDetected: true,
           };
 
-          setPositions((prevPositions) => [...prevPositions, newPosition]);
+          setPositions((prevPositions) => [newPosition, ...prevPositions]);
           setCenterPositions([latitude, longitude]);
         }
 
         setCriminalData((prevData) => [
-          ...prevData,
           <CriminalCard key={data.id} data={data} />,
+          ...prevData,
         ]);
       } catch (error) {
         console.error("Error while processing JSON data:", error);
       }
     };
 
-    newSocket.addEventListener("error", (event) => {
+    const handleError = (event) => {
       console.error("WebSocket connection error:", event);
-    });
+    };
 
-    newSocket.addEventListener("close", (event) => {
+    const handleClose = (event) => {
       console.error("WebSocket connection closed:", event);
-    });
-  }, []);
+    };
+
+    newSocket.addEventListener("open", handleOpen);
+    newSocket.addEventListener("message", handleMessage);
+    newSocket.addEventListener("error", handleError);
+    newSocket.addEventListener("close", handleClose);
+
+    return () => {
+      newSocket.removeEventListener("open", handleOpen);
+      newSocket.removeEventListener("message", handleMessage);
+      newSocket.removeEventListener("error", handleError);
+      newSocket.removeEventListener("close", handleClose);
+      newSocket.close();
+    };
+  }, [setIsConnected, setPositions, setCenterPositions, setCriminalData]);
 
   return (
     <div>

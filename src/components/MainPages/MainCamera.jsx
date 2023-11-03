@@ -111,9 +111,9 @@ export default function MainCamera() {
         {/* MAPPING FETCH DATA */}
         {apiData.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-            {apiData.map((item) => (
+            {apiData.map((item, index) => (
               <ViewCameraCard
-                key={item.id}
+                key={index}
                 data={item}
                 upCameraDatas={upCameraDatas}
                 deleteCamera={deleteCamera}
