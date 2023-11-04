@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
-import L from "leaflet";
-
+import "./MainStyle.css";
+import { useRecoilState } from "recoil";
+import { latState, lngState } from "../recoil/atoms";
 
 const tileLayer = {
   url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 };
-import "./MainStyle.css";
-import { useRecoilState } from "recoil";
-import { latState, lngState } from "../recoil/atoms";
 
 const GetCoordinates = () => {
   const map = useMap();
@@ -31,7 +29,7 @@ const GetCoordinates = () => {
   return null;
 };
 
-const ClickableMap = ({upCameraData}) => {
+const ClickableMap = ({ upCameraData }) => {
   return (
     <MapContainer
       className={"center-of-map"}

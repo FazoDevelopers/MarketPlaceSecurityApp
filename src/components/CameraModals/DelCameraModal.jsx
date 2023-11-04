@@ -4,6 +4,7 @@ import { isDelCameraModalState } from "../../recoil/atoms";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import PropTypes from "prop-types";
+import { handleError, handleSuccess } from "../Notifications";
 
 export default function DelCameraModal(props) {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
@@ -19,14 +20,15 @@ export default function DelCameraModal(props) {
       if (response.status === 204) {
         console.log(response);
         props.fetch();
-        toast.success("Camera deleted successfully");
+        handleSuccess("Kamera muvaffaqiyatli o'chirildi!");
       } else {
         console.error("Request failed with status:", response.status);
-        toast.error("Failed to delete the camera");
+        handleError("Kamera o'chirishda xatolik!");
       }
     } catch (error) {
       console.error("delete:", error);
-      toast.error("Failed to delete the camera");
+      setIsDelCameraModal(true);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
 
@@ -38,7 +40,7 @@ export default function DelCameraModal(props) {
         <div className="flex items-center justify-center h-screen">
           <div className="bg-stone-900 text-white p-20 rounded shadow-lg w-1/3">
             <h1 className="font-bebas text-4xl text-center">
-              #{props.data.id}
+              #{props.data.name}
             </h1>
             <h1 className="text-2xl text-center">
               Haqiqatdan o`chirishni xohlaysizmi?

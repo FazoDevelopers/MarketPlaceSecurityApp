@@ -3,10 +3,9 @@ import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
-import { toast } from "react-toastify";
-import { toastOptions } from "../../config.js";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { handleError, handleSuccess } from "../Notifications.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);
@@ -41,9 +40,9 @@ export default function UpCameraModal(props) {
       if (response.status === 200) {
         console.log(response);
         props.fetch();
-        toast.success("Kamera muvafaqqiyatli tahrirlandi!", toastOptions);
+        handleSuccess("Kamera muvafaqqiyatli tahrirlandi!");
       } else {
-        toast.error("Kamera tahrirlanishda xatolik!", toastOptions);
+        handleError("Kamera tahrirlanishda xatolik!");
       }
 
       console.log("Camera data updated:", response.data);
@@ -51,10 +50,9 @@ export default function UpCameraModal(props) {
       console.log(response.status);
       setIsUpCameraModal(false);
     } catch (error) {
-      console.error("Error updating camera data:", error);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="fixed inset-0 z-50">

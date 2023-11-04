@@ -10,6 +10,7 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
+import { handleError } from "../Notifications";
 
 export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
@@ -23,18 +24,18 @@ export default function MainCamera() {
   const [upCamDatas, setUpCamDatas] = useState(null);
   const [delCamDatas, setDelCamDatas] = useState(null);
   const [indexPage, setIndexPage] = useState(1);
-  const [nextPageStatus, setNextPageStatus] = useState("");
-  const [prevPageStatus, setPrevPageStatus] = useState("");
+  const [nextPageStatus, setNextPageStatus] = useState(null);
+  const [prevPageStatus, setPrevPageStatus] = useState(null);
   const [apiData, setApiData] = useState([]);
 
-  // Previous page index
+  // Previous page index for pagination
   const decreasePageIndex = () => {
     if (prevPageStatus) {
       setIndexPage((prev) => prev - 1);
     }
   };
 
-  // Next page index
+  // Next page index for pagination
   const increasePageIndex = () => {
     if (nextPageStatus) {
       setIndexPage((prev) => prev + 1);
@@ -60,10 +61,10 @@ export default function MainCamera() {
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);
       } else {
-        console.error("Request failed with status:", response.status);
+        handleError("Ma'lumot yuklashda xatolik!");
       }
     } catch (error) {
-      console.error("Error fetching camera data:", error);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
 

@@ -1,27 +1,14 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { toastOptions } from "../../config.js";
 import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 import ClickableMap from "../ClickableMap";
 import PropTypes from "prop-types";
-
-// ADD SUCCESS NOTIFICATION
-const handleSuccess = () => {
-  toast.success("Kamera muvafaqqiyatli qo'shildi!", toastOptions);
-};
-
-// ADD ERROR NOTIFICATION
-const handleError = (error) => {
-  console.error("Error:", error);
-  toast.error("Kamera qo'shishda xatolik!", toastOptions);
-};
+import { handleError, handleSuccess } from "../Notifications.js";
 
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
   );
@@ -45,16 +32,16 @@ export default function AddCameraModal(props) {
       const response = await axios.post(`/api/camera/`, cameraData, {});
       if (response.status === 201) {
         props.fetch();
-        handleSuccess();
+        handleSuccess("Kamera muvaqqiyatli qo'shildi!");
         console.log(response);
         setIsAddCameraModal(false);
       } else if (response.status === 400) {
         console.log(400);
       } else {
-        handleError(response.statusText);
+        handleError("Kamera qo'shishda xatolik!");
       }
     } catch (error) {
-      handleError(error);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
 

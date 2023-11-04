@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
-import L from "leaflet";
+import "./MainStyle.css";
+import { useRecoilState } from "recoil";
+import { latState, lngState } from "../recoil/atoms";
 
 const center = [52.22977, 21.01178];
 
@@ -9,9 +11,6 @@ const tileLayer = {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 };
-import "./MainStyle.css";
-import { useRecoilState } from "recoil";
-import { latState, lngState } from "../recoil/atoms";
 
 const GetCoordinates = () => {
   const map = useMap();

@@ -1,26 +1,14 @@
 import { useRecoilState } from "recoil";
 import { isAddCriminalModalState } from "../../recoil/atoms";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { toastOptions } from "../../config";
 import { useForm } from "react-hook-form";
 import PropTypes from "prop-types";
+import { handleError, handleSuccess } from "../Notifications";
 
 export default function AddCriminalModal(props) {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
     isAddCriminalModalState
   );
-
-  // ADD SUCCESS NOTIFICATION
-  const handleSuccess = () => {
-    toast.success("Kamera muvafaqqiyatli qo'shildi!", toastOptions);
-  };
-
-  // ADD ERROR NOTIFICATION
-  const handleError = (error) => {
-    console.error("Error:", error);
-    toast.error("Kamera qo'shishda xatolik!", toastOptions);
-  };
 
   const {
     handleSubmit,
@@ -42,16 +30,16 @@ export default function AddCriminalModal(props) {
       const response = await axios.post(`/api/criminals/`, cameraData, {});
       if (response.status === 201) {
         props.fetch();
-        handleSuccess();
+        handleSuccess("Jinoyatchi muvaffaqiyatli qo'shildi!");
         console.log(response);
         setIsAddCriminalModal(false);
       } else if (response.status === 400) {
         console.log(400);
       } else {
-        handleError(response.statusText);
+        handleError("Jinoyatchi qo'shishda xatolik!");
       }
     } catch (error) {
-      handleError(error);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
 

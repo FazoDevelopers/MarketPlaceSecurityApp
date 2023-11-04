@@ -10,6 +10,8 @@ import DelCriminalModal from "../CriminalModals/DelCriminalModal";
 import UpCriminalModal from "../CriminalModals/UpCriminalModal";
 import ViewCriminalCard from "../MainCards/ViewCriminalCard";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { handleError } from "../Notifications";
 
 export default function MainCriminal() {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
@@ -64,7 +66,7 @@ export default function MainCriminal() {
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);
     } catch (error) {
-      console.log(error);
+      handleError("error fetching data", error);
     }
   };
 

@@ -1,29 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { isUpCriminalModalState, latState, lngState } from "../../recoil/atoms";
-import ClickableMap from "../ClickableMap";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import axios from "axios";
-import { toastOptions } from "../../config";
+import { handleError, handleSuccess } from "../Notifications";
 
 export default function UpCriminalModal(props) {
   const [lat, setLat] = useRecoilState(latState);
   const [lng, setLng] = useRecoilState(lngState);
+  const [criminalImg, setCriminalImg] = useState(null);
   const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
     isUpCriminalModalState
   );
-
-  // ADD SUCCESS NOTIFICATION
-  const handleSuccess = () => {
-    toast.success("Jinoyatchi muvafaqqiyatli yangilandi!", toastOptions);
-  };
-
-  // ADD ERROR NOTIFICATION
-  const handleError = (error) => {
-    console.error("Error:", error);
-    toast.error("Jinoyatchi yangilashda xatolik!", toastOptions);
-  };
 
   const { handleSubmit, register, errors } = useForm({
     defaultValues: {
@@ -38,33 +26,41 @@ export default function UpCriminalModal(props) {
 
   // SEND FORMDATA TO BACKEND
   const onSubmit = async (formData) => {
-    const cameraData = new FormData();
-    cameraData.append("first_name", formData.criminalName);
-    cameraData.append("last_name", formData.criminalSurname);
-    cameraData.append("middle_name", formData.criminalFather);
-    cameraData.append("age", formData.criminalAge);
-    cameraData.append("description", formData.criminalDescription);
-    cameraData.append("image", formData.criminalImage[0]);
-    console.log(cameraData);
+    const criminalData = new FormData();
+    criminalData.append("first_name", formData.criminalName);
+    criminalData.append("last_name", formData.criminalSurname);
+    criminalData.append("middle_name", formData.criminalFather);
+    criminalData.append("age", formData.criminalAge);
+    criminalData.append("description", formData.criminalDescription);
+    if (criminalImg) {
+      criminalData.append("image", criminalImg);
+    }
+
+    console.log(formData);
+    console.log(criminalData);
     try {
       const response = await axios.patch(
         `/api/criminals/${props.data.id}/`,
-        cameraData,
-        {}
+        criminalData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       console.log(response);
       if (response.statusText === "OK") {
         props.fetch();
-        handleSuccess();
+        handleSuccess("Jinoyatchi muvaffaqiyatli tahrirlandi!");
         console.log(response);
         setIsUpCriminalModal(false);
       } else if (response.status === 400) {
         console.log(400);
       } else {
-        handleError(response.statusText);
+        handleError("Jinoyatchi tahrirlashda xatolik!");
       }
     } catch (error) {
-      handleError(error);
+      handleError("Jinoyatchi tahrirlashda xatolik!");
     }
   };
 
@@ -132,7 +128,9 @@ export default function UpCriminalModal(props) {
                     </span>
                     <input
                       type="file"
-                      {...register("criminalImage")}
+                      onChange={(e) => {
+                        setCriminalImg(e.target.files[0]);
+                      }}
                       className="border-2 border-lime-600 p-3"
                     />
                   </div>
