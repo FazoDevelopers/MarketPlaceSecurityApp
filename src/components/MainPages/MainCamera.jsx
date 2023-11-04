@@ -13,20 +13,16 @@ import { useRecoilState } from "recoil";
 import { handleError } from "../Notifications";
 
 export default function MainCamera() {
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
-    isAddCameraModalState
-  );
-  const [isUpCameraModal, setIsUpCameraModal] =
-    useRecoilState(isUpCameraModalState);
-  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
-    isDelCameraModalState
-  );
   const [upCamDatas, setUpCamDatas] = useState(null);
   const [delCamDatas, setDelCamDatas] = useState(null);
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState(null);
   const [prevPageStatus, setPrevPageStatus] = useState(null);
   const [apiData, setApiData] = useState([]);
+
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
+  const [isUpCameraModal, setIsUpCameraModal] = useRecoilState(isUpCameraModalState);
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(isDelCameraModalState);
 
   // Previous page index for pagination
   const decreasePageIndex = () => {

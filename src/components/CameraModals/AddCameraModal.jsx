@@ -66,6 +66,10 @@ export default function AddCameraModal(props) {
                   type="text"
                   {...register("cameraName", {
                     required: "Kamera nomi majburiy",
+                    pattern: {
+                      value: /^[A-Za-z_ '"`]+$/,
+                      message: "Belgi ishlatish mumkin emas",
+                    },
                   })}
                   className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
                 />
