@@ -16,27 +16,36 @@ export default function UpCameraModal(props) {
   const { control, handleSubmit } = useForm();
   const [placeImg, setPlaceImg] = useState(null);
 
-  // UPDATE CAMERA DATA
   const onSubmit = async (data) => {
-    console.log(data);
     const cameraData = new FormData();
     cameraData.append("name", data.name);
     cameraData.append("url", data.url);
     cameraData.append("latitude", lat);
     cameraData.append("longitude", lng);
-    cameraData.append("image", placeImg);
-    console.log(cameraData);
+
+    if (placeImg) {
+      cameraData.append("image", placeImg);
+    }
+
     try {
       const response = await axios.patch(
         `http://192.168.1.132:8000/api/camera/${props.upCamDatas.id}/`,
-        cameraData
+        cameraData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       if (response.status === 200) {
+        console.log(response);
         props.fetch();
         toast.success("Kamera muvafaqqiyatli tahrirlandi!", toastOptions);
       } else {
         toast.error("Kamera tahrirlanishda xatolik!", toastOptions);
       }
+
       console.log("Camera data updated:", response.data);
       console.log("Camera data:", cameraData);
       console.log(response.status);

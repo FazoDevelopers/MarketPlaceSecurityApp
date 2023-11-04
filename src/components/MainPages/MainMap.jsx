@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   Marker,
@@ -11,6 +11,7 @@ import "leaflet/dist/leaflet.css";
 import "../MainStyle.css";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
+import PropTypes from "prop-types";
 
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
@@ -26,7 +27,7 @@ function SetViewOnClick({ coords, zoomCustom }) {
   return null;
 }
 
-const zoomCustom = 10;
+const zoomCustom = 15;
 
 function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
@@ -38,7 +39,7 @@ function CombinedComponent() {
   useEffect(() => {
     const criminalDataTimer = setTimeout(() => {
       setCriminalData((prevData) => prevData.slice(1));
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(criminalDataTimer);
   }, [criminalData, setCriminalData]);
@@ -47,7 +48,7 @@ function CombinedComponent() {
   useEffect(() => {
     const positionsTimer = setTimeout(() => {
       setPositions((prevPositions) => prevPositions.slice(1));
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
@@ -151,7 +152,7 @@ function CombinedComponent() {
                 icon={
                   new L.DivIcon({
                     className: position.humanDetected ? "marker-icon" : "",
-                    html: `<img src="${position.photo}" alt="${position.name}" style="width: 50px; height: 50px;" />`,
+                    html: `<img src="${position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%" />`,
                     iconSize: [50, 50],
                     iconAnchor: [25, 25],
                     popupAnchor: [0, -25],
@@ -159,14 +160,7 @@ function CombinedComponent() {
                 }
               >
                 <Tooltip permanent>
-                  <div>
-                    <img
-                      src={position.photo}
-                      alt={position.name}
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                    <p>{position.name}</p>
-                  </div>
+                  <p>{position.name}</p>
                 </Tooltip>
               </Marker>
             ))}
@@ -202,3 +196,8 @@ function CombinedComponent() {
 }
 
 export default CombinedComponent;
+
+SetViewOnClick.propTypes = {
+  coords: PropTypes.array.isRequired,
+  zoomCustom: PropTypes.number.isRequired,
+};

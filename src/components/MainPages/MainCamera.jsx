@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ViewCameraCard from "../MainCards/ViewCameraCard";
 import AddCameraModal from "../CameraModals/AddCameraModal";
 import UpCameraModal from "../CameraModals/UpCameraModal";
@@ -10,7 +10,6 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
-import { useForm } from "react-hook-form";
 
 export default function MainCamera() {
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(

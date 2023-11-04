@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../MainStyle.css";
+import PropTypes from "prop-types";
+
 export default function CriminalCard({ data }) {
   console.log(data.first_name);
   const [isPinned, setIsPinned] = useState(false);
@@ -24,6 +26,12 @@ export default function CriminalCard({ data }) {
             className="fa-solid fa-thumbtack"
             style={isPinned ? { transform: "rotate(35deg)" } : null}
             onClick={pinCriminal}
+            onKeyPress={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                pinCriminal();
+              }
+            }}
+            tabIndex={0} // Add a tabindex to make it focusable
           ></i>
         </div>
         <p className="text-sm text-end font-orbitron">{data.first_name}</p>
@@ -38,3 +46,7 @@ export default function CriminalCard({ data }) {
     </div>
   );
 }
+
+CriminalCard.propTypes = {
+  data: PropTypes.object.isRequired,
+};
