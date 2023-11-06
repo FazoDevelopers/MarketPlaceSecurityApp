@@ -12,6 +12,7 @@ export default function DelCameraModal(props) {
   );
   const [delCardIndex, setDelCardIndex] = useState();
 
+  // DELETE CAMERA DATA FROM API
   const delData = async () => {
     try {
       const response = await axios.delete(`/api/camera/${props.data.id}/`);
@@ -49,6 +50,16 @@ export default function DelCameraModal(props) {
             <div className="flex justify-between mt-4">
               <button
                 type="button"
+                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                onClick={() => {
+                  setIsDelCameraModal(false);
+                }}
+              >
+                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+              </button>
+
+              <button
+                type="button"
                 className="bg-red-800 px-5 py-2"
                 onClick={() => {
                   setDelCardIndex(props.data.id);
@@ -57,15 +68,6 @@ export default function DelCameraModal(props) {
                 }}
               >
                 <i className="fa-solid fa-trash"></i> O`CHIRISH
-              </button>
-              <button
-                type="button"
-                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
-                onClick={() => {
-                  setIsDelCameraModal(false);
-                }}
-              >
-                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
               </button>
             </div>
           </div>
@@ -76,6 +78,6 @@ export default function DelCameraModal(props) {
 }
 
 DelCameraModal.propTypes = {
-  data: PropTypes.any.isRequired,
-  fetch: PropTypes.any.isRequired,
+  data: PropTypes.object.isRequired,
+  fetch: PropTypes.func.isRequired,
 };

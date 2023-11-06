@@ -9,9 +9,7 @@ import { handleError, handleSuccess } from "../Notifications.js";
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
-    isAddCameraModalState
-  );
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
 
   const {
     register,
@@ -58,6 +56,7 @@ export default function AddCameraModal(props) {
               KAMERA QO`SHISH
             </h1>
             <div className="grid gap-10">
+              {/* KAMERA NOMI */}
               <div>
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA NOMI
@@ -78,6 +77,7 @@ export default function AddCameraModal(props) {
                 )}
               </div>
 
+              {/* KAMERA MANZILI */}
               <div>
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA MANZILI
@@ -91,6 +91,7 @@ export default function AddCameraModal(props) {
                 />
               </div>
 
+              {/* JOY RASMI */}
               <div className="flex flex-col">
                 <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
                   JOY RASMI
@@ -107,6 +108,7 @@ export default function AddCameraModal(props) {
                 )}
               </div>
 
+              {/* KAMERA URLI */}
               <div>
                 <span className="bg-lime-600 px-1 font-extrabold">
                   KAMERA URL
@@ -122,6 +124,7 @@ export default function AddCameraModal(props) {
                   <p className="text-red-500">{errors.cameraUrl.message}</p>
                 )}
               </div>
+              
             </div>
           </div>
           <div className="grid content-between">
