@@ -37,7 +37,9 @@ export default function DetectHumanCard({ data }) {
               ></i>
             </div>
           </div>
-          <p className="text-sm font-orbitron text-end bg-red-500 p-2">19:15:120 01.10.2023</p>
+          <p className="text-sm font-orbitron text-end bg-red-500 p-2">
+            19:15:120 01.10.2023
+          </p>
         </div>
       </div>
     </>
