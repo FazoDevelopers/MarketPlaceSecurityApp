@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../MainStyle.css";
+import PropTypes from "prop-types";
 export default function DetectHumanCard({ data }) {
   const [isPinned, setIsPinned] = useState(false);
 
@@ -37,7 +38,7 @@ export default function DetectHumanCard({ data }) {
               ></i>
             </div>
           </div>
-          <p className="text-sm font-orbitron text-end bg-red-500 p-2">
+          <p className="text-base font-orbitron text-center bg-red-500 p-2">
             19:15:120 01.10.2023
           </p>
         </div>
@@ -45,3 +46,7 @@ export default function DetectHumanCard({ data }) {
     </>
   );
 }
+
+DetectHumanCard.propTypes = {
+  data: PropTypes.object.isRequired,
+};

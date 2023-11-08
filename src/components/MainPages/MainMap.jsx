@@ -36,33 +36,28 @@ function CombinedComponent() {
   const [centerPositions, setCenterPositions] = useState([42, 21]);
   const [isConnected, setIsConnected] = useState(false);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCriminalData((prevData) =>
-  //       prevData.length > 0 ? prevData.slice(1) : prevData
-  //     );
-  //     console.log(criminalData);
-  //   }, 15000);
-
-  //   // Clear interval on component unmount
-  //   return () => clearInterval(interval);
-  // }, [criminalData]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCriminalDetectData((prevData) =>
-  //       prevData.length > 0 ? prevData.slice(1) : prevData
-  //     );
-  //     console.log(criminalDetectData);
-  //   }, 6000);
-
-  //   // Clear interval on component unmount
-  //   return () => clearInterval(interval);
-  // }, [criminalDetectData]);
-
-  // Effect for logging the criminalDetectData
   useEffect(() => {
-    console.log(criminalDetectData);
+    const interval = setInterval(() => {
+      setCriminalData((prevData) =>
+        prevData.length > 0 ? prevData.slice(1) : prevData
+      );
+      console.log(criminalData);
+    }, 15000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, [criminalData]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCriminalDetectData((prevData) =>
+        prevData.length > 0 ? prevData.slice(1) : prevData
+      );
+      console.log(criminalDetectData);
+    }, 6000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, [criminalDetectData]);
 
   // Positions Timer Hook
