@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { isDelCameraModalState } from "../../recoil/atoms";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import PropTypes from "prop-types";
 import { handleError, handleSuccess } from "../Notifications";
 

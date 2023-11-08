@@ -10,7 +10,6 @@ import DelCriminalModal from "../CriminalModals/DelCriminalModal";
 import UpCriminalModal from "../CriminalModals/UpCriminalModal";
 import ViewCriminalCard from "../MainCards/ViewCriminalCard";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { handleError } from "../Notifications";
 
 export default function MainCriminal() {
@@ -76,6 +75,7 @@ export default function MainCriminal() {
 
   return (
     <>
+      {/* OPEN MODAL */}
       {isAddCriminalModal && <AddCriminalModal fetch={fetchData} />}
       {isUpCriminalModal && (
         <UpCriminalModal fetch={fetchData} data={updateCriminal} />
@@ -104,6 +104,7 @@ export default function MainCriminal() {
           </div>
         </div>
 
+        {/* MAP FETCH DATA */}
         {data.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {data?.map((item) => {

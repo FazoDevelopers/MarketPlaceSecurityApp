@@ -164,7 +164,7 @@ export default function UpCriminalModal(props) {
                       type="submit"
                       className="bg-green-800 px-4 py-2 border-2 border-green-600"
                     >
-                      <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
+                      <i className="fa-solid fa-plus pr-2"></i> TAHRIRLASH
                     </button>
                   </div>
                 </div>

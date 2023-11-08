@@ -54,6 +54,7 @@ export default function AddCriminalModal(props) {
             </h1>
             <div className="grid grid-cols-2 gap-20">
               <div>
+                {/* CRIMINAL NAME */}
                 <div className="mb-5">
                   <span className="bg-lime-600 px-1 font-extrabold">
                     JINOYATCHI ISMI
@@ -76,6 +77,7 @@ export default function AddCriminalModal(props) {
                   )}
                 </div>
 
+                {/* CRIMINAL SURNAME */}
                 <div className="mb-5">
                   <span className="bg-lime-600 px-1 font-extrabold">
                     JINOYATCHI FAMILIYASI
@@ -98,6 +100,7 @@ export default function AddCriminalModal(props) {
                   )}
                 </div>
 
+                {/* CRIMINAL FATHER'S NAME */}
                 <div className="mb-5">
                   <span className="bg-lime-600 px-1 font-extrabold">
                     JINOYATCHI OTASI
@@ -120,6 +123,7 @@ export default function AddCriminalModal(props) {
                   )}
                 </div>
 
+                {/* CRIMINAL AGE */}
                 <div className="mb-5">
                   <span className="bg-lime-600 px-1 font-extrabold">
                     JINOYATCHI YOSHI
@@ -129,12 +133,12 @@ export default function AddCriminalModal(props) {
                     {...register("criminalAge", {
                       required: "Bo'sh bo'lishi mumkin emas",
                       min: {
-                        value: 18,
+                        value: 1,
                         message:
                           "Jinoyat uchun minimum yoshi 18 bo'lishi kerak",
                       },
                       max: {
-                        value: 100,
+                        value: 200,
                         message:
                           "Jinoyat uchun maksimum yoshi 100 dan oshmasligi kerak",
                       },
