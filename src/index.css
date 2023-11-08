@@ -13,3 +13,18 @@ body{
 *{
     /* border: 1px solid red; */
 }
+
+/* Add this to your styles.css */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Works on Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Works on IE and Edge */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+}

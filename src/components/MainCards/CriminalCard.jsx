@@ -12,7 +12,7 @@ export default function CriminalCard({ data }) {
   };
   return (
     <div
-      className="criminal_card_wrapper absolute p-2 overflow-hidden cursor-pointer hover:z-20 w-full"
+      className="criminal_card_wrapper p-2 overflow-hidden cursor-pointer hover:z-20 w-full"
       style={{
         marginTop: isPinned ? 0 : `${Number(data.key) * 100}px`,
         zIndex: isPinned ? 99 : "unset",

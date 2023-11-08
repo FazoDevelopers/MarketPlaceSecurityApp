@@ -31,18 +31,15 @@ const zoomCustom = 15;
 
 function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
+  const [criminalDetectData, setCriminalDetectData] = useState([]);
   const [positions, setPositions] = useState([]);
   const [centerPositions, setCenterPositions] = useState([42, 21]);
   const [isConnected, setIsConnected] = useState(false);
 
-  // Criminal Data Timer Hook
+  // Effect for logging the criminalDetectData
   useEffect(() => {
-    const criminalDataTimer = setTimeout(() => {
-      setCriminalData((prevData) => prevData.slice(1));
-    }, 15000);
-
-    return () => clearTimeout(criminalDataTimer);
-  }, [criminalData, setCriminalData]);
+    console.log(criminalDetectData);
+  }, [criminalDetectData]);
 
   // Positions Timer Hook
   useEffect(() => {
@@ -53,7 +50,7 @@ function CombinedComponent() {
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
 
-  // WebSocket Hook
+  // WebSocket Hook for exist in database
   useEffect(() => {
     const newSocket = new WebSocket("ws://192.168.1.132:5000");
 
@@ -66,7 +63,7 @@ function CombinedComponent() {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
+        // console.log(data);
 
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
@@ -112,6 +109,51 @@ function CombinedComponent() {
     };
   }, [setIsConnected, setPositions, setCenterPositions, setCriminalData]);
 
+  // WebSocket Hook for detect human
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://192.168.1.132:5678/");
+
+    const handleOpen = (event) => {
+      console.log("Connected to the WebSocket detect");
+      newSocket.send(JSON.stringify({ state: "web" }));
+      setIsConnected(true);
+    };
+
+    const handleMessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // console.log(data);
+        setCriminalDetectData((prevData) => [
+          <DetectHumanCard key={data.id} data={data} />,
+          ...prevData,
+        ]);
+      } catch (error) {
+        console.error("Error while processing JSON data:", error);
+      }
+    };
+
+    const handleError = (event) => {
+      console.error("WebSocket connection error:", event);
+    };
+
+    const handleClose = (event) => {
+      console.error("WebSocket connection closed:", event);
+    };
+
+    newSocket.addEventListener("open", handleOpen);
+    newSocket.addEventListener("message", handleMessage);
+    newSocket.addEventListener("error", handleError);
+    newSocket.addEventListener("close", handleClose);
+
+    return () => {
+      newSocket.removeEventListener("open", handleOpen);
+      newSocket.removeEventListener("message", handleMessage);
+      newSocket.removeEventListener("error", handleError);
+      newSocket.removeEventListener("close", handleClose);
+      newSocket.close();
+    };
+  }, [setCriminalDetectData]);
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
@@ -128,10 +170,11 @@ function CombinedComponent() {
           </div>
 
           <div
-            className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
-            style={{ minHeight: "80vh" }}
+            // className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
+            className="criminals_sidebar border-gray-500 border-2 hide-scrollbar mt-4 w-full relative overflow-y-scroll"
+            style={{ maxHeight: "80vh" }}
           >
-            <DetectHumanCard />
+            {criminalDetectData}
           </div>
         </div>
 
@@ -176,8 +219,8 @@ function CombinedComponent() {
             </p>
           </div>
           <div
-            className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
-            style={{ minHeight: "80vh" }}
+            className="criminals_sidebar border-gray-500 border-2 hide-scrollbar mt-4 w-full relative overflow-y-scroll"
+            style={{ maxHeight: "80vh" }}
           >
             {isConnected ? (
               criminalData
