@@ -98,7 +98,15 @@ function CombinedComponent() {
         }
 
         setCriminalData((prevData) => [
-          <CriminalCard key={data.id} data={data} />,
+          <div
+            key={data.id}
+            onClick={() => {
+              setCenterPositions([data.camera.latitude, data.camera.longitude]);
+              console.log(data);
+            }}
+          >
+            <CriminalCard data={data} />
+          </div>,
           ...prevData,
         ]);
       } catch (error) {

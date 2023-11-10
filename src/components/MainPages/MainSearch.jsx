@@ -24,7 +24,12 @@ export default function MainSearch() {
 
     try {
       const response = await axios.get(`/api/records/?${params}`);
-      setData(response.data.results);
+      if (Array.isArray(response.data.results)) {
+        const reversedResponse = [...response.data.results].reverse();
+        setData(reversedResponse);
+      } else {
+        setData([]);
+      }
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);
       console.log(response.data.results);
@@ -54,7 +59,7 @@ export default function MainSearch() {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    fetchRecords(); // No need to pass data, fetchRecords gets values from useForm
+    fetchRecords();
   };
 
   return (

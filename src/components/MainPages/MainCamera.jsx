@@ -20,9 +20,14 @@ export default function MainCamera() {
   const [prevPageStatus, setPrevPageStatus] = useState(null);
   const [apiData, setApiData] = useState([]);
 
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
-  const [isUpCameraModal, setIsUpCameraModal] = useRecoilState(isUpCameraModalState);
-  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(isDelCameraModalState);
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
+    isAddCameraModalState
+  );
+  const [isUpCameraModal, setIsUpCameraModal] =
+    useRecoilState(isUpCameraModalState);
+  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
+    isDelCameraModalState
+  );
 
   // Previous page index for pagination
   const decreasePageIndex = () => {
