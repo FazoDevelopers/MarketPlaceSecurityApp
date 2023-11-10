@@ -15,7 +15,6 @@ export default function MainSearch() {
   // Fetch records based on the form data and page index
   const fetchRecords = async () => {
     const formData = getValues(); // Get current form data
-    console.log(formData);
     const params = new URLSearchParams({
       date_recorded__gte: formData.searchFromDate,
       date_recorded__lte: formData.searchToDate,
@@ -24,6 +23,7 @@ export default function MainSearch() {
 
     try {
       const response = await axios.get(`/api/records/?${params}`);
+      console.log(response);
       if (Array.isArray(response.data.results)) {
         const reversedResponse = [...response.data.results].reverse();
         setData(reversedResponse);
@@ -32,7 +32,6 @@ export default function MainSearch() {
       }
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);
-      console.log(response.data.results);
     } catch (error) {
       setError(error);
     }

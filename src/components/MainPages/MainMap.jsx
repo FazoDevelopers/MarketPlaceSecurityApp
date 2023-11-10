@@ -12,7 +12,8 @@ import "../MainStyle.css";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
 import PropTypes from "prop-types";
-
+import { v4 as uuidv4 } from "uuid";
+import PinnedCards from "../MainCards/PinnedCards";
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
 
@@ -35,6 +36,9 @@ function CombinedComponent() {
   const [positions, setPositions] = useState([]);
   const [centerPositions, setCenterPositions] = useState([42, 21]);
   const [isConnected, setIsConnected] = useState(false);
+  const [pinnedCriminals, setPinnedCriminals] = useState([]);
+
+  console.log(pinnedCriminals);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,7 +46,7 @@ function CombinedComponent() {
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
       console.log(criminalData);
-    }, 15000);
+    }, 150000000);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -64,7 +68,7 @@ function CombinedComponent() {
   useEffect(() => {
     const positionsTimer = setTimeout(() => {
       setPositions((prevPositions) => prevPositions.slice(1));
-    }, 15000);
+    }, 150000000);
 
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
@@ -97,18 +101,27 @@ function CombinedComponent() {
           setCenterPositions([latitude, longitude]);
         }
 
-        setCriminalData((prevData) => [
-          <div
-            key={data.id}
-            onClick={() => {
-              setCenterPositions([data.camera.latitude, data.camera.longitude]);
-              console.log(data);
-            }}
-          >
-            <CriminalCard data={data} />
-          </div>,
-          ...prevData,
-        ]);
+        setCriminalData((prevData) => {
+          return [
+            <div
+              key={uuidv4()}
+              onClick={() => {
+                setCenterPositions([
+                  data.camera.latitude,
+                  data.camera.longitude,
+                ]);
+                console.log(data);
+              }}
+            >
+              <CriminalCard
+                setPinnedCriminals={setPinnedCriminals}
+                pinnedCriminals={pinnedCriminals}
+                data={data}
+              />
+            </div>,
+            ...prevData,
+          ];
+        });
       } catch (error) {
         console.error("Error while processing JSON data:", error);
       }
@@ -151,7 +164,7 @@ function CombinedComponent() {
         const data = JSON.parse(event.data);
         // console.log(data);
         setCriminalDetectData((prevData) => [
-          <DetectHumanCard key={data.id} data={data} />,
+          <DetectHumanCard key={uuidv4()} data={data} />,
           ...prevData,
         ]);
       } catch (error) {
@@ -205,7 +218,7 @@ function CombinedComponent() {
           </div>
         </div>
 
-        <div className="col-span-1 sm:col-span-4 z-10">
+        <div className="col-span-1 sm:col-span-4 z-10 relative">
           <MapContainer
             center={centerPositions}
             zoom={zoomCustom}
@@ -222,7 +235,7 @@ function CombinedComponent() {
                 icon={
                   new L.DivIcon({
                     className: position.humanDetected ? "marker-icon" : "",
-                    html: `<img src="${position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%" />`,
+                    html: `<img src="${position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit:cover" />`,
                     iconSize: [50, 50],
                     iconAnchor: [25, 25],
                     popupAnchor: [0, -25],
@@ -237,6 +250,12 @@ function CombinedComponent() {
             <SetViewOnClick coords={centerPositions} zoomCustom={zoomCustom} />
           </MapContainer>
         </div>
+          <div className="text-white fixed bottom-[100px] left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
+            {pinnedCriminals.length > 0 &&
+              pinnedCriminals.map((criminal) => (
+                <PinnedCards key={criminal.key} data={criminal} />
+              ))}
+          </div>
 
         <div className="col-span-1 sm:col-span-1 text-white">
           <div className="border-lime-600 border-8 py-2 px-3 bg-opacity-50 bg-lime-600 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto">

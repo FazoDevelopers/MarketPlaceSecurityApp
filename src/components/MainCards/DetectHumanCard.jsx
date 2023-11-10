@@ -31,11 +31,11 @@ export default function DetectHumanCard({ data }) {
               <span className="font-bebas text-sm">
                 Long: {data.camera_object.longitude}
               </span>
-              <i
+              {/* <i
                 className="fa-solid fa-thumbtack"
                 style={isPinned ? { transform: "rotate(35deg)" } : null}
                 onClick={pinCriminal}
-              ></i>
+              ></i> */}
             </div>
           </div>
           <p className="text-base font-orbitron text-center bg-red-500 p-2">
