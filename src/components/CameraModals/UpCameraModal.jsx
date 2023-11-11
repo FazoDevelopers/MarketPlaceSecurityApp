@@ -5,7 +5,7 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { handleError, handleSuccess } from "../Notifications.js";
+import { handleError, handleSuccess } from "../globals.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);

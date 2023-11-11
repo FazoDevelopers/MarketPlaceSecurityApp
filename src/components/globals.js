@@ -18,3 +18,17 @@ export const handleSuccess = (msg) => {
 export const handleError = (msg) => {
   toast.error(msg, toastOptions);
 };
+
+// Previous page index for pagination
+export const decreasePageIndex = (indexPage, prevPage) => {
+  if (prevPage) {
+    indexPage((prev) => prev - 1);
+  }
+};
+
+// Next page index for pagination
+export const increasePageIndex = (indexPage, nextPage) => {
+  if (nextPage) {
+    indexPage((prev) => prev + 1);
+  }
+};

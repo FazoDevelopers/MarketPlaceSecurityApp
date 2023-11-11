@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import SearchCriminalCard from "../MainCards/SearchCriminalCard";
+import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainSearch() {
   const [data, setData] = useState(null);
@@ -24,37 +25,23 @@ export default function MainSearch() {
     try {
       const response = await axios.get(`/api/records/?${params}`);
       console.log(response);
-      if (Array.isArray(response.data.results)) {
-        const reversedResponse = [...response.data.results].reverse();
-        setData(reversedResponse);
-      } else {
-        setData([]);
-      }
+      setData(response.data.results);
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);
+
+      if (response.status !== 200 && response.statusText !== "OK") {
+        handleError("Ma'lumot yuklashda xatolik!");
+      }
     } catch (error) {
       setError(error);
+      handleError("Serverga ulanib bo'lmadi!");
     }
   };
 
   // Effect to fetch records when the indexPage changes
   useEffect(() => {
     fetchRecords();
-  }, [indexPage]); // Only re-run the effect if indexPage changes
-
-  // Previous page index for pagination
-  const decreasePageIndex = () => {
-    if (prevPageStatus) {
-      setIndexPage((prev) => prev - 1);
-    }
-  };
-
-  // Next page index for pagination
-  const increasePageIndex = () => {
-    if (nextPageStatus) {
-      setIndexPage((prev) => prev + 1);
-    }
-  };
+  }, [indexPage]);
 
   // Function to handle form submission
   const onSubmit = (data) => {
@@ -92,10 +79,6 @@ export default function MainSearch() {
         </form>
       </div>
       <div className="container mx-auto">
-        {error && (
-          <p className="text-red-500">An error occurred: {error.message}</p>
-        )}
-
         {data?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {data.map((item) => (
@@ -115,7 +98,7 @@ export default function MainSearch() {
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={decreasePageIndex}
+            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
@@ -126,7 +109,7 @@ export default function MainSearch() {
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={increasePageIndex}
+            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>

@@ -10,7 +10,7 @@ import {
   isUpCameraModalState,
 } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
-import { handleError } from "../Notifications";
+import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainCamera() {
   const [upCamDatas, setUpCamDatas] = useState(null);
@@ -28,21 +28,6 @@ export default function MainCamera() {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
     isDelCameraModalState
   );
-
-  // Previous page index for pagination
-  const decreasePageIndex = () => {
-    if (prevPageStatus) {
-      setIndexPage((prev) => prev - 1);
-    }
-  };
-
-  // Next page index for pagination
-  const increasePageIndex = () => {
-    if (nextPageStatus) {
-      setIndexPage((prev) => prev + 1);
-      console.log(indexPage);
-    }
-  };
 
   const upCameraDatas = (data) => {
     setUpCamDatas(data);
@@ -135,7 +120,7 @@ export default function MainCamera() {
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={decreasePageIndex}
+            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
@@ -146,7 +131,7 @@ export default function MainCamera() {
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={increasePageIndex}
+            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>

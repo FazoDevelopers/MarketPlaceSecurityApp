@@ -4,12 +4,14 @@ import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
 import ClickableMap from "../ClickableMap";
 import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../Notifications.js";
+import { handleError, handleSuccess } from "../globals.js";
 
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
+  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
+    isAddCameraModalState
+  );
 
   const {
     register,
@@ -124,7 +126,6 @@ export default function AddCameraModal(props) {
                   <p className="text-red-500">{errors.cameraUrl.message}</p>
                 )}
               </div>
-              
             </div>
           </div>
           <div className="grid content-between">

@@ -4,7 +4,7 @@ import { isDelCameraModalState } from "../../recoil/atoms";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../Notifications";
+import { handleError, handleSuccess } from "../globals";
 
 export default function DelCameraModal(props) {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(

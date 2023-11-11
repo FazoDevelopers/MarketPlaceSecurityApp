@@ -14,6 +14,7 @@ import DetectHumanCard from "../MainCards/DetectHumanCard";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
 import PinnedCards from "../MainCards/PinnedCards";
+import { handleError } from "../globals";
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
 
@@ -77,11 +78,14 @@ function CombinedComponent() {
   useEffect(() => {
     const newSocket = new WebSocket("ws://192.168.1.132:5000");
 
-    const handleOpen = (event) => {
+    const handleOpen = () => {
       console.log("Connected to the WebSocket");
       newSocket.send(JSON.stringify({ state: "web" }));
       setIsConnected(true);
     };
+    if (!isConnected) {
+      handleError("WebSocket ulanganiga ishonch hosil qiling!");
+    }
 
     const handleMessage = (event) => {
       try {
@@ -127,7 +131,7 @@ function CombinedComponent() {
       }
     };
 
-    const handleError = (event) => {
+    const handleErrorWebSocket = (event) => {
       console.error("WebSocket connection error:", event);
     };
 
@@ -137,13 +141,13 @@ function CombinedComponent() {
 
     newSocket.addEventListener("open", handleOpen);
     newSocket.addEventListener("message", handleMessage);
-    newSocket.addEventListener("error", handleError);
+    newSocket.addEventListener("error", handleErrorWebSocket);
     newSocket.addEventListener("close", handleClose);
 
     return () => {
       newSocket.removeEventListener("open", handleOpen);
       newSocket.removeEventListener("message", handleMessage);
-      newSocket.removeEventListener("error", handleError);
+      newSocket.removeEventListener("error", handleErrorWebSocket);
       newSocket.removeEventListener("close", handleClose);
       newSocket.close();
     };
@@ -172,7 +176,7 @@ function CombinedComponent() {
       }
     };
 
-    const handleError = (event) => {
+    const handleErrorWebSocket = (event) => {
       console.error("WebSocket connection error:", event);
     };
 
@@ -182,13 +186,13 @@ function CombinedComponent() {
 
     newSocket.addEventListener("open", handleOpen);
     newSocket.addEventListener("message", handleMessage);
-    newSocket.addEventListener("error", handleError);
+    newSocket.addEventListener("error", handleErrorWebSocket);
     newSocket.addEventListener("close", handleClose);
 
     return () => {
       newSocket.removeEventListener("open", handleOpen);
       newSocket.removeEventListener("message", handleMessage);
-      newSocket.removeEventListener("error", handleError);
+      newSocket.removeEventListener("error", handleErrorWebSocket);
       newSocket.removeEventListener("close", handleClose);
       newSocket.close();
     };
@@ -250,12 +254,12 @@ function CombinedComponent() {
             <SetViewOnClick coords={centerPositions} zoomCustom={zoomCustom} />
           </MapContainer>
         </div>
-          <div className="text-white fixed bottom-[100px] left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
-            {pinnedCriminals.length > 0 &&
-              pinnedCriminals.map((criminal) => (
-                <PinnedCards key={criminal.key} data={criminal} />
-              ))}
-          </div>
+        <div className="text-white fixed bottom-[100px] left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
+          {pinnedCriminals.length > 0 &&
+            pinnedCriminals.map((criminal) => (
+              <PinnedCards key={criminal.key} data={criminal} />
+            ))}
+        </div>
 
         <div className="col-span-1 sm:col-span-1 text-white">
           <div className="border-lime-600 border-8 py-2 px-3 bg-opacity-50 bg-lime-600 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto">
@@ -272,7 +276,7 @@ function CombinedComponent() {
               criminalData
             ) : (
               <div>
-                <h1 className="text-red-500 text-center">
+                <h1 className="text-red-500 text-center p-3">
                   WebSocket ulanganiga ishonch hosil qiling!
                 </h1>
               </div>

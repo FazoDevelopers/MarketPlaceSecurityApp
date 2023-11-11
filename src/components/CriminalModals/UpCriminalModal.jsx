@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import { isUpCriminalModalState, latState, lngState } from "../../recoil/atoms";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { handleError, handleSuccess } from "../Notifications";
+import { handleError, handleSuccess } from "../globals";
 
 export default function UpCriminalModal(props) {
   const [lat, setLat] = useRecoilState(latState);

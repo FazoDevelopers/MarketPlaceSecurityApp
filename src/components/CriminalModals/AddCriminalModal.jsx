@@ -3,7 +3,7 @@ import { isAddCriminalModalState } from "../../recoil/atoms";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../Notifications";
+import { handleError, handleSuccess } from "../globals";
 
 export default function AddCriminalModal(props) {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(

@@ -10,7 +10,7 @@ import DelCriminalModal from "../CriminalModals/DelCriminalModal";
 import UpCriminalModal from "../CriminalModals/UpCriminalModal";
 import ViewCriminalCard from "../MainCards/ViewCriminalCard";
 import axios from "axios";
-import { handleError } from "../Notifications";
+import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainCriminal() {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
@@ -37,22 +37,6 @@ export default function MainCriminal() {
   const updateCriminalData = (data) => {
     setUpdateCriminal(data);
     setIsUpCriminalModal(true);
-  };
-
-  // Previous page index
-  const decreasePageIndex = () => {
-    if (prevPageStatus) {
-      setIndexPage((prev) => prev - 1);
-    }
-  };
-
-  // Next page index
-  const increasePageIndex = () => {
-    if (nextPageStatus) {
-      setIndexPage((prev) => prev + 1);
-      console.log(indexPage);
-      console.log(nextPageStatus);
-    }
   };
 
   // fetch data from backend
@@ -132,7 +116,7 @@ export default function MainCriminal() {
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={decreasePageIndex}
+            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
@@ -143,7 +127,7 @@ export default function MainCriminal() {
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={increasePageIndex}
+            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>
