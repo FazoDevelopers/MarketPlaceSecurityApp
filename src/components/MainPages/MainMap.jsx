@@ -90,8 +90,6 @@ function CombinedComponent() {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log(data);
-
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
           const newPosition = {
