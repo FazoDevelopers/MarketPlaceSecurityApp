@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import SearchCriminalCard from "../MainCards/SearchCriminalCard";
@@ -6,12 +6,18 @@ import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainSearch() {
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState(null);
   const [prevPageStatus, setPrevPageStatus] = useState(null);
 
   const { register, handleSubmit, getValues } = useForm();
+
+  const handleSearch = useMemo(() => {
+    return (event) => {
+      const inputValue = event.target.value;
+      console.log("Input value changed:", inputValue);
+    };
+  }, []);
 
   // Fetch records based on the form data and page index
   const fetchRecords = async () => {
@@ -33,7 +39,6 @@ export default function MainSearch() {
         handleError("Ma'lumot yuklashda xatolik!");
       }
     } catch (error) {
-      setError(error);
       handleError("Serverga ulanib bo'lmadi!");
     }
   };
@@ -44,7 +49,7 @@ export default function MainSearch() {
   }, [indexPage]);
 
   // Function to handle form submission
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     fetchRecords();
   };
 
@@ -59,6 +64,7 @@ export default function MainSearch() {
             <input
               type="text"
               {...register("criminalSearch")}
+              onChange={(e) => handleSearch(e)}
               className="border-2 border-lime-600 bg-transparent p-2 outline-none"
               placeholder="Qidirish"
             />
