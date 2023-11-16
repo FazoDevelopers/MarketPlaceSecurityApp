@@ -19,6 +19,7 @@ export default function MainCamera() {
   const [nextPageStatus, setNextPageStatus] = useState(null);
   const [prevPageStatus, setPrevPageStatus] = useState(null);
   const [apiData, setApiData] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
@@ -41,7 +42,9 @@ export default function MainCamera() {
   // fetch camera data from API
   const fetchData = async () => {
     try {
-      const response = await axios.get(`/api/camera/?page=${indexPage}`);
+      const response = await axios.get(
+        `/api/camera/?page=${indexPage}&search=${searchText}`
+      );
       if (response.status === 200) {
         setApiData(response.data.results);
         setNextPageStatus(response.data.next);
@@ -56,7 +59,7 @@ export default function MainCamera() {
 
   useEffect(() => {
     fetchData();
-  }, [indexPage]);
+  }, [indexPage, searchText]);
 
   return (
     <>
@@ -81,6 +84,12 @@ export default function MainCamera() {
             KAMERALAR
           </h1>
           <div className="flex gap-5">
+            <input
+              type="text"
+              onChange={(e) => setSearchText(e.target.value)}
+              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              placeholder="Qidirish"
+            />
             <button
               type="button"
               className="p-2 bg-green-500 text-white font-extrabold border-2 border-lime-600"

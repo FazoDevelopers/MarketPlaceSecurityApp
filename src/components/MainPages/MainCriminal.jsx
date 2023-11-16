@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   isAddCriminalModalState,
@@ -28,6 +28,7 @@ export default function MainCriminal() {
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState("");
   const [prevPageStatus, setPrevPageStatus] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   const deleteCriminalData = (data) => {
     setDeleteCriminal(data);
@@ -42,7 +43,9 @@ export default function MainCriminal() {
   // fetch data from backend
   const fetchData = async () => {
     try {
-      const response = await axios.get(`/api/criminals/?page=${indexPage}`);
+      const response = await axios.get(
+        `/api/criminals/?page=${indexPage}&search=${searchText}`
+      );
       console.log(indexPage);
       console.log(response.data);
       setData(response.data.results);
@@ -58,7 +61,7 @@ export default function MainCriminal() {
 
   useEffect(() => {
     fetchData();
-  }, [indexPage]);
+  }, [indexPage, searchText]);
 
   return (
     <>
@@ -78,6 +81,12 @@ export default function MainCriminal() {
           </h1>
 
           <div className="flex gap-5">
+            <input
+              type="text"
+              onChange={(e) => setSearchText(e.target.value)}
+              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              placeholder="Qidirish"
+            />
             <button
               type="button"
               className="p-2 bg-green-500 text-white font-extrabold border-2 border-lime-600"
