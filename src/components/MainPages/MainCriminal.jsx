@@ -48,8 +48,11 @@ export default function MainCriminal() {
       setData(response.data.results);
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);
+      if (response.status !== 200 && response.statusText !== "OK") {
+        handleError("Ma'lumot yuklashda xatolik!");
+      }
     } catch (error) {
-      handleError("error fetching data", error);
+      handleError("Serverga ulanib bo'lmadi!", error);
     }
   };
 

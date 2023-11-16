@@ -13,9 +13,21 @@ export default function MainSearch() {
   const { register, handleSubmit, getValues } = useForm();
 
   const handleSearch = useMemo(() => {
-    return (event) => {
+    return async (event) => {
       const inputValue = event.target.value;
-      console.log("Input value changed:", inputValue);
+      try {
+        const response = await axios.get(`/api/records/?search=${inputValue}`);
+        console.log(response);
+        setData(response.data.results);
+        setNextPageStatus(response.data.next);
+        setPrevPageStatus(response.data.previous);
+
+        if (response.status !== 200 && response.statusText !== "OK") {
+          handleError("Ma'lumot yuklashda xatolik!");
+        }
+      } catch (error) {
+        handleError("Serverga ulanib bo'lmadi!");
+      }
     };
   }, []);
 
@@ -98,6 +110,7 @@ export default function MainSearch() {
           </div>
         )}
 
+        {/* PAGINATION */}
         <div className="flex justify-center my-5 text-white">
           <button
             type="button"
