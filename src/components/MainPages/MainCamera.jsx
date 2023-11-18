@@ -47,8 +47,13 @@ export default function MainCamera() {
       );
       if (response.status === 200) {
         setApiData(response.data.results);
+        // setApiData(response.data.results.reverse());
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);
+
+        // !! array reverse camera data
+        // !! criminal add problem
+        // !! filter reset btn
       } else {
         handleError("Ma'lumot yuklashda xatolik!");
       }

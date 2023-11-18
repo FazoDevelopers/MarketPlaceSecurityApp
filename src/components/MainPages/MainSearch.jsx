@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import SearchCriminalCard from "../MainCards/SearchCriminalCard";
@@ -10,7 +10,8 @@ export default function MainSearch() {
   const [nextPageStatus, setNextPageStatus] = useState(null);
   const [prevPageStatus, setPrevPageStatus] = useState(null);
 
-  const { register, handleSubmit, getValues } = useForm();
+  const { register, handleSubmit, getValues, reset } = useForm();
+  const criminalSearch = useRef();
 
   const handleSearch = useMemo(() => {
     return async (event) => {
@@ -77,6 +78,7 @@ export default function MainSearch() {
               type="text"
               {...register("criminalSearch")}
               onChange={(e) => handleSearch(e)}
+              ref={criminalSearch}
               className="border-2 border-lime-600 bg-transparent p-2 outline-none"
               placeholder="Qidirish"
             />
@@ -92,6 +94,17 @@ export default function MainSearch() {
             />
             <button className="p-2 bg-green-600 text-white font-extrabold border-2 border-green-600">
               QIDIRISH
+            </button>
+            <button
+              className="p-2 bg-red-600 text-white font-extrabold border-2 border-red-600"
+              onClick={() => {
+                reset((register) => ({
+                  ...register
+                }));
+                criminalSearch.current.value = null;
+              }}
+            >
+              TOZALASH
             </button>
           </div>
         </form>

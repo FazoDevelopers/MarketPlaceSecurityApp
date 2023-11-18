@@ -35,19 +35,18 @@ function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
   const [criminalDetectData, setCriminalDetectData] = useState([]);
   const [positions, setPositions] = useState([]);
-  const [centerPositions, setCenterPositions] = useState([42, 21]);
+  const [centerPositions, setCenterPositions] = useState([
+    40.996289671996706, 3671.640515327454,
+  ]);
   const [isConnected, setIsConnected] = useState(false);
   const [pinnedCriminals, setPinnedCriminals] = useState([]);
-
-  console.log(pinnedCriminals);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCriminalData((prevData) =>
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
-      console.log(criminalData);
-    }, 150000000);
+    }, 6000000000);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -59,7 +58,7 @@ function CombinedComponent() {
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
       console.log(criminalDetectData);
-    }, 6000);
+    }, 6000000000);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -69,7 +68,7 @@ function CombinedComponent() {
   useEffect(() => {
     const positionsTimer = setTimeout(() => {
       setPositions((prevPositions) => prevPositions.slice(1));
-    }, 150000000);
+    }, 6000000000);
 
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
