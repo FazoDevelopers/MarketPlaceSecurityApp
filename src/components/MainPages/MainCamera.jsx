@@ -50,10 +50,6 @@ export default function MainCamera() {
         // setApiData(response.data.results.reverse());
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);
-
-        // !! array reverse camera data
-        // !! criminal add problem
-        // !! filter reset btn
       } else {
         handleError("Ma'lumot yuklashda xatolik!");
       }

@@ -75,7 +75,7 @@ function CombinedComponent() {
 
   // WebSocket Hook for exist in database
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.132:5000");
+    const newSocket = new WebSocket("ws://192.168.1.157:5000");
 
     const handleOpen = () => {
       console.log("Connected to the WebSocket");
@@ -89,6 +89,7 @@ function CombinedComponent() {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log(data);
         if (data.camera) {
           const { latitude, longitude, name, image } = data.camera;
           const newPosition = {
@@ -152,7 +153,7 @@ function CombinedComponent() {
 
   // WebSocket Hook for detect human
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.132:5678/");
+    const newSocket = new WebSocket("ws://192.168.1.157:5678/");
 
     const handleOpen = (event) => {
       console.log("Connected to the WebSocket detect");

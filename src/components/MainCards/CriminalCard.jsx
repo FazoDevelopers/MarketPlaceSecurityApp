@@ -7,13 +7,13 @@ export default function CriminalCard({
   setPinnedCriminals,
   pinnedCriminals,
 }) {
-  console.log(data.first_name);
+  console.log(data.identity.first_name);
   const [isPinned, setIsPinned] = useState(false);
 
   if (isPinned) {
     // Check if the data already exists in pinnedCriminals
     const isDataExists = pinnedCriminals.some(
-      (criminal) => criminal.id === data.id
+      (criminal) => criminal.id === data.identity.id
     );
 
     // If the data doesn't exist, add it to pinnedCriminals
@@ -29,7 +29,7 @@ export default function CriminalCard({
   return (
     <div className="criminal_card_wrapper p-2 overflow-hidden cursor-pointer hover:z-20 w-full">
       <div className="flex flex-row gap-5 border-lime-500 border-1 bg-lime-600 text-white font-extrabold">
-        <img src={data.image} className="object-cover w-[8rem]" />
+        <img src={data.identity.image} className="object-cover w-[8rem]" />
         <div className="flex flex-col p-2">
           {!isPinned && (
             <div className="text-end">
@@ -46,14 +46,14 @@ export default function CriminalCard({
               ></i>
             </div>
           )}
-          <span className="text-sm">{data.first_name}</span>
-          <span className="text-sm">{data.last_name}</span>
-          <span className="text-sm">{data.dad_name}</span>
+          <span className="text-sm">{data.identity.first_name}</span>
+          <span className="text-sm">{data.identity.last_name}</span>
+          <span className="text-sm">{data.identity.dad_name}</span>
         </div>
       </div>
 
       <div className="w-full border-gray-400 border-2 text-gray-400 bg-black p-2">
-        <p className="text-sm">Sharh: {data.description}</p>
+        <p className="text-sm">Sharh: {data.identity.description}</p>
       </div>
     </div>
   );

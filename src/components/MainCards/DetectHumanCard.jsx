@@ -2,7 +2,6 @@ import "../MainStyle.css";
 import PropTypes from "prop-types";
 export default function DetectHumanCard({ data }) {
   return (
-    <>
       <div className="criminal_card_wrapper p-2 overflow-hidden cursor-pointer hover:z-20 w-full opacity-95">
         <div className="border-gray-500 border-2 bg-gray-600 text-white font-extrabold">
           <div className="grid grid-cols-2">
@@ -29,7 +28,6 @@ export default function DetectHumanCard({ data }) {
           </p>
         </div>
       </div>
-    </>
   );
 }
 
