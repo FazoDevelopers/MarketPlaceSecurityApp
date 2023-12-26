@@ -29,7 +29,7 @@ function SetViewOnClick({ coords, zoomCustom }) {
   return null;
 }
 
-const zoomCustom = 15;
+const zoomCustom = 11;
 
 function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
@@ -228,7 +228,9 @@ function CombinedComponent() {
           >
             <TileLayer
               className="filter grayscale brightness-50 contrast-150"
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url="../../src/assets/Uzb/{z}/{x}/{y}.png"
+              // CHANGE URL TO OFFLINE
+              // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {positions.map((position, index) => (
               <Marker
