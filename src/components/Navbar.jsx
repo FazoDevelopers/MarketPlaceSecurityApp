@@ -1,38 +1,54 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { handleError, handleSuccess } from "../utils/globals";
+import { api } from "../services/api";
 
 export default function Navbar() {
+  const keyGenerate = async() => {
+    try{
+      const response = await api.get("")
+    }catch(err){
+      handleError("Generatsiyada xatolik!")
+    }
+  };
   return (
-    <div className="navbar_wrapper sticky top-0 z-50 bg-black">
-      <div className="container mx-auto p-4 flex flex-wrap justify-evenly max-w-screen-lg">
+    <div className="sticky top-0 z-50 bg-black navbar_wrapper">
+      <div className="container flex flex-wrap max-w-screen-lg p-4 mx-auto justify-evenly">
         <Link
-          to="/"
-          className="border-gray-400 border-8 py-2 px-3 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto"
+          to="/home"
+          className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white border-8 border-gray-400 md:mb-0 md:w-auto"
         >
-          <i className="fa-sharp fa-solid fa-house pr-3"></i>
+          <i className="pr-3 fa-sharp fa-solid fa-house"></i>
           <p className=" text-basis">BOSH SAHIFA</p>
         </Link>
         <Link
           to="/camera"
-          className="border-gray-400 border-8 py-2 px-3 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto"
+          className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white border-8 border-gray-400 md:mb-0 md:w-auto"
         >
-          <i className="fa-solid fa-camera-cctv pr-3"></i>
+          <i className="pr-3 fa-solid fa-camera-cctv"></i>
           <p className="text-basis">KAMERALAR</p>
         </Link>
         <Link
           to="/criminal"
-          className="border-gray-400 border-8 py-2 px-3 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto"
+          className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white border-8 border-gray-400 md:mb-0 md:w-auto"
         >
-          <i className="fa-sharp fa-solid fa-user-secret pr-3"></i>
+          <i className="pr-3 fa-sharp fa-solid fa-user-secret"></i>
           <p className="text-basis">JINOYATCHILAR</p>
         </Link>
         <Link
           to="/search"
-          className="border-gray-400 border-8 py-2 px-3 text-white font-extrabold flex items-center w-full md:w-auto"
+          className="flex items-center w-full px-3 py-2 font-extrabold text-white border-8 border-gray-400 md:w-auto"
         >
-          <i className="fa-sharp fa-solid fa-magnifying-glass pr-3"></i>
+          <i className="pr-3 fa-sharp fa-solid fa-magnifying-glass"></i>
           <p className="text-basis">QIDIRISH</p>
         </Link>
+        <button
+          type="button"
+          className="px-5 text-black bg-white"
+          onChange={() => keyGenerate()}
+        >
+          <i className="fas fa-key"></i>
+        </button>
       </div>
     </div>
   );
