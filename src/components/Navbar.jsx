@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../services/api";
 import { handleError } from "../utils/globals";
 
 export default function Navbar() {
@@ -7,11 +8,9 @@ export default function Navbar() {
 
   const keyGenerate = async () => {
     try {
-      // Simulating an asynchronous operation
-      // Replace this with your actual asynchronous logic
-      // const response = await api.get("");
-      // console.log(response);
-      setKalit("kalit so'z");
+      const response = await api.get("android/auth/token/");
+      console.log(response.data.token);
+      setKalit(response.data.token);
     } catch (err) {
       handleError("Generatsiyada xatolik!");
     }
@@ -61,7 +60,11 @@ export default function Navbar() {
           <i className="fas fa-key fa-2x"></i>
         </button>
 
-        {kalit ? <p className="text-white">{kalit}</p> : null}
+        {kalit ? (
+          <p className="mt-3 text-white">
+            <b>Yangi kalit:</b> {kalit}
+          </p>
+        ) : null}
       </div>
     </div>
   );
