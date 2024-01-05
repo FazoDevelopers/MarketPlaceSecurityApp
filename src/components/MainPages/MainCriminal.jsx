@@ -1,16 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   isAddCriminalModalState,
   isDelCriminalModalState,
   isUpCriminalModalState,
 } from "../../recoil/atoms";
+import { api } from "../../services/api";
+import {
+  decreasePageIndex,
+  handleError,
+  increasePageIndex,
+} from "../../utils/globals";
 import AddCriminalModal from "../CriminalModals/AddCriminalModal";
 import DelCriminalModal from "../CriminalModals/DelCriminalModal";
 import UpCriminalModal from "../CriminalModals/UpCriminalModal";
 import ViewCriminalCard from "../MainCards/ViewCriminalCard";
-import axios from "axios";
-import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainCriminal() {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
@@ -43,7 +47,7 @@ export default function MainCriminal() {
   // fetch data from backend
   const fetchData = async () => {
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `/api/criminals/?page=${indexPage}&search=${searchText}`
       );
       console.log(indexPage);
@@ -75,8 +79,8 @@ export default function MainCriminal() {
       )}
 
       <div className="container mx-auto text-white">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
+        <div className="flex flex-col items-center justify-between md:flex-row">
+          <h1 className="mb-4 text-4xl font-bebas md:text-6xl md:mb-0">
             JINOYATCHILAR
           </h1>
 
@@ -84,17 +88,17 @@ export default function MainCriminal() {
             <input
               type="text"
               onChange={(e) => setSearchText(e.target.value)}
-              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              className="p-2 bg-transparent border-2 outline-none border-lime-600"
               placeholder="Qidirish"
             />
             <button
               type="button"
-              className="p-2 bg-green-500 text-white font-extrabold border-2 border-lime-600"
+              className="p-2 font-extrabold text-white bg-green-500 border-2 border-lime-600"
               onClick={() => {
                 setIsAddCriminalModal(true);
               }}
             >
-              <i className="fa-sharp fa-solid fa-plus p-1"></i>
+              <i className="p-1 fa-sharp fa-solid fa-plus"></i>
               QO`SHISH
             </button>
           </div>
@@ -102,7 +106,7 @@ export default function MainCriminal() {
 
         {/* MAP FETCH DATA */}
         {data.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {data?.map((item) => {
               return (
                 <ViewCriminalCard
@@ -115,7 +119,7 @@ export default function MainCriminal() {
             })}
           </div>
         ) : (
-          <div className="text-center p-64 text-gray-600 uppercase font-bold">
+          <div className="p-64 font-bold text-center text-gray-600 uppercase">
             <h1 className="text-8xl">Bo`sh</h1>
             <h1 className="text-3xl font-bold">Jinoyatchi mavjud emas</h1>
           </div>

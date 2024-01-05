@@ -1,9 +1,9 @@
+import PropTypes from "prop-types";
+import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isAddCriminalModalState } from "../../recoil/atoms";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../globals";
+import { handleError, handleSuccess } from "../../utils/globals";
+import { api } from "../../services/api";
 
 export default function AddCriminalModal(props) {
   const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
@@ -27,7 +27,7 @@ export default function AddCriminalModal(props) {
     cameraData.append("image", formData.criminalImage[0]);
     console.log(cameraData);
     try {
-      const response = await axios.post(`/api/criminals/`, cameraData, {});
+      const response = await api.post(`/api/criminals/`, cameraData, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli qo'shildi!");
@@ -48,15 +48,15 @@ export default function AddCriminalModal(props) {
       <div className="absolute inset-0 bg-black opacity-50 blur -z-10"></div>
       <div className="flex items-center justify-center h-screen">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-stone-900 text-white p-20 rounded shadow-lg">
-            <h1 className="font-bebas text-5xl text-center mb-4">
+          <div className="p-20 text-white rounded shadow-lg bg-stone-900">
+            <h1 className="mb-4 text-5xl text-center font-bebas">
               JINOYATCHI QO`SHISH
             </h1>
             <div className="grid grid-cols-2 gap-20">
               <div>
                 {/* CRIMINAL NAME */}
                 <div className="mb-5">
-                  <span className="bg-lime-600 px-1 font-extrabold">
+                  <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI ISMI
                   </span>
                   <input
@@ -68,7 +68,7 @@ export default function AddCriminalModal(props) {
                         message: "Faqat harflar kiritilishi kerak",
                       },
                     })}
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
                   {errors.criminalName && (
                     <span className="text-red-500">
@@ -79,7 +79,7 @@ export default function AddCriminalModal(props) {
 
                 {/* CRIMINAL SURNAME */}
                 <div className="mb-5">
-                  <span className="bg-lime-600 px-1 font-extrabold">
+                  <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI FAMILIYASI
                   </span>
                   <input
@@ -91,7 +91,7 @@ export default function AddCriminalModal(props) {
                         message: "Faqat harflar kiritilishi kerak",
                       },
                     })}
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
                   {errors.criminalSurname && (
                     <span className="text-red-500">
@@ -102,7 +102,7 @@ export default function AddCriminalModal(props) {
 
                 {/* CRIMINAL FATHER'S NAME */}
                 <div className="mb-5">
-                  <span className="bg-lime-600 px-1 font-extrabold">
+                  <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI OTASI
                   </span>
                   <input
@@ -114,7 +114,7 @@ export default function AddCriminalModal(props) {
                         message: "Faqat harflar kiritilishi kerak",
                       },
                     })}
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
                   {errors.criminalFather && (
                     <span className="text-red-500">
@@ -125,7 +125,7 @@ export default function AddCriminalModal(props) {
 
                 {/* CRIMINAL AGE */}
                 <div className="mb-5">
-                  <span className="bg-lime-600 px-1 font-extrabold">
+                  <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI YOSHI
                   </span>
                   <input
@@ -143,7 +143,7 @@ export default function AddCriminalModal(props) {
                           "Jinoyat uchun maksimum yoshi 100 dan oshmasligi kerak",
                       },
                     })}
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
                   {errors.criminalAge && (
                     <span className="text-red-500">
@@ -155,7 +155,7 @@ export default function AddCriminalModal(props) {
 
               <div>
                 <div className="flex flex-col mb-5">
-                  <span className="bg-lime-600 px-1 font-extrabold w-28 mb-1">
+                  <span className="px-1 mb-1 font-extrabold bg-lime-600 w-28">
                     JOY RASMI
                   </span>
                   <input
@@ -171,7 +171,7 @@ export default function AddCriminalModal(props) {
                         },
                       },
                     })}
-                    className="border-2 border-lime-600 p-3"
+                    className="p-3 border-2 border-lime-600"
                   />
 
                   {errors.criminalImage && (
@@ -182,7 +182,7 @@ export default function AddCriminalModal(props) {
                 </div>
 
                 <div>
-                  <span className="bg-lime-600 px-1 font-extrabold">
+                  <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI HAQIDA
                   </span>
 
@@ -193,7 +193,7 @@ export default function AddCriminalModal(props) {
                     id=""
                     cols="30"
                     rows="10"
-                    className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                    className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   ></textarea>
                   {errors.criminalDescription && (
                     <span className="text-red-500">
@@ -204,19 +204,19 @@ export default function AddCriminalModal(props) {
                 <div className="flex justify-between mt-4">
                   <button
                     type="button"
-                    className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                    className="px-4 py-2 bg-yellow-800 border-2 border-yellow-600"
                     onClick={() => {
                       setIsAddCriminalModal(false);
                     }}
                   >
-                    <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                    <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
                   </button>
 
                   <button
                     type="submit"
-                    className="bg-green-800 px-4 py-2 border-2 border-green-600"
+                    className="px-4 py-2 bg-green-800 border-2 border-green-600"
                   >
-                    <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
+                    <i className="pr-2 fa-solid fa-plus"></i> QO`SHISH
                   </button>
                 </div>
               </div>

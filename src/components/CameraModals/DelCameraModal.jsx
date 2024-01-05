@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { isDelCameraModalState } from "../../recoil/atoms";
-import axios from "axios";
-import { ToastContainer } from "react-toastify";
-import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../globals";
+import { handleError, handleSuccess } from "../../utils/globals";
+import { api } from "../../services/api";
 
 export default function DelCameraModal(props) {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
@@ -15,7 +16,7 @@ export default function DelCameraModal(props) {
   // DELETE CAMERA DATA FROM API
   const delData = async () => {
     try {
-      const response = await axios.delete(`/api/camera/${props.data.id}/`);
+      const response = await api.delete(`/api/camera/${props.data.id}/`);
       console.log(response);
 
       if (response.status === 204) {
@@ -39,8 +40,8 @@ export default function DelCameraModal(props) {
       <div className="fixed inset-0 z-50">
         <div className="absolute inset-0 bg-black opacity-50 blur -z-10"></div>
         <div className="flex items-center justify-center h-screen">
-          <div className="bg-stone-900 text-white p-20 rounded shadow-lg w-1/3">
-            <h1 className="font-bebas text-4xl text-center">
+          <div className="w-1/3 p-20 text-white rounded shadow-lg bg-stone-900">
+            <h1 className="text-4xl text-center font-bebas">
               #{props.data.name}
             </h1>
             <h1 className="text-2xl text-center">
@@ -50,17 +51,17 @@ export default function DelCameraModal(props) {
             <div className="flex justify-between mt-4">
               <button
                 type="button"
-                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                className="px-4 py-2 bg-yellow-800 border-2 border-yellow-600"
                 onClick={() => {
                   setIsDelCameraModal(false);
                 }}
               >
-                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
               </button>
 
               <button
                 type="button"
-                className="bg-red-800 px-5 py-2"
+                className="px-5 py-2 bg-red-800"
                 onClick={() => {
                   setDelCardIndex(props.data.id);
                   setIsDelCameraModal(false);

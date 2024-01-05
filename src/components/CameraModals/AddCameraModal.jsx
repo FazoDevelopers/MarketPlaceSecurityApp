@@ -1,10 +1,11 @@
-import { useForm } from "react-hook-form";
 import axios from "axios";
-import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
-import ClickableMap from "../ClickableMap";
 import PropTypes from "prop-types";
-import { handleError, handleSuccess } from "../globals.js";
+import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { handleError, handleSuccess } from "../../utils/globals.js";
+import ClickableMap from "../ClickableMap";
+import { api } from "../../services/api.js";
 
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
@@ -29,7 +30,7 @@ export default function AddCameraModal(props) {
     cameraData.append("image", formData.cameraImage[0]);
     console.log(cameraData);
     try {
-      const response = await axios.post(`/api/camera/`, cameraData, {});
+      const response = await api.post(`/api/camera/`, cameraData, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");
@@ -51,16 +52,16 @@ export default function AddCameraModal(props) {
       <div className="flex items-center justify-center h-screen">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-stone-900 text-white p-20 rounded shadow-lg w-4/5 grid grid-cols-2 gap-20"
+          className="grid w-4/5 grid-cols-2 gap-20 p-20 text-white rounded shadow-lg bg-stone-900"
         >
           <div className="flex flex-col">
-            <h1 className="font-bebas text-5xl text-center mb-4">
+            <h1 className="mb-4 text-5xl text-center font-bebas">
               KAMERA QO`SHISH
             </h1>
             <div className="grid gap-10">
               {/* KAMERA NOMI */}
               <div>
-                <span className="bg-lime-600 px-1 font-extrabold">
+                <span className="px-1 font-extrabold bg-lime-600">
                   KAMERA NOMI
                 </span>
                 <input
@@ -72,7 +73,7 @@ export default function AddCameraModal(props) {
                       message: "Belgi ishlatish mumkin emas",
                     },
                   })}
-                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                  className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />
                 {errors.cameraName && (
                   <p className="text-red-500">{errors.cameraName.message}</p>
@@ -81,12 +82,12 @@ export default function AddCameraModal(props) {
 
               {/* KAMERA MANZILI */}
               <div>
-                <span className="bg-lime-600 px-1 font-extrabold">
+                <span className="px-1 font-extrabold bg-lime-600">
                   KAMERA MANZILI
                 </span>
                 <input
                   type="text"
-                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none appearance-none cursor-not-allowed"
+                  className="w-full p-3 bg-transparent border-2 outline-none appearance-none cursor-not-allowed border-lime-600"
                   value={`Latitude: ${lat}, Longitude: ${lng}`}
                   disabled
                   readOnly
@@ -95,12 +96,12 @@ export default function AddCameraModal(props) {
 
               {/* JOY RASMI */}
               <div className="flex flex-col">
-                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                <span className="w-32 px-1 mb-1 font-extrabold bg-lime-600">
                   JOY RASMI
                 </span>
                 <input
                   type="file"
-                  className="border-2 border-lime-600 p-3"
+                  className="p-3 border-2 border-lime-600"
                   {...register("cameraImage", {
                     required: "Kamera rasmi majburiy",
                   })}
@@ -112,7 +113,7 @@ export default function AddCameraModal(props) {
 
               {/* KAMERA URLI */}
               <div>
-                <span className="bg-lime-600 px-1 font-extrabold">
+                <span className="px-1 font-extrabold bg-lime-600">
                   KAMERA URL
                 </span>
                 <input
@@ -120,7 +121,7 @@ export default function AddCameraModal(props) {
                   {...register("cameraUrl", {
                     required: "Kamera manzili majburiy",
                   })}
-                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                  className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />
                 {errors.cameraUrl && (
                   <p className="text-red-500">{errors.cameraUrl.message}</p>
@@ -134,19 +135,19 @@ export default function AddCameraModal(props) {
             <div className="flex justify-between mt-4">
               <button
                 type="button"
-                className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                className="px-4 py-2 bg-yellow-800 border-2 border-yellow-600"
                 onClick={() => {
                   setIsAddCameraModal(false);
                 }}
               >
-                <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
               </button>
 
               <button
                 type="submit"
-                className="bg-green-800 px-4 py-2 border-2 border-green-600"
+                className="px-4 py-2 bg-green-800 border-2 border-green-600"
               >
-                <i className="fa-solid fa-plus pr-2"></i> QO`SHISH
+                <i className="pr-2 fa-solid fa-plus"></i> QO`SHISH
               </button>
             </div>
           </div>

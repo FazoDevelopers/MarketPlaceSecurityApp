@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -6,18 +9,15 @@ import {
   Tooltip,
   useMap,
 } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "../MainStyle.css";
+import { v4 as uuidv4 } from "uuid";
+import { DETECT_SOCKET_URL, EXIST_SOCKET_URL } from "../../utils/constants";
+import { handleError } from "../../utils/globals";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
-import PropTypes from "prop-types";
-import { v4 as uuidv4 } from "uuid";
 import PinnedCards from "../MainCards/PinnedCards";
-import { handleError } from "../globals";
+import "../MainStyle.css";
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
-
   useEffect(() => {
     if (coords && coords.length === 2) {
       setTimeout(() => {
@@ -28,7 +28,6 @@ function SetViewOnClick({ coords, zoomCustom }) {
 
   return null;
 }
-
 const zoomCustom = 11;
 
 function CombinedComponent() {
@@ -75,8 +74,7 @@ function CombinedComponent() {
 
   // WebSocket Hook for exist in database
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.157:5000");
-
+    const newSocket = new WebSocket(EXIST_SOCKET_URL);
     const handleOpen = () => {
       console.log("Connected to the WebSocket");
       newSocket.send(JSON.stringify({ state: "web" }));
@@ -149,13 +147,19 @@ function CombinedComponent() {
       newSocket.removeEventListener("close", handleClose);
       newSocket.close();
     };
-  }, [setIsConnected, setPositions, setCenterPositions, setCriminalData]);
+  }, [
+    isConnected,
+    setPositions,
+    setCenterPositions,
+    setCriminalData,
+    pinnedCriminals,
+  ]);
 
   // WebSocket Hook for detect human
   useEffect(() => {
-    const newSocket = new WebSocket("ws://192.168.1.157:5678/");
+    const newSocket = new WebSocket(DETECT_SOCKET_URL);
 
-    const handleOpen = (event) => {
+    const handleOpen = () => {
       console.log("Connected to the WebSocket detect");
       newSocket.send(JSON.stringify({ state: "web" }));
       setIsConnected(true);
@@ -164,7 +168,6 @@ function CombinedComponent() {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log(data);
         setCriminalDetectData((prevData) => [
           <DetectHumanCard key={uuidv4()} data={data} />,
           ...prevData,
@@ -198,8 +201,8 @@ function CombinedComponent() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-        <div className="col-span-1 sm:col-span-1 text-white">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+        <div className="col-span-1 text-white sm:col-span-1">
           <div
             className={`${
               isConnected
@@ -207,20 +210,20 @@ function CombinedComponent() {
                 : "border-red-600 bg-red-600"
             } border-8 py-2 px-3 bg-opacity-50 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto`}
           >
-            <i className="fa-sharp fa-regular fa-radar fa-2x pr-3"></i>
-            <p className="font-bebas text-2xl tracking-widest">Aniqlangan</p>
+            <i className="pr-3 fa-sharp fa-regular fa-radar fa-2x"></i>
+            <p className="text-2xl tracking-widest font-bebas">Aniqlangan</p>
           </div>
 
           <div
-            // className="criminals_sidebar border-gray-500 border-8 mt-4 w-full relative overflow-auto"
-            className="criminals_sidebar border-gray-500 border-2 hide-scrollbar mt-4 w-full relative overflow-y-scroll"
+            // className="relative w-full mt-4 overflow-auto border-8 border-gray-500 criminals_sidebar"
+            className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
             {criminalDetectData}
           </div>
         </div>
 
-        <div className="col-span-1 sm:col-span-4 z-10 relative">
+        <div className="relative z-10 col-span-1 sm:col-span-4">
           <MapContainer
             center={centerPositions}
             zoom={zoomCustom}
@@ -228,9 +231,9 @@ function CombinedComponent() {
           >
             <TileLayer
               className="filter grayscale brightness-50 contrast-150"
-              url="../../src/assets/Uzb/{z}/{x}/{y}.png"
+              // url="../../src/assets/Uzb/{z}/{x}/{y}.png"
               // CHANGE URL TO OFFLINE
-              // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {positions.map((position, index) => (
               <Marker
@@ -261,22 +264,22 @@ function CombinedComponent() {
             ))}
         </div>
 
-        <div className="col-span-1 sm:col-span-1 text-white">
-          <div className="border-lime-600 border-8 py-2 px-3 bg-opacity-50 bg-lime-600 text-white font-extrabold flex items-center mb-4 md:mb-0 w-full md:w-auto">
-            <i className="fa-sharp fa-solid fa-magnifying-glass fa-2x pr-3"></i>
-            <p className="font-bebas text-2xl tracking-widest">
+        <div className="col-span-1 text-white sm:col-span-1">
+          <div className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white bg-opacity-50 border-8 border-lime-600 bg-lime-600 md:mb-0 md:w-auto">
+            <i className="pr-3 fa-sharp fa-solid fa-magnifying-glass fa-2x"></i>
+            <p className="text-2xl tracking-widest font-bebas">
               QIDIRUVDAGILAR
             </p>
           </div>
           <div
-            className="criminals_sidebar border-gray-500 border-2 hide-scrollbar mt-4 w-full relative overflow-y-scroll"
+            className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
             {isConnected ? (
               criminalData
             ) : (
               <div>
-                <h1 className="text-red-500 text-center p-3">
+                <h1 className="p-3 text-center text-red-500">
                   WebSocket ulanganiga ishonch hosil qiling!
                 </h1>
               </div>

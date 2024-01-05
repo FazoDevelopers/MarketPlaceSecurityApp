@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import axios from "axios";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { api } from "../../services/api";
+import {
+  decreasePageIndex,
+  handleError,
+  increasePageIndex,
+} from "../../utils/globals";
 import SearchCriminalCard from "../MainCards/SearchCriminalCard";
-import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
 
 export default function MainSearch() {
   const [data, setData] = useState(null);
@@ -17,7 +21,7 @@ export default function MainSearch() {
     return async (event) => {
       const inputValue = event.target.value;
       try {
-        const response = await axios.get(`/api/records/?search=${inputValue}`);
+        const response = await api.get(`/api/records/?search=${inputValue}`);
         console.log(response);
         setData(response.data.results);
         setNextPageStatus(response.data.next);
@@ -42,7 +46,7 @@ export default function MainSearch() {
     }).toString();
 
     try {
-      const response = await axios.get(`/api/records/?${params}`);
+      const response = await api.get(`/api/records/?${params}`);
       console.log(response);
       setData(response.data.results);
       setNextPageStatus(response.data.next);
@@ -68,8 +72,8 @@ export default function MainSearch() {
 
   return (
     <>
-      <div className="container mx-auto text-white flex justify-between">
-        <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
+      <div className="container flex justify-between mx-auto text-white">
+        <h1 className="mb-4 text-4xl font-bebas md:text-6xl md:mb-0">
           QIDIRUV
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,27 +83,27 @@ export default function MainSearch() {
               {...register("criminalSearch")}
               onChange={(e) => handleSearch(e)}
               ref={criminalSearch}
-              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              className="p-2 bg-transparent border-2 outline-none border-lime-600"
               placeholder="Qidirish"
             />
             <input
               type="datetime-local"
               {...register("searchFromDate")}
-              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              className="p-2 bg-transparent border-2 outline-none border-lime-600"
             />
             <input
               type="datetime-local"
               {...register("searchToDate")}
-              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              className="p-2 bg-transparent border-2 outline-none border-lime-600"
             />
-            <button className="p-2 bg-green-600 text-white font-extrabold border-2 border-green-600">
+            <button className="p-2 font-extrabold text-white bg-green-600 border-2 border-green-600">
               QIDIRISH
             </button>
             <button
-              className="p-2 bg-red-600 text-white font-extrabold border-2 border-red-600"
+              className="p-2 font-extrabold text-white bg-red-600 border-2 border-red-600"
               onClick={() => {
                 reset((register) => ({
-                  ...register
+                  ...register,
                 }));
                 criminalSearch.current.value = null;
               }}
@@ -111,13 +115,13 @@ export default function MainSearch() {
       </div>
       <div className="container mx-auto">
         {data?.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {data.map((item) => (
               <SearchCriminalCard key={item.id} data={item} />
             ))}
           </div>
         ) : (
-          <div className="text-center p-64 text-gray-600 uppercase font-bold">
+          <div className="p-64 font-bold text-center text-gray-600 uppercase">
             <h1 className="text-8xl">Bo`sh</h1>
             <h1 className="text-3xl font-bold">Jinoyatchi mavjud emas</h1>
           </div>

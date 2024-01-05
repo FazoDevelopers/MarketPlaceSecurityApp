@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
-import ViewCameraCard from "../MainCards/ViewCameraCard";
-import AddCameraModal from "../CameraModals/AddCameraModal";
-import UpCameraModal from "../CameraModals/UpCameraModal";
-import DelCameraModal from "../CameraModals/DelCameraModal";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import {
   isAddCameraModalState,
   isDelCameraModalState,
   isUpCameraModalState,
 } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
-import { decreasePageIndex, handleError, increasePageIndex } from "../globals";
+import { api } from "../../services/api";
+import {
+  decreasePageIndex,
+  handleError,
+  increasePageIndex,
+} from "../../utils/globals";
+import AddCameraModal from "../CameraModals/AddCameraModal";
+import DelCameraModal from "../CameraModals/DelCameraModal";
+import UpCameraModal from "../CameraModals/UpCameraModal";
+import ViewCameraCard from "../MainCards/ViewCameraCard";
 
 export default function MainCamera() {
   const [upCamDatas, setUpCamDatas] = useState(null);
@@ -42,12 +46,12 @@ export default function MainCamera() {
   // fetch camera data from API
   const fetchData = async () => {
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `/api/camera/?page=${indexPage}&search=${searchText}`
       );
+      console.log(response.data);
       if (response.status === 200) {
         setApiData(response.data.results);
-        // setApiData(response.data.results.reverse());
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);
       } else {
@@ -80,25 +84,25 @@ export default function MainCamera() {
       )}
 
       <div className="container mx-auto text-white">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className="font-bebas text-4xl md:text-6xl mb-4 md:mb-0">
+        <div className="flex flex-col items-center justify-between md:flex-row">
+          <h1 className="mb-4 text-4xl font-bebas md:text-6xl md:mb-0">
             KAMERALAR
           </h1>
           <div className="flex gap-5">
             <input
               type="text"
               onChange={(e) => setSearchText(e.target.value)}
-              className="border-2 border-lime-600 bg-transparent p-2 outline-none"
+              className="p-2 bg-transparent border-2 outline-none border-lime-600"
               placeholder="Qidirish"
             />
             <button
               type="button"
-              className="p-2 bg-green-500 text-white font-extrabold border-2 border-lime-600"
+              className="p-2 font-extrabold text-white bg-green-500 border-2 border-lime-600"
               onClick={() => {
                 setIsAddCameraModal(true);
               }}
             >
-              <i className="fa-sharp fa-solid fa-plus p-1"></i>
+              <i className="p-1 fa-sharp fa-solid fa-plus"></i>
               QO`SHISH
             </button>
           </div>
@@ -106,7 +110,7 @@ export default function MainCamera() {
 
         {/* MAPPING FETCH DATA */}
         {apiData.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {apiData.map((item, index) => (
               <ViewCameraCard
                 key={index}
@@ -117,7 +121,7 @@ export default function MainCamera() {
             ))}
           </div>
         ) : (
-          <div className="text-center p-64 text-gray-600 uppercase font-bold">
+          <div className="p-64 font-bold text-center text-gray-600 uppercase">
             <h1 className="text-8xl">Bo`sh</h1>
             <h1 className="text-3xl font-bold">Kamera mavjud emas</h1>
           </div>

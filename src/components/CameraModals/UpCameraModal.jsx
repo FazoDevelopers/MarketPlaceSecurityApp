@@ -1,11 +1,12 @@
-import UpClickableMap from "../UpClickableMap";
-import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
 import axios from "axios";
-import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { handleError, handleSuccess } from "../globals.js";
+import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { handleError, handleSuccess } from "../../utils/globals.js";
+import UpClickableMap from "../UpClickableMap";
+import { api } from "../../services/api.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);
@@ -34,7 +35,7 @@ export default function UpCameraModal(props) {
     }
 
     try {
-      const response = await axios.patch(
+      const response = await api.patch(
         `http://192.168.1.132:8000/api/camera/${props.upCamDatas.id}/`,
         cameraData,
         {
@@ -66,15 +67,15 @@ export default function UpCameraModal(props) {
       <div className="fixed inset-0 z-50">
         <div className="absolute inset-0 bg-black opacity-50 blur -z-10"></div>
         <div className="flex items-center justify-center h-screen">
-          <div className="bg-stone-900 text-white p-20 rounded shadow-lg w-4/5 grid grid-cols-2 gap-20">
+          <div className="grid w-4/5 grid-cols-2 gap-20 p-20 text-white rounded shadow-lg bg-stone-900">
             <div className="flex flex-col">
-              <h1 className="font-bebas text-5xl text-center mb-4">
+              <h1 className="mb-4 text-5xl text-center font-bebas">
                 #{props.upCamDatas.name} TAHRIRLASH
               </h1>
 
               {/* KAMERA NOMI */}
               <div className="mb-5">
-                <span className="bg-lime-600 px-1 font-extrabold">
+                <span className="px-1 font-extrabold bg-lime-600">
                   KAMERA NOMI
                 </span>
                 <input
@@ -87,7 +88,7 @@ export default function UpCameraModal(props) {
                       message: "Belgi ishlatish mumkin emas",
                     },
                   })}
-                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                  className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />
                 {errors.cameraName && (
                   <p className="text-red-500">{errors.cameraName.message}</p>
@@ -96,7 +97,7 @@ export default function UpCameraModal(props) {
 
               {/* KAMERA URLI */}
               <div className="mb-5">
-                <span className="bg-lime-600 px-1 font-extrabold">
+                <span className="px-1 font-extrabold bg-lime-600">
                   KAMERA URL
                 </span>
                 <input
@@ -105,7 +106,7 @@ export default function UpCameraModal(props) {
                   {...register("cameraUrl", {
                     required: "Kamera manzili majburiy",
                   })}
-                  className="border-2 border-lime-600 w-full bg-transparent p-3 outline-none"
+                  className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />
                 {errors.cameraUrl && (
                   <p className="text-red-500">{errors.cameraUrl.message}</p>
@@ -114,13 +115,13 @@ export default function UpCameraModal(props) {
 
               {/* JOY RASMI */}
               <div className="flex flex-col">
-                <span className="bg-lime-600 px-1 font-extrabold w-32 mb-1">
+                <span className="w-32 px-1 mb-1 font-extrabold bg-lime-600">
                   JOY RASMI
                 </span>
                 <input
                   type="file"
                   accept="image/png, image/jpeg, image/jpg, image/svg"
-                  className="border-2 border-lime-600 p-3"
+                  className="p-3 border-2 border-lime-600"
                   {...(errors.cameraName && (
                     <p className="text-red-500">{errors.cameraName.message}</p>
                   ))}
@@ -137,19 +138,19 @@ export default function UpCameraModal(props) {
               <div className="flex justify-between mt-4">
                 <button
                   type="button"
-                  className="bg-yellow-800 px-4 py-2 border-2 border-yellow-600"
+                  className="px-4 py-2 bg-yellow-800 border-2 border-yellow-600"
                   onClick={() => {
                     setIsUpCameraModal(false);
                   }}
                 >
-                  <i className="fa-solid fa-xmark pr-2"></i> BEKOR QILISH
+                  <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
                 </button>
 
                 <button
                   type="submit"
-                  className="bg-green-800 px-4 py-2 border-2 border-green-600"
+                  className="px-4 py-2 bg-green-800 border-2 border-green-600"
                 >
-                  <i className="fa-solid fa-plus pr-2"></i> TAHRIRLASH
+                  <i className="pr-2 fa-solid fa-plus"></i> TAHRIRLASH
                 </button>
               </div>
             </div>

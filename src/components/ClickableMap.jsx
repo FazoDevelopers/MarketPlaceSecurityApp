@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { MapContainer, useMap, TileLayer } from "react-leaflet";
-import "./MainStyle.css";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { useRecoilState } from "recoil";
 import { latState, lngState } from "../recoil/atoms";
+import "./MainStyle.css";
 
 const center = [52.22977, 21.01178];
 
@@ -14,8 +14,8 @@ const tileLayer = {
 
 const GetCoordinates = () => {
   const map = useMap();
-  const [lat, setLat] = useRecoilState(latState);
-  const [lng, setLng] = useRecoilState(lngState);
+  const [, setLat] = useRecoilState(latState);
+  const [, setLng] = useRecoilState(lngState);
 
   useEffect(() => {
     if (!map) return;
