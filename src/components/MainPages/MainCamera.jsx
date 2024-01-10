@@ -47,7 +47,7 @@ export default function MainCamera() {
   const fetchData = async () => {
     try {
       const response = await api.get(
-        `/api/camera/?page=${indexPage}&search=${searchText}`
+        `/api/cameras/?page=${indexPage}&search=${searchText}`
       );
       console.log(response.data);
       if (response.status === 200) {

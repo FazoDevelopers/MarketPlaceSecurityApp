@@ -12,12 +12,13 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       const response = await api.post("/auth/token/", data);
-      if (response.status === 200 && response.statusText == "OK") {
+      
         sessionStorage.setItem("token", response.data.token);
         navigate("/home");
-      }
+      
     } catch (err) {
       handleError("Login yoki parolda xatolik!");
     }
