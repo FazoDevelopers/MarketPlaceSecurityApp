@@ -10,6 +10,7 @@ import {
   useMap,
 } from "react-leaflet";
 import { v4 as uuidv4 } from "uuid";
+import detectionSound from "../../assets/sounds/detection.mp3";
 import { DETECT_SOCKET_URL, EXIST_SOCKET_URL } from "../../utils/constants";
 import { handleError } from "../../utils/globals";
 import CriminalCard from "../MainCards/CriminalCard";
@@ -39,6 +40,11 @@ function CombinedComponent() {
   ]);
   const [isConnected, setIsConnected] = useState(false);
   const [pinnedCriminals, setPinnedCriminals] = useState([]);
+
+  const playDetectionSound = () => {
+    const audio = new Audio(detectionSound);
+    audio.play();
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,7 +83,9 @@ function CombinedComponent() {
     const newSocket = new WebSocket(EXIST_SOCKET_URL);
     const handleOpen = () => {
       console.log("Connected to the WebSocket");
-      newSocket.send(JSON.stringify({ state: "web" }));
+      newSocket.send(
+        JSON.stringify({ state: "web", token: sessionStorage.getItem("token") })
+      );
       setIsConnected(true);
     };
     if (!isConnected) {
@@ -99,6 +107,7 @@ function CombinedComponent() {
 
           setPositions((prevPositions) => [newPosition, ...prevPositions]);
           setCenterPositions([latitude, longitude]);
+          playDetectionSound();
         }
 
         setCriminalData((prevData) => {
