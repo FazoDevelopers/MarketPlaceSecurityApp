@@ -1,30 +1,23 @@
-import React, { useEffect } from "react";
-import { MapContainer, useMap, TileLayer } from "react-leaflet";
-import "./MainStyle.css";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { useRecoilState } from "recoil";
 import { latState, lngState } from "../recoil/atoms";
-
-const tileLayer = {
-  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-};
+import { MAP_CONFIG } from "../utils/constants";
+import "./MainStyle.css";
 
 const GetCoordinates = () => {
   const map = useMap();
-  const [lat, setLat] = useRecoilState(latState);
-  const [lng, setLng] = useRecoilState(lngState);
-
+  const [, setLat] = useRecoilState(latState);
+  const [, setLng] = useRecoilState(lngState);
   useEffect(() => {
     if (!map) return;
-
     map.on("moveend", () => {
       const { lat, lng } = map.getCenter();
-
       setLat(lat);
       setLng(lng);
     });
-  }, [map]);
+  }, [map, setLat, setLng]);
 
   return null;
 };
@@ -34,10 +27,10 @@ const ClickableMap = ({ upCameraData }) => {
     <MapContainer
       className={"center-of-map"}
       center={[upCameraData.latitude, upCameraData.longitude]}
-      zoom={18}
-      scrollWheelZoom={false}
+      zoom={MAP_CONFIG?.zoom}
+      scrollWheelZoom={MAP_CONFIG?.scrollWheelZoom}
     >
-      <TileLayer {...tileLayer} />
+      <TileLayer {...MAP_CONFIG.tileLayer} />
 
       <GetCoordinates />
     </MapContainer>
@@ -45,3 +38,7 @@ const ClickableMap = ({ upCameraData }) => {
 };
 
 export default ClickableMap;
+
+ClickableMap.propTypes = {
+  upCameraData: PropTypes.object.isRequired,
+};

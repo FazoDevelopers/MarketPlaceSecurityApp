@@ -17,7 +17,8 @@ const GetCoordinates = () => {
       setLat(lat);
       setLng(lng);
     });
-  }, [map]);
+  }, [map, setLat, setLng]);
+
   return null;
 };
 
