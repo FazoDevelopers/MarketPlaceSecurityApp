@@ -84,7 +84,7 @@ function CombinedComponent() {
     const handleOpen = () => {
       console.log("Connected to the WebSocket");
       newSocket.send(
-        JSON.stringify({ state: "web", token: sessionStorage.getItem("token") })
+        JSON.stringify({ state: "web", token: localStorage.getItem("token") })
       );
       setIsConnected(true);
     };
@@ -170,7 +170,7 @@ function CombinedComponent() {
 
     const handleOpen = () => {
       console.log("Connected to the WebSocket detect");
-      newSocket.send(JSON.stringify({ state: "web", token: sessionStorage.getItem("token") }));
+      newSocket.send(JSON.stringify({ state: "web", token: localStorage.getItem("token") }));
       setIsConnected(true);
     };
 

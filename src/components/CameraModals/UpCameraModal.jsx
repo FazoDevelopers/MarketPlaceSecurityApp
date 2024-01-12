@@ -36,7 +36,7 @@ export default function UpCameraModal(props) {
 
     try {
       const response = await api.patch(
-        `http://10.119.6.226:8000/api/cameras/${props.upCamDatas.id}/`,
+        `http://192.168.254.150:8000/api/cameras/${props.upCamDatas.id}/`,
         cameraData,
         {
           headers: {

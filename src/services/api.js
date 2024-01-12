@@ -1,11 +1,11 @@
 import axios from "axios";
-
+// 192.168.254.150
 export const api = axios.create({
-  baseURL: "http://10.119.6.226:8000",
+  baseURL: "http://192.168.254.150:8000",
   headers: {
     common: {
-      Authorization: `Token ${sessionStorage.getItem("token")}`,
+      Authorization: `Token ${localStorage.getItem("token")}`,
       //   "Content-Type": "application/x-www-form-urlencoded",
     },
-  },
+  }
 });

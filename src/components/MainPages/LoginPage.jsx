@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import { handleError } from "../../utils/globals";
+import axios from "axios";
+import { BASE_URL } from "../../utils/constants";
 
 export default function LoginPage() {
   const {
@@ -14,9 +16,9 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await api.post("/auth/token/", data);
+      const response = await axios.post(`${BASE_URL}/auth/token/`, data);
       
-        sessionStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.token);
         navigate("/home");
       
     } catch (err) {

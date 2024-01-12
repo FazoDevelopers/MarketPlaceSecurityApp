@@ -1,6 +1,7 @@
 import "../MainStyle.css";
 import PropTypes from "prop-types";
 export default function DetectHumanCard({ data }) {
+  console.log(data);
   return (
       <div className="criminal_card_wrapper p-2 overflow-hidden cursor-pointer hover:z-20 w-full opacity-95">
         <div className="border-gray-500 border-2 bg-gray-600 text-white font-extrabold">
@@ -24,7 +25,7 @@ export default function DetectHumanCard({ data }) {
             </div>
           </div>
           <p className="text-base font-orbitron text-center bg-red-500 p-2">
-            19:15:120 01.10.2023
+            11.01.2024
           </p>
         </div>
       </div>

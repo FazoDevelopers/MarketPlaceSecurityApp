@@ -12,7 +12,7 @@ export default function AdminMain() {
   const isLoginPage = location.pathname === "/";
 
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!token && !isLoginPage) {

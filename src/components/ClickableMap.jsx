@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { latState, lngState } from "../recoil/atoms";
 import "./MainStyle.css";
 
-const center = [52.22977, 21.01178];
+const center = [40.996289671996706, 3671.640515327454];
 
 const tileLayer = {
   url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

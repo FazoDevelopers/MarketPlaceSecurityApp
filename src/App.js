@@ -6,7 +6,7 @@ const App = () => {
   const timeouts = {};
 
   useEffect(() => {
-    const newSocket = new WebSocket("ws://10.119.6.226:5000");
+    const newSocket = new WebSocket("ws://192.168.254.150:5000");
 
     setSocket(newSocket);
 
