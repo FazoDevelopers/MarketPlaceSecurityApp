@@ -225,7 +225,6 @@ function CombinedComponent() {
           </div>
 
           <div
-            // className="relative w-full mt-4 overflow-auto border-8 border-gray-500 criminals_sidebar"
             className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
@@ -240,7 +239,6 @@ function CombinedComponent() {
             scrollWheelZoom={true}
           >
             <TileLayer
-              className="filter grayscale brightness-50 contrast-150"
               // url="../../src/assets/Uzb/{z}/{x}/{y}.png"
               // CHANGE URL TO OFFLINE
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

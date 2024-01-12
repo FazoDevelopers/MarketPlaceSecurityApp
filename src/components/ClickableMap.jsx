@@ -2,15 +2,8 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { useRecoilState } from "recoil";
 import { latState, lngState } from "../recoil/atoms";
+import { MAP_CONFIG } from "../utils/constants";
 import "./MainStyle.css";
-
-const center = [40.996289671996706, 3671.640515327454];
-
-const tileLayer = {
-  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  attribution:
-    '&copy; <a href="https://www.milliygvardiya.uz/">Milliy Gvardiya</a>',
-};
 
 const GetCoordinates = () => {
   const map = useMap();
@@ -19,10 +12,8 @@ const GetCoordinates = () => {
 
   useEffect(() => {
     if (!map) return;
-
     map.on("moveend", () => {
       const { lat, lng } = map.getCenter();
-
       setLat(lat);
       setLng(lng);
     });
@@ -34,12 +25,12 @@ const ClickableMap = () => {
   return (
     <MapContainer
       className={"center-of-map"}
-      center={center}
-      zoom={18}
-      scrollWheelZoom={true}
-      zoomControl={true}
+      center={MAP_CONFIG?.center}
+      zoom={MAP_CONFIG?.maxZoom}
+      scrollWheelZoom={MAP_CONFIG?.scrollWheelZoom}
+      zoomControl={MAP_CONFIG?.zoomControl}
     >
-      <TileLayer {...tileLayer} />
+      <TileLayer {...MAP_CONFIG?.tileLayer} />
       <GetCoordinates />
     </MapContainer>
   );
