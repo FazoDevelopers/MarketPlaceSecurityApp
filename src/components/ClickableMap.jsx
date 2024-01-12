@@ -9,7 +9,7 @@ const center = [40.996289671996706, 3671.640515327454];
 const tileLayer = {
   url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    '&copy; <a href="https://www.milliygvardiya.uz/">Milliy Gvardiya</a>',
 };
 
 const GetCoordinates = () => {
@@ -27,7 +27,6 @@ const GetCoordinates = () => {
       setLng(lng);
     });
   }, [map]);
-
   return null;
 };
 
@@ -37,10 +36,10 @@ const ClickableMap = () => {
       className={"center-of-map"}
       center={center}
       zoom={18}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
+      zoomControl={true}
     >
       <TileLayer {...tileLayer} />
-
       <GetCoordinates />
     </MapContainer>
   );

@@ -112,7 +112,7 @@ function CombinedComponent() {
 
         setCriminalData((prevData) => {
           return [
-            <div
+            <button
               key={uuidv4()}
               onClick={() => {
                 setCenterPositions([
@@ -121,13 +121,14 @@ function CombinedComponent() {
                 ]);
                 console.log(data);
               }}
+              onKeyDown={() => {}}
             >
               <CriminalCard
                 setPinnedCriminals={setPinnedCriminals}
                 pinnedCriminals={pinnedCriminals}
                 data={data}
               />
-            </div>,
+            </button>,
             ...prevData,
           ];
         });
