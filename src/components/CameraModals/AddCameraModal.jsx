@@ -34,6 +34,8 @@ export default function AddCameraModal(props) {
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");
         console.log(response);
         setIsAddCameraModal(false);
+      } else if (response.status === 400) {
+        console.log(400);
       } else {
         handleError("Kamera qo'shishda xatolik!");
       }
@@ -100,6 +102,14 @@ export default function AddCameraModal(props) {
                   className="p-3 border-2 border-lime-600"
                   {...register("cameraImage", {
                     required: "Kamera rasmi majburiy",
+                    validate: {
+                      sizeCheck: (value) => {
+                        if (value[0]?.size > 10485760) {
+                          return "Rasm hajmi 1MB dan oshmasligi kerak";
+                        }
+                        return true;
+                      },
+                    },
                   })}
                 />
                 {errors.cameraImage && (
@@ -127,6 +137,7 @@ export default function AddCameraModal(props) {
           </div>
           <div className="grid content-between">
             <ClickableMap />
+
             <div className="flex justify-between mt-4">
               <button
                 type="button"

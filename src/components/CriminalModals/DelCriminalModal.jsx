@@ -1,8 +1,6 @@
-import React from "react";
+import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { isDelCriminalModalState } from "../../recoil/atoms";
-import axios from "axios";
-import { toast } from "react-toastify";
 import { api } from "../../services/api";
 
 export default function DelCriminalModal(props) {
