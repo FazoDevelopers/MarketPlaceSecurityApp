@@ -18,3 +18,9 @@ export const MAP_CONFIG = {
     [41.10064, 71.77327],
   ],
 };
+export const INPUT_PATTERN_CHECK = {
+  forName: {
+    pattern: /^[A-Za-z_ '"`]+$/,
+    message: "Belgi ishlatish mumkin emas!",
+  },
+};

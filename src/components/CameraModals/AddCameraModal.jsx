@@ -1,18 +1,16 @@
-import axios from "axios";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { api } from "../../services/api.js";
+import { INPUT_PATTERN_CHECK } from "../../utils/constants.js";
 import { handleError, handleSuccess } from "../../utils/globals.js";
 import ClickableMap from "../ClickableMap";
-import { api } from "../../services/api.js";
 
 export default function AddCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-  const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
-    isAddCameraModalState
-  );
+  const [, setIsAddCameraModal] = useRecoilState(isAddCameraModalState);
 
   const {
     register,
@@ -36,8 +34,6 @@ export default function AddCameraModal(props) {
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");
         console.log(response);
         setIsAddCameraModal(false);
-      } else if (response.status === 400) {
-        console.log(400);
       } else {
         handleError("Kamera qo'shishda xatolik!");
       }
@@ -69,8 +65,8 @@ export default function AddCameraModal(props) {
                   {...register("cameraName", {
                     required: "Kamera nomi majburiy",
                     pattern: {
-                      value: /^[A-Za-z_ '"`]+$/,
-                      message: "Belgi ishlatish mumkin emas",
+                      value: INPUT_PATTERN_CHECK.forName.pattern,
+                      message: INPUT_PATTERN_CHECK.forName.message,
                     },
                   })}
                   className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
@@ -131,7 +127,6 @@ export default function AddCameraModal(props) {
           </div>
           <div className="grid content-between">
             <ClickableMap />
-
             <div className="flex justify-between mt-4">
               <button
                 type="button"
