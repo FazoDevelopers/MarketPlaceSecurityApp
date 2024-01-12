@@ -1,16 +1,17 @@
-import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
+import { api } from "../../services/api.js";
 import { handleError, handleSuccess } from "../../utils/globals.js";
 import UpClickableMap from "../UpClickableMap";
-import { api } from "../../services/api.js";
+import { INPUT_PATTERN_CHECK } from "../../utils/constants.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
+  const [placeImg, setPlaceImg] = useState(null);
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
 
@@ -20,8 +21,6 @@ export default function UpCameraModal(props) {
     formState: { errors },
   } = useForm();
 
-  const [placeImg, setPlaceImg] = useState(null);
-
   // SEND FORMDATA TO BACKEND
   const onSubmit = async (data) => {
     const cameraData = new FormData();
@@ -29,14 +28,12 @@ export default function UpCameraModal(props) {
     cameraData.append("url", data.cameraUrl);
     cameraData.append("latitude", lat);
     cameraData.append("longitude", lng);
-
     if (placeImg) {
       cameraData.append("image", placeImg);
     }
-
     try {
       const response = await api.patch(
-        `http://192.168.254.150:8000/api/cameras/${props.upCamDatas.id}/`,
+        `/api/cameras/${props.upCamDatas.id}/`,
         cameraData,
         {
           headers: {
@@ -52,10 +49,6 @@ export default function UpCameraModal(props) {
       } else {
         handleError("Kamera tahrirlanishda xatolik!");
       }
-
-      console.log("Camera data updated:", response.data);
-      console.log("Camera data:", cameraData);
-      console.log(response.status);
       setIsUpCameraModal(false);
     } catch (error) {
       handleError("Serverga ulanib bo'lmadi!");
@@ -72,7 +65,6 @@ export default function UpCameraModal(props) {
               <h1 className="mb-4 text-5xl text-center font-bebas">
                 #{props.upCamDatas.name} TAHRIRLASH
               </h1>
-
               {/* KAMERA NOMI */}
               <div className="mb-5">
                 <span className="px-1 font-extrabold bg-lime-600">
@@ -84,8 +76,8 @@ export default function UpCameraModal(props) {
                   {...register("cameraName", {
                     required: "Kamera nomi majburiy",
                     pattern: {
-                      value: /^[A-Za-z_ '"`]+$/,
-                      message: "Belgi ishlatish mumkin emas",
+                      value: INPUT_PATTERN_CHECK.forName.pattern,
+                      message: INPUT_PATTERN_CHECK.forName.message,
                     },
                   })}
                   className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
@@ -134,7 +126,6 @@ export default function UpCameraModal(props) {
 
             <div className="grid content-between">
               <UpClickableMap upCameraData={props.upCamDatas} />
-
               <div className="flex justify-between mt-4">
                 <button
                   type="button"
@@ -145,7 +136,6 @@ export default function UpCameraModal(props) {
                 >
                   <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
                 </button>
-
                 <button
                   type="submit"
                   className="px-4 py-2 bg-green-800 border-2 border-green-600"

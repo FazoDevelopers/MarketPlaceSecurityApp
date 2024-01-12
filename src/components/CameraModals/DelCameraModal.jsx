@@ -1,11 +1,10 @@
-import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { isDelCameraModalState } from "../../recoil/atoms";
-import { handleError, handleSuccess } from "../../utils/globals";
 import { api } from "../../services/api";
+import { handleError, handleSuccess } from "../../utils/globals";
 
 export default function DelCameraModal(props) {
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
@@ -17,8 +16,6 @@ export default function DelCameraModal(props) {
   const delData = async () => {
     try {
       const response = await api.delete(`/api/cameras/${props.data.id}/`);
-      console.log(response);
-
       if (response.status === 204) {
         console.log(response);
         props.fetch();
