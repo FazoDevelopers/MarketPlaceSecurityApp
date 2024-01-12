@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
@@ -24,12 +25,10 @@ export default function MainCamera() {
   const [prevPageStatus, setPrevPageStatus] = useState(null);
   const [apiData, setApiData] = useState([]);
   const [searchText, setSearchText] = useState("");
-
   const [isAddCameraModal, setIsAddCameraModal] = useRecoilState(
     isAddCameraModalState
   );
-  const [isUpCameraModal, setIsUpCameraModal] =
-    useRecoilState(isUpCameraModalState);
+  const [isUpCameraModal] = useRecoilState(isUpCameraModalState);
   const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
     isDelCameraModalState
   );
@@ -37,7 +36,6 @@ export default function MainCamera() {
   const upCameraDatas = (data) => {
     setUpCamDatas(data);
   };
-
   const deleteCamera = (data) => {
     setDelCamDatas(data);
     setIsDelCameraModal(true);
@@ -62,13 +60,13 @@ export default function MainCamera() {
     }
   };
 
+  // useEffect for fetchData
   useEffect(() => {
     fetchData();
   }, [indexPage, searchText]);
 
   return (
     <>
-      {/* MODAL OPEN CHECK */}
       {isAddCameraModal && (
         <AddCameraModal fetch={fetchData} pageIndex={indexPage} />
       )}
@@ -90,8 +88,8 @@ export default function MainCamera() {
           </h1>
           <div className="flex gap-5">
             <input
-              type="text"
-              onChange={(e) => setSearchText(e.target.value)}
+              type="search"
+              onChange={debounce((e) => setSearchText(e.target.value), 1000)}
               className="p-2 bg-transparent border-2 outline-none border-lime-600"
               placeholder="Qidirish"
             />
@@ -102,8 +100,7 @@ export default function MainCamera() {
                 setIsAddCameraModal(true);
               }}
             >
-              <i className="p-1 fa-sharp fa-solid fa-plus"></i>
-              QO`SHISH
+              <i className="p-1 fa-sharp fa-solid fa-plus"></i> QO`SHISH
             </button>
           </div>
         </div>
@@ -134,18 +131,23 @@ export default function MainCamera() {
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
+            onClick={debounce(
+              () => decreasePageIndex(setIndexPage, prevPageStatus),
+              1000
+            )}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
           </button>
-
           <button
             type="button"
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
+            onClick={debounce(
+              () => increasePageIndex(setIndexPage, nextPageStatus),
+              1000
+            )}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>
