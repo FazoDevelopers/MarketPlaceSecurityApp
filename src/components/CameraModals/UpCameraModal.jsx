@@ -1,17 +1,14 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { api } from "../../services/api.js";
 import { handleError, handleSuccess } from "../../utils/globals.js";
 import UpClickableMap from "../UpClickableMap";
-import { INPUT_PATTERN_CHECK } from "../../utils/constants.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);
   const [lng] = useRecoilState(lngState);
-  const [placeImg, setPlaceImg] = useState(null);
   const [isUpCameraModal, setIsUpCameraModal] =
     useRecoilState(isUpCameraModalState);
 
@@ -22,19 +19,17 @@ export default function UpCameraModal(props) {
   } = useForm();
 
   // SEND FORMDATA TO BACKEND
-  const onSubmit = async (data) => {
-    const cameraData = new FormData();
-    cameraData.append("name", data.cameraName);
-    cameraData.append("url", data.cameraUrl);
-    cameraData.append("latitude", lat);
-    cameraData.append("longitude", lng);
-    if (placeImg) {
-      cameraData.append("image", placeImg);
-    }
+  const onSubmit = async (formData) => {
+    const data = new FormData();
+    data.append("name", formData.cameraName);
+    data.append("url", formData.cameraUrl);
+    data.append("latitude", lat);
+    data.append("longitude", lng);
+    data.append("image", formData.cameraImage);
     try {
       const response = await api.patch(
         `/api/cameras/${props.upCamDatas.id}/`,
-        cameraData,
+        data,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -108,14 +103,22 @@ export default function UpCameraModal(props) {
                 </span>
                 <input
                   type="file"
-                  accept="image/png, image/jpeg, image/jpg, image/svg"
+                  accept="image/*"
                   className="p-3 border-2 border-lime-600"
+                  {...register("cameraImage", {
+                    required: "Bo'sh bo'lishi mumkin emas",
+                    validate: {
+                      sizeCheck: (value) => {
+                        if (value[0]?.size > 10485760) {
+                          return "Rasm hajmi 10MB dan oshmasligi kerak";
+                        }
+                        return true;
+                      },
+                    },
+                  })}
                   {...(errors.cameraName && (
                     <p className="text-red-500">{errors.cameraName.message}</p>
                   ))}
-                  onChange={(e) => {
-                    setPlaceImg(e.target.files[0]);
-                  }}
                 />
               </div>
             </div>

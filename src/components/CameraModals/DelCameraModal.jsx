@@ -7,10 +7,8 @@ import { api } from "../../services/api";
 import { handleError, handleSuccess } from "../../utils/globals";
 
 export default function DelCameraModal(props) {
-  const [isDelCameraModal, setIsDelCameraModal] = useRecoilState(
-    isDelCameraModalState
-  );
-  const [delCardIndex, setDelCardIndex] = useState();
+  const [, setIsDelCameraModal] = useRecoilState(isDelCameraModalState);
+  const [, setDelCardIndex] = useState();
 
   // DELETE CAMERA DATA FROM API
   const delData = async () => {

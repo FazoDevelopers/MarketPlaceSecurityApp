@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
 import "../MainStyle.css";
-import PropTypes from "prop-types";
 
 export default function CriminalCard({
   data,
@@ -19,7 +19,6 @@ export default function CriminalCard({
     // If the data doesn't exist, add it to pinnedCriminals
     if (!isDataExists) {
       setPinnedCriminals((prev) => [data, ...prev]);
-      console.log("true");
     }
   }
 
@@ -27,8 +26,8 @@ export default function CriminalCard({
     setIsPinned(!isPinned);
   };
   return (
-    <div className="criminal_card_wrapper p-2 overflow-hidden cursor-pointer hover:z-20 w-full">
-      <div className="flex flex-row gap-5 border-lime-500 border-1 bg-lime-600 text-white font-extrabold">
+    <div className="w-full p-2 overflow-hidden cursor-pointer criminal_card_wrapper hover:z-20">
+      <div className="flex flex-row gap-5 font-extrabold text-white border-lime-500 border-1 bg-lime-600">
         <img src={data.identity.image} className="object-cover w-[8rem]" />
         <div className="flex flex-col p-2">
           {!isPinned && (
@@ -42,7 +41,7 @@ export default function CriminalCard({
                     pinCriminal();
                   }
                 }}
-                tabIndex={0} // Add a tabindex to make it focusable
+                tabIndex={0}
               ></i>
             </div>
           )}
@@ -52,7 +51,7 @@ export default function CriminalCard({
         </div>
       </div>
 
-      <div className="w-full border-gray-400 border-2 text-gray-400 bg-black p-2">
+      <div className="w-full p-2 text-gray-400 bg-black border-2 border-gray-400">
         <p className="text-sm">Sharh: {data.identity.description}</p>
       </div>
     </div>

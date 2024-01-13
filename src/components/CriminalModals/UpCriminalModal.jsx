@@ -1,15 +1,11 @@
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
-import { isUpCriminalModalState, latState, lngState } from "../../recoil/atoms";
+import { isUpCriminalModalState } from "../../recoil/atoms";
 import { api } from "../../services/api";
 import { handleError, handleSuccess } from "../../utils/globals";
 export default function UpCriminalModal(props) {
-  const [lat, setLat] = useRecoilState(latState);
-  const [lng, setLng] = useRecoilState(lngState);
-  const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
-    isUpCriminalModalState
-  );
+  const [, setIsUpCriminalModal] = useRecoilState(isUpCriminalModalState);
 
   const { handleSubmit, register } = useForm({
     defaultValues: {

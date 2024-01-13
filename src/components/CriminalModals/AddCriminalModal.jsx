@@ -6,9 +6,7 @@ import { api } from "../../services/api";
 import { handleError, handleSuccess } from "../../utils/globals";
 
 export default function AddCriminalModal(props) {
-  const [isAddCriminalModal, setIsAddCriminalModal] = useRecoilState(
-    isAddCriminalModalState
-  );
+  const [, setIsAddCriminalModal] = useRecoilState(isAddCriminalModalState);
 
   const {
     handleSubmit,

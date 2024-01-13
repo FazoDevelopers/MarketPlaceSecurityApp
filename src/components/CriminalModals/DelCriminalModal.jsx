@@ -5,7 +5,7 @@ import { isDelCriminalModalState } from "../../recoil/atoms";
 import { api } from "../../services/api";
 
 export default function DelCriminalModal(props) {
-  const [isDelCriminalModal, setIsDelCriminalModal] = useRecoilState(
+  const [, setIsDelCriminalModal] = useRecoilState(
     isDelCriminalModalState
   );
 

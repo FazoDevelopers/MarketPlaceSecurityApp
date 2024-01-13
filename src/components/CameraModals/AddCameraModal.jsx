@@ -19,15 +19,15 @@ export default function AddCameraModal(props) {
 
   // SEND FORMDATA TO BACKEND
   const onSubmit = async (formData) => {
-    const cameraData = new FormData();
-    cameraData.append("name", formData.cameraName);
-    cameraData.append("url", formData.cameraUrl);
-    cameraData.append("latitude", lat);
-    cameraData.append("longitude", lng);
-    cameraData.append("image", formData.cameraImage[0]);
-    console.log(cameraData);
+    const data = new FormData();
+    data.append("name", formData.cameraName);
+    data.append("url", formData.cameraUrl);
+    data.append("latitude", lat);
+    data.append("longitude", lng);
+    data.append("image", formData.cameraImage[0]);
+    console.log(data);
     try {
-      const response = await api.post(`/api/cameras/`, cameraData, {});
+      const response = await api.post(`/api/cameras/`, data, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");
