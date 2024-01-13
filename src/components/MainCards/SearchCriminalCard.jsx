@@ -1,10 +1,7 @@
-import React from "react";
 import PropTypes from "prop-types";
-
 export default function SearchCriminalCard(props) {
   function formatDateString(isoString) {
     const date = new Date(isoString);
-
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // getMonth() is zero-based
     const year = date.getFullYear();
@@ -18,10 +15,10 @@ export default function SearchCriminalCard(props) {
 
   return (
     <>
-      <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
+      <div className="px-3 py-2 font-extrabold text-white border-4 border-lime-600 bg-opacity-20 bg-lime-600">
         <div className="relative">
           <img
-            className="aspect-square w-full object-cover"
+            className="object-cover w-full aspect-square"
             src={props.data.image_path}
             alt=""
           />

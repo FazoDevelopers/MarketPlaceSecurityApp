@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import { useRecoilState } from "recoil";
 import {
   isDelCriminalModalState,
@@ -6,33 +6,27 @@ import {
 } from "../../recoil/atoms";
 
 export default function ViewCriminalCard(props) {
-  const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
-    isUpCriminalModalState
-  );
-
-  const [isDelCriminalModal, setIsDelCriminalModal] = useRecoilState(
-    isDelCriminalModalState
-  );
+  const [, setIsUpCriminalModal] = useRecoilState(isUpCriminalModalState);
+  const [, setIsDelCriminalModal] = useRecoilState(isDelCriminalModalState);
 
   return (
     <>
-      <div className="border-lime-600 border-4 py-2 px-3 bg-opacity-20 bg-lime-600 text-white font-extrabold">
+      <div className="px-3 py-2 font-extrabold text-white border-4 border-lime-600 bg-opacity-20 bg-lime-600">
         <div className="relative">
           <img
-            className="aspect-square w-full object-cover"
+            className="object-cover w-full aspect-square"
             src={props.data.image_url}
-            alt=""
+            alt={props.data.image_url}
           />
         </div>
-
-        <h1 className="text-2xl mt-1">Ism: {props.data.first_name}</h1>
-        <h1 className="text-2xl mt-1">Familiya: {props.data.last_name}</h1>
-        <h1 className="text-2xl mt-1">Otasi: {props.data.middle_name}</h1>
+        <h1 className="mt-1 text-2xl">Ism: {props.data.first_name}</h1>
+        <h1 className="mt-1 text-2xl">Familiya: {props.data.last_name}</h1>
+        <h1 className="mt-1 text-2xl">Otasi: {props.data.middle_name}</h1>
         <p className="font-thin">Sharh: {props.data.description}</p>
         <div className="flex justify-between mt-4">
           <button
             type="button"
-            className="bg-red-800 px-5 py-2"
+            className="px-5 py-2 bg-red-800"
             onClick={() => {
               setIsDelCriminalModal(true);
               console.log(props.data);
@@ -43,7 +37,7 @@ export default function ViewCriminalCard(props) {
           </button>
           <button
             type="button"
-            className="bg-green-800 px-5 py-2"
+            className="px-5 py-2 bg-green-800"
             onClick={() => {
               setIsUpCriminalModal(true);
               props.updateData(props.data);
@@ -56,3 +50,16 @@ export default function ViewCriminalCard(props) {
     </>
   );
 }
+
+ViewCriminalCard.propTypes = {
+  data: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    image_url: PropTypes.string.isRequired,
+    first_name: PropTypes.string.isRequired,
+    last_name: PropTypes.string.isRequired,
+    middle_name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }),
+  deleteData: PropTypes.func.isRequired,
+  updateData: PropTypes.func.isRequired,
+};
