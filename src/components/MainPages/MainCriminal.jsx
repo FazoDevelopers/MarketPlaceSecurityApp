@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
@@ -132,18 +133,23 @@ export default function MainCriminal() {
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
+            onClick={debounce(
+              () => decreasePageIndex(setIndexPage, prevPageStatus),
+              1000
+            )}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
           </button>
-
           <button
             type="button"
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
+            onClick={debounce(
+              () => increasePageIndex(setIndexPage, nextPageStatus),
+              1000
+            )}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>

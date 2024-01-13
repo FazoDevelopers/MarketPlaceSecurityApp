@@ -123,7 +123,6 @@ export default function MainCamera() {
             <h1 className="text-3xl font-bold">Kamera mavjud emas</h1>
           </div>
         )}
-
         {/* PAGINATION */}
         <div className="flex justify-center my-5">
           <button

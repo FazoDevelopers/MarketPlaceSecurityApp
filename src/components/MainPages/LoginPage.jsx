@@ -1,8 +1,8 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { handleError } from "../../utils/globals";
-import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
+import { handleError } from "../../utils/globals";
 
 export default function LoginPage() {
   const {
@@ -16,8 +16,8 @@ export default function LoginPage() {
     console.log(data);
     try {
       const response = await axios.post(`${BASE_URL}/auth/token/`, data);
-        localStorage.setItem("token", response.data.token);
-        navigate("/home"); // change to login is working -  navigate("/")
+      localStorage.setItem("token", response.data.token);
+      navigate("/home"); // change to login is working -  navigate("/")
     } catch (err) {
       handleError("Login yoki parolda xatolik!");
     }
