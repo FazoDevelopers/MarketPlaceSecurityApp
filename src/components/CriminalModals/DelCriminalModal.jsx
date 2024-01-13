@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { isDelCriminalModalState } from "../../recoil/atoms";
@@ -67,3 +68,8 @@ export default function DelCriminalModal(props) {
     </>
   );
 }
+
+DelCriminalModal.propTypes = {
+  data: PropTypes.object.isRequired,
+  fetch: PropTypes.func.isRequired,
+};
