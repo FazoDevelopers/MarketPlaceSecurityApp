@@ -19,7 +19,7 @@ export const MAP_CONFIG = {
   ],
 };
 export const INPUT_PATTERN_CHECK = {
-  forName: {
+  data: {
     pattern: /^[A-Za-z_ '"`]+$/,
     message: "Belgi ishlatish mumkin emas!",
   },

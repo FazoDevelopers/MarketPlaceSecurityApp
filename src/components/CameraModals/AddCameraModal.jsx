@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isAddCameraModalState, latState, lngState } from "../../recoil/atoms";
 import { api } from "../../services/api.js";
-import { INPUT_PATTERN_CHECK } from "../../utils/constants.js";
 import { handleError, handleSuccess } from "../../utils/globals.js";
 import ClickableMap from "../ClickableMap";
 
@@ -66,10 +65,6 @@ export default function AddCameraModal(props) {
                   type="text"
                   {...register("cameraName", {
                     required: "Kamera nomi majburiy",
-                    pattern: {
-                      value: INPUT_PATTERN_CHECK.forName.pattern,
-                      message: INPUT_PATTERN_CHECK.forName.message,
-                    },
                   })}
                   className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />

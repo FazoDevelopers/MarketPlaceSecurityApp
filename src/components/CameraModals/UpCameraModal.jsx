@@ -75,10 +75,6 @@ export default function UpCameraModal(props) {
                   defaultValue={props.upCamDatas.name}
                   {...register("cameraName", {
                     required: "Kamera nomi majburiy",
-                    pattern: {
-                      value: INPUT_PATTERN_CHECK.forName.pattern,
-                      message: INPUT_PATTERN_CHECK.forName.message,
-                    },
                   })}
                   className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                 />

@@ -17,14 +17,17 @@ export default function AddCriminalModal(props) {
   } = useForm();
 
   // SEND FORMDATA TO BACKEND
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
+    const data = new FormData();
+    data.append("first_name", formData.criminalName);
+    data.append("last_name", formData.criminalSurname);
+    data.append("middle_name", formData.criminalFather);
+    data.append("age", formData.criminalAge);
+    data.append("description", formData.criminalDescription);
+    data.append("image", formData.criminalImage[0]);
     console.log(data);
     try {
-      const response = await api.post(`/api/criminals/`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post(`/api/criminals/`, data, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli qo'shildi!");
@@ -58,14 +61,14 @@ export default function AddCriminalModal(props) {
                   </span>
                   <input
                     type="text"
-                    {...register("first_name", {
+                    {...register("criminalName", {
                       required: "Bo'sh bo'lishi mumkin emas",
                     })}
                     className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
-                  {errors.first_name && (
+                  {errors.criminalName && (
                     <span className="text-red-500">
-                      {errors.first_name.message}
+                      {errors.criminalName.message}
                     </span>
                   )}
                 </div>
@@ -77,14 +80,14 @@ export default function AddCriminalModal(props) {
                   </span>
                   <input
                     type="text"
-                    {...register("last_name", {
+                    {...register("criminalSurname", {
                       required: "Bo'sh bo'lishi mumkin emas",
                     })}
                     className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
-                  {errors.last_name && (
+                  {errors.criminalSurname && (
                     <span className="text-red-500">
-                      {errors.last_name.message}
+                      {errors.criminalSurname.message}
                     </span>
                   )}
                 </div>
@@ -96,14 +99,14 @@ export default function AddCriminalModal(props) {
                   </span>
                   <input
                     type="text"
-                    {...register("middle_name", {
+                    {...register("criminalFather", {
                       required: "Bo'sh bo'lishi mumkin emas",
                     })}
                     className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
-                  {errors.middle_name && (
+                  {errors.criminalFather && (
                     <span className="text-red-500">
-                      {errors.middle_name.message}
+                      {errors.criminalFather.message}
                     </span>
                   )}
                 </div>
@@ -115,7 +118,7 @@ export default function AddCriminalModal(props) {
                   </span>
                   <input
                     type="number"
-                    {...register("age", {
+                    {...register("criminalAge", {
                       required: "Bo'sh bo'lishi mumkin emas",
                       min: {
                         value: 1,
@@ -129,8 +132,10 @@ export default function AddCriminalModal(props) {
                     })}
                     className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   />
-                  {errors.age && (
-                    <span className="text-red-500">{errors.age.message}</span>
+                  {errors.criminalAge && (
+                    <span className="text-red-500">
+                      {errors.criminalAge.message}
+                    </span>
                   )}
                 </div>
               </div>
@@ -142,12 +147,12 @@ export default function AddCriminalModal(props) {
                   </span>
                   <input
                     type="file"
-                    {...register("image", {
+                    {...register("criminalImage", {
                       required: "Bo'sh bo'lishi mumkin emas",
                       validate: {
                         sizeCheck: (value) => {
                           if (value[0]?.size > 10485760) {
-                            return "Rasm hajmi 1MB dan oshmasligi kerak";
+                            return "Rasm hajmi 10MB dan oshmasligi kerak";
                           }
                           return true;
                         },
@@ -155,9 +160,10 @@ export default function AddCriminalModal(props) {
                     })}
                     className="p-3 border-2 border-lime-600"
                   />
-
-                  {errors.image && (
-                    <span className="text-red-500">{errors.image.message}</span>
+                  {errors.criminalImage && (
+                    <span className="text-red-500">
+                      {errors.criminalImage.message}
+                    </span>
                   )}
                 </div>
 
@@ -165,9 +171,8 @@ export default function AddCriminalModal(props) {
                   <span className="px-1 font-extrabold bg-lime-600">
                     JINOYATCHI HAQIDA
                   </span>
-
                   <textarea
-                    {...register("description", {
+                    {...register("criminalDescription", {
                       required: "Bo'sh bo'lishi mumkin emas",
                     })}
                     id=""
@@ -175,9 +180,9 @@ export default function AddCriminalModal(props) {
                     rows="10"
                     className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                   ></textarea>
-                  {errors.description && (
+                  {errors.criminalDescription && (
                     <span className="text-red-500">
-                      {errors.description.message}
+                      {errors.criminalDescription.message}
                     </span>
                   )}
                 </div>
