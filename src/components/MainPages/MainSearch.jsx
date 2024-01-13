@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { debounce } from "lodash";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../services/api";
 import {
@@ -13,20 +14,27 @@ export default function MainSearch() {
   const [indexPage, setIndexPage] = useState(1);
   const [nextPageStatus, setNextPageStatus] = useState(null);
   const [prevPageStatus, setPrevPageStatus] = useState(null);
-
   const { register, handleSubmit, getValues, reset } = useForm();
   const criminalSearch = useRef();
 
   const handleSearch = useMemo(() => {
-    return async (event) => {
-      const inputValue = event.target.value;
+    return async () => {
+      const formData = getValues(); // Get current form data
+      const params = new URLSearchParams({
+        date_recorded__gte: formData.searchFromDate,
+        date_recorded__lte: formData.searchToDate,
+        page: indexPage,
+      }).toString();
+
+      console.log(formData.searchToDate);
       try {
-        const response = await api.get(`/api/records/?search=${inputValue}`);
+        const response = await api.get(
+          `/api/records/?search=${criminalSearch.current.value}&${params}`
+        );
         console.log(response);
         setData(response.data.results);
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);
-
         if (response.status !== 200 && response.statusText !== "OK") {
           handleError("Ma'lumot yuklashda xatolik!");
         }
@@ -34,41 +42,11 @@ export default function MainSearch() {
         handleError("Serverga ulanib bo'lmadi!");
       }
     };
-  }, []);
+  }, [getValues, indexPage]);
 
-  // Fetch records based on the form data and page index
-  const fetchRecords = async () => {
-    const formData = getValues(); // Get current form data
-    const params = new URLSearchParams({
-      date_recorded__gte: formData.searchFromDate,
-      date_recorded__lte: formData.searchToDate,
-      page: indexPage,
-    }).toString();
-
-    try {
-      const response = await api.get(`/api/records/?${params}`);
-      console.log(response);
-      setData(response.data.results);
-      setNextPageStatus(response.data.next);
-      setPrevPageStatus(response.data.previous);
-
-      if (response.status !== 200 && response.statusText !== "OK") {
-        handleError("Ma'lumot yuklashda xatolik!");
-      }
-    } catch (error) {
-      handleError("Serverga ulanib bo'lmadi!");
-    }
-  };
-
-  // Effect to fetch records when the indexPage changes
   useEffect(() => {
-    fetchRecords();
-  }, [indexPage]);
-
-  // Function to handle form submission
-  const onSubmit = () => {
-    fetchRecords();
-  };
+    handleSearch();
+  }, []);
 
   return (
     <>
@@ -76,12 +54,12 @@ export default function MainSearch() {
         <h1 className="mb-4 text-4xl font-bebas md:text-6xl md:mb-0">
           QIDIRUV
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleSearch)}>
           <div>
             <input
               type="text"
               {...register("criminalSearch")}
-              onChange={(e) => handleSearch(e)}
+              onChange={debounce((e) => handleSearch(e), 1000)}
               ref={criminalSearch}
               className="p-2 bg-transparent border-2 outline-none border-lime-600"
               placeholder="Qidirish"
@@ -96,7 +74,10 @@ export default function MainSearch() {
               {...register("searchToDate")}
               className="p-2 bg-transparent border-2 outline-none border-lime-600"
             />
-            <button className="p-2 font-extrabold text-white bg-green-600 border-2 border-green-600">
+            <button
+              type="submit"
+              className="p-2 font-extrabold text-white bg-green-600 border-2 border-green-600"
+            >
               QIDIRISH
             </button>
             <button
@@ -128,24 +109,29 @@ export default function MainSearch() {
         )}
 
         {/* PAGINATION */}
-        <div className="flex justify-center my-5 text-white">
+        <div className="flex justify-center my-5">
           <button
             type="button"
             className={`${
               !prevPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => decreasePageIndex(setIndexPage, prevPageStatus)}
+            onClick={debounce(
+              () => decreasePageIndex(setIndexPage, prevPageStatus),
+              1000
+            )}
             disabled={!prevPageStatus}
           >
             <i className="fa-solid fa-chevron-left"></i> Oldingi
           </button>
-
           <button
             type="button"
             className={`${
               !nextPageStatus ? "bg-green-800" : "bg-green-500"
             } px-5 py-2 font-extrabold m-3`}
-            onClick={() => increasePageIndex(setIndexPage, nextPageStatus)}
+            onClick={debounce(
+              () => increasePageIndex(setIndexPage, nextPageStatus),
+              1000
+            )}
             disabled={!nextPageStatus}
           >
             Keyingi <i className="fa-solid fa-chevron-right"></i>
