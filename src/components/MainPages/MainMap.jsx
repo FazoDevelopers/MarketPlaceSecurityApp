@@ -11,7 +11,12 @@ import {
 } from "react-leaflet";
 import { v4 as uuidv4 } from "uuid";
 import detectionSound from "../../assets/sounds/detection.mp3";
-import { DETECT_SOCKET_URL, EXIST_SOCKET_URL } from "../../utils/constants";
+import {
+  DETECT_SOCKET_URL,
+  DETECT_TIMEOUT,
+  EXIST_SOCKET_URL,
+  MAP_CONFIG,
+} from "../../utils/constants";
 import { handleError } from "../../utils/globals";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
@@ -29,7 +34,7 @@ function SetViewOnClick({ coords, zoomCustom }) {
 
   return null;
 }
-const zoomCustom = 11;
+const zoomCustom = MAP_CONFIG.zoomCustom;
 
 function CombinedComponent() {
   const [criminalData, setCriminalData] = useState([]);
@@ -41,9 +46,13 @@ function CombinedComponent() {
   const [isConnected, setIsConnected] = useState(false);
   const [pinnedCriminals, setPinnedCriminals] = useState([]);
 
+  const detectionAudio = new Audio(detectionSound);
   const playDetectionSound = () => {
-    const audio = new Audio(detectionSound);
-    audio.play();
+    detectionAudio.play();
+  };
+  const stopDetectionSound = () => {
+    detectionAudio.pause();
+    detectionAudio.currentTime = 0;
   };
 
   useEffect(() => {
@@ -51,7 +60,7 @@ function CombinedComponent() {
       setCriminalData((prevData) =>
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
-    }, 6000000000);
+    }, DETECT_TIMEOUT);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -63,7 +72,7 @@ function CombinedComponent() {
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
       console.log(criminalDetectData);
-    }, 6000000000);
+    }, DETECT_TIMEOUT);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -73,7 +82,7 @@ function CombinedComponent() {
   useEffect(() => {
     const positionsTimer = setTimeout(() => {
       setPositions((prevPositions) => prevPositions.slice(1));
-    }, 6000000000);
+    }, DETECT_TIMEOUT);
 
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
@@ -81,6 +90,9 @@ function CombinedComponent() {
   // WebSocket Hook for exist in database
   useEffect(() => {
     const newSocket = new WebSocket(EXIST_SOCKET_URL);
+    if (!isConnected) {
+      handleError("WebSocket ulanganiga ishonch hosil qiling!");
+    }
     const handleOpen = () => {
       console.log("Connected to the WebSocket");
       newSocket.send(
@@ -88,10 +100,6 @@ function CombinedComponent() {
       );
       setIsConnected(true);
     };
-    if (!isConnected) {
-      handleError("WebSocket ulanganiga ishonch hosil qiling!");
-    }
-
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -136,20 +144,16 @@ function CombinedComponent() {
         console.error("Error while processing JSON data:", error);
       }
     };
-
     const handleErrorWebSocket = (event) => {
       console.error("WebSocket connection error:", event);
     };
-
     const handleClose = (event) => {
       console.error("WebSocket connection closed:", event);
     };
-
     newSocket.addEventListener("open", handleOpen);
     newSocket.addEventListener("message", handleMessage);
     newSocket.addEventListener("error", handleErrorWebSocket);
     newSocket.addEventListener("close", handleClose);
-
     return () => {
       newSocket.removeEventListener("open", handleOpen);
       newSocket.removeEventListener("message", handleMessage);
@@ -168,13 +172,13 @@ function CombinedComponent() {
   // WebSocket Hook for detect human
   useEffect(() => {
     const newSocket = new WebSocket(DETECT_SOCKET_URL);
-
     const handleOpen = () => {
       console.log("Connected to the WebSocket detect");
-      newSocket.send(JSON.stringify({ state: "web", token: localStorage.getItem("token") }));
+      newSocket.send(
+        JSON.stringify({ state: "web", token: localStorage.getItem("token") })
+      );
       setIsConnected(true);
     };
-
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -186,20 +190,16 @@ function CombinedComponent() {
         console.error("Error while processing JSON data:", error);
       }
     };
-
     const handleErrorWebSocket = (event) => {
       console.error("WebSocket connection error:", event);
     };
-
     const handleClose = (event) => {
       console.error("WebSocket connection closed:", event);
     };
-
     newSocket.addEventListener("open", handleOpen);
     newSocket.addEventListener("message", handleMessage);
     newSocket.addEventListener("error", handleErrorWebSocket);
     newSocket.addEventListener("close", handleClose);
-
     return () => {
       newSocket.removeEventListener("open", handleOpen);
       newSocket.removeEventListener("message", handleMessage);
@@ -247,6 +247,9 @@ function CombinedComponent() {
               <Marker
                 key={index}
                 position={position.location}
+                onClick={() => {
+                  stopDetectionSound();
+                }}
                 icon={
                   new L.DivIcon({
                     className: position.humanDetected ? "marker-icon" : "",
