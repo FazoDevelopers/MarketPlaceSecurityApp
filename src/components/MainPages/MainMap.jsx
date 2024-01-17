@@ -88,6 +88,7 @@ function CombinedComponent() {
   }, [positions, setPositions]);
 
   // WebSocket Hook for exist in database
+  // FIXME: READ TODOS.TODO 1)
   useEffect(() => {
     const newSocket = new WebSocket(EXIST_SOCKET_URL);
     if (!isConnected) {
@@ -170,6 +171,7 @@ function CombinedComponent() {
   ]);
 
   // WebSocket Hook for detect human
+  // FIXME: READ TODOS.TODO 1)
   useEffect(() => {
     const newSocket = new WebSocket(DETECT_SOCKET_URL);
     const handleOpen = () => {

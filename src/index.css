@@ -10,11 +10,6 @@ body{
     background-color: var(--main-back-color);
 }
 
-*{
-    /* border: 1px solid red; */
-    /* color: white; */
-}
-
 /* Add this to your styles.css */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

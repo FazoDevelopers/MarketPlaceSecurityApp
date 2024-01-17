@@ -26,3 +26,4 @@ export const INPUT_PATTERN_CHECK = {
     message: "Belgi ishlatish mumkin emas!",
   },
 };
+
