@@ -15,7 +15,7 @@ export default function DelCameraModal(props) {
     try {
       const response = await api.delete(`/api/camera/${props.data.id}/`);
       if (response.status === 204) {
-        console.log(response);
+         
         props.fetch();
         handleSuccess("Kamera muvaffaqiyatli o'chirildi!");
       } else {

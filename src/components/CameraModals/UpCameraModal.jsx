@@ -27,7 +27,7 @@ export default function UpCameraModal(props) {
     data.append("longitude", lng);
     data.append("image", formData.cameraImage[0]);
 
-    console.log(data);
+     
     try {
       const response = await api.patch(
         `/api/camera/${props.upCamDatas.id}/`,
@@ -39,7 +39,7 @@ export default function UpCameraModal(props) {
         }
       );
 
-      console.log(response);
+       
 
       if (response.status === 200) {
         props.fetch();

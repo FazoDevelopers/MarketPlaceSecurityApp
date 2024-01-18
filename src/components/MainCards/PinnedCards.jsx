@@ -6,8 +6,6 @@ export default function PinnedCards({ data }) {
 
   const pinDelete = () => {
     setIsPinned(!isPinned);
-
-    console.log(isPinned);
   };
 
   return (

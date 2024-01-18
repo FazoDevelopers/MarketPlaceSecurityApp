@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const onSubmit = async (data) => {
-    console.log(data);
+     
     try {
       const response = await axios.post(`${BASE_URL}/auth/token/`, data);
       localStorage.setItem("token", response.data.token);

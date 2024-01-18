@@ -51,8 +51,6 @@ export default function MainCriminal() {
       const response = await api.get(
         `/api/criminals/?page=${indexPage}&search=${searchText}`
       );
-      console.log(indexPage);
-      console.log(response.data);
       setData(response.data.results);
       setNextPageStatus(response.data.next);
       setPrevPageStatus(response.data.previous);

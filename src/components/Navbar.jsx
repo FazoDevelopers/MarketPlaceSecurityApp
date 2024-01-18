@@ -9,7 +9,6 @@ export default function Navbar() {
   const keyGenerate = async () => {
     try {
       const response = await api.get("android/auth/token/");
-      console.log(response.data.token);
       setKalit(response.data.token);
     } catch (err) {
       handleError("Generatsiyada xatolik!");

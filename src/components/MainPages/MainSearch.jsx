@@ -26,12 +26,10 @@ export default function MainSearch() {
         page: indexPage,
       }).toString();
 
-      console.log(formData.searchToDate);
       try {
         const response = await api.get(
           `/api/records/?search=${criminalSearch.current.value}&${params}`
         );
-        console.log(response.data);
         setData(response.data.results);
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);

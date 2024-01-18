@@ -27,7 +27,7 @@ export default function UpCriminalModal(props) {
     data.append("age", formData.criminalAge);
     data.append("description", formData.criminalDescription);
     data.append("image", formData.criminalImage[0]);
-    console.log(data);
+     
     try {
       const response = await api.patch(
         `/api/criminals/${props.data.id}/`,
@@ -38,11 +38,11 @@ export default function UpCriminalModal(props) {
           },
         }
       );
-      console.log(response);
+       
       if (response.statusText === "OK") {
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli tahrirlandi!");
-        console.log(response);
+         
         setIsUpCriminalModal(false);
       } else if (response.status === 400) {
         console.log(400);

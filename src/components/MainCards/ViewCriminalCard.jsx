@@ -29,7 +29,6 @@ export default function ViewCriminalCard(props) {
             className="px-5 py-2 bg-red-800"
             onClick={() => {
               setIsDelCriminalModal(true);
-              console.log(props.data);
               props.deleteData(props.data);
             }}
           >

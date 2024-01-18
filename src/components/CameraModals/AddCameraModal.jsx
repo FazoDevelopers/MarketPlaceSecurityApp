@@ -25,13 +25,13 @@ export default function AddCameraModal(props) {
     data.append("latitude", lat);
     data.append("longitude", lng);
     data.append("image", formData.cameraImage[0]);
-    console.log(data);
+     
     try {
       const response = await api.post(`/api/camera/`, data, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");
-        console.log(response);
+         
         setIsAddCameraModal(false);
       } else if (response.status === 400) {
         console.log(400);

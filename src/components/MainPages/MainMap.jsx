@@ -55,6 +55,7 @@ function CombinedComponent() {
     detectionAudio.pause();
     detectionAudio.currentTime = 0;
   };
+  console.log("criminalDetectData", criminalDetectData);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,7 +73,6 @@ function CombinedComponent() {
       setCriminalDetectData((prevData) =>
         prevData.length > 0 ? prevData.slice(1) : prevData
       );
-      console.log(criminalDetectData);
     }, DETECT_TIMEOUT);
 
     // Clear interval on component unmount
@@ -88,27 +88,22 @@ function CombinedComponent() {
     return () => clearTimeout(positionsTimer);
   }, [positions, setPositions]);
 
-  // WebSocket Hook for exist in database
+  // Interval exist in database
   useEffect(() => {
     const fetchDatas = setInterval(async () => {
-      const response = await fetch("http://0.0.0.0:8000/api/web-results/", {
+      const response = await fetch(`${BASE_URL}/api/web-results/`, {
         method: "GET",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
       });
 
-      response?.data && console.log(response);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
       const data = await response.json();
       data && setIsConnected(true);
 
       if (data.camera) {
         // Process camera data
-        console.log(data);
+         
         const { latitude, longitude, name, image } = data.camera;
         const newPosition = {
           location: [latitude, longitude],
@@ -124,14 +119,14 @@ function CombinedComponent() {
         setCriminalData((prevData) => {
           // Process criminal data
           return [
-            <button
+            <div
               key={uuidv4()}
               onClick={() => {
                 setCenterPositions([
                   data.camera.latitude,
                   data.camera.longitude,
                 ]);
-                console.log(data);
+                 
               }}
               onKeyDown={() => {}}
             >
@@ -140,7 +135,7 @@ function CombinedComponent() {
                 pinnedCriminals={pinnedCriminals}
                 data={data}
               />
-            </button>,
+            </div>,
             ...prevData,
           ];
         });
@@ -150,10 +145,7 @@ function CombinedComponent() {
     return () => clearInterval(fetchDatas);
   }, [isConnected]);
 
-  console.log("pinnedCriminals", pinnedCriminals);
-
   // WebSocket Hook for detect human
-  // FIXME: READ TODOS.TODO 1)
   useEffect(() => {
     const newSocket = new WebSocket(DETECT_SOCKET_URL);
     const handleOpen = () => {
@@ -167,7 +159,7 @@ function CombinedComponent() {
       try {
         const data = JSON.parse(event.data);
         setCriminalDetectData((prevData) => [
-          <DetectHumanCard key={uuidv4()} data={data} />,
+          <DetectHumanCard key={uuidv4()+1} data={data} />,
           ...prevData,
         ]);
       } catch (error) {
@@ -196,7 +188,6 @@ function CombinedComponent() {
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedLayer(selectedValue);
-    console.log("Selected Map Layer:", selectedValue);
   };
 
   return (
@@ -218,7 +209,7 @@ function CombinedComponent() {
             className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
-            {criminalDetectData}
+            {criminalDetectData.length > 1 && criminalDetectData}
           </div>
         </div>
 
@@ -272,7 +263,7 @@ function CombinedComponent() {
 
         <div className="col-span-1 text-white sm:col-span-1">
           <select
-            className="w-full bg-transparent"
+            className="w-full bg-black text-white"
             value={selectedLayer}
             onChange={handleSelectChange}
           >
@@ -289,7 +280,7 @@ function CombinedComponent() {
             </p>
           </div>
           <div
-            className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
+            className="text-center relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
             {isConnected ? (

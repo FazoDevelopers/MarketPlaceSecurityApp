@@ -7,7 +7,7 @@ export default function CriminalCard({
   setPinnedCriminals,
   pinnedCriminals,
 }) {
-  console.log(data);
+   
   const [isPinned, setIsPinned] = useState(false);
 
   useEffect(() => {

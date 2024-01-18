@@ -23,13 +23,13 @@ export default function AddCriminalModal(props) {
     data.append("age", formData.criminalAge);
     data.append("description", formData.criminalDescription);
     data.append("image", formData.criminalImage[0]);
-    console.log(data);
+     
     try {
       const response = await api.post(`/api/criminals/`, data, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli qo'shildi!");
-        console.log(response);
+         
         setIsAddCriminalModal(false);
       } else if (response.status === 400) {
         console.log(400);
