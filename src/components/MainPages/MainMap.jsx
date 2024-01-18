@@ -17,7 +17,7 @@ import {
   DETECT_TIMEOUT,
   MAP_CONFIG,
 } from "../../utils/constants";
-import { handleError } from "../../utils/globals";
+import mapLayers from "../../utils/map_layers";
 import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
 import PinnedCards from "../MainCards/PinnedCards";
@@ -45,6 +45,7 @@ function CombinedComponent() {
   ]);
   const [isConnected, setIsConnected] = useState(false);
   const [pinnedCriminals, setPinnedCriminals] = useState([]);
+  const [selectedLayer, setSelectedLayer] = useState("");
 
   const detectionAudio = new Audio(detectionSound);
   const playDetectionSound = () => {
@@ -88,9 +89,7 @@ function CombinedComponent() {
   }, [positions, setPositions]);
 
   // WebSocket Hook for exist in database
-  // FIXME: READ TODOS.TODO 1)
-
-  useEffect(()=>{
+  useEffect(() => {
     const fetchDatas = setInterval(async () => {
       const response = await fetch("http://0.0.0.0:8000/api/web-results/", {
         method: "GET",
@@ -103,13 +102,13 @@ function CombinedComponent() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       data && setIsConnected(true);
-        
+
       if (data.camera) {
         // Process camera data
-      console.log(data);
+        console.log(data);
         const { latitude, longitude, name, image } = data.camera;
         const newPosition = {
           location: [latitude, longitude],
@@ -117,7 +116,7 @@ function CombinedComponent() {
           photo: image,
           humanDetected: true,
         };
-  
+
         setPositions((prevPositions) => [newPosition, ...prevPositions]);
         setCenterPositions([latitude, longitude]);
         playDetectionSound();
@@ -128,7 +127,10 @@ function CombinedComponent() {
             <button
               key={uuidv4()}
               onClick={() => {
-                setCenterPositions([data.camera.latitude, data.camera.longitude]);
+                setCenterPositions([
+                  data.camera.latitude,
+                  data.camera.longitude,
+                ]);
                 console.log(data);
               }}
               onKeyDown={() => {}}
@@ -142,14 +144,13 @@ function CombinedComponent() {
             ...prevData,
           ];
         });
-      }      
-  }, 500);
-  
-  return () => clearInterval(fetchDatas)
-  }, [isConnected])
+      }
+    }, 500);
+
+    return () => clearInterval(fetchDatas);
+  }, [isConnected]);
 
   console.log("pinnedCriminals", pinnedCriminals);
-  
 
   // WebSocket Hook for detect human
   // FIXME: READ TODOS.TODO 1)
@@ -192,6 +193,12 @@ function CombinedComponent() {
     };
   }, [setCriminalDetectData]);
 
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedLayer(selectedValue);
+    console.log("Selected Map Layer:", selectedValue);
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
@@ -223,8 +230,11 @@ function CombinedComponent() {
           >
             <TileLayer
               // url="../../src/assets/Uzb/{z}/{x}/{y}.png"
-              // CHANGE URL TO OFFLINE
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url={
+                selectedLayer
+                  ? selectedLayer
+                  : "http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}"
+              }
             />
             {positions.map((position, index) => (
               <Marker
@@ -236,7 +246,9 @@ function CombinedComponent() {
                 icon={
                   new L.DivIcon({
                     className: position.humanDetected ? "marker-icon" : "",
-                    html: `<img src="${BASE_URL + position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit:cover" />`,
+                    html: `<img src="${BASE_URL + position.photo}" alt="${
+                      position.name
+                    }" style="width: 50px; height: 50px; border-radius: 50%; object-fit:cover" />`,
                     iconSize: [50, 50],
                     iconAnchor: [25, 25],
                     popupAnchor: [0, -25],
@@ -259,6 +271,17 @@ function CombinedComponent() {
         </div>
 
         <div className="col-span-1 text-white sm:col-span-1">
+          <select
+            className="w-full bg-transparent"
+            value={selectedLayer}
+            onChange={handleSelectChange}
+          >
+            {mapLayers.map((layer, index) => (
+              <option key={index} value={layer.value}>
+                {layer.label}
+              </option>
+            ))}
+          </select>
           <div className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white bg-opacity-50 border-8 border-lime-600 bg-lime-600 md:mb-0 md:w-auto">
             <i className="pr-3 fa-sharp fa-solid fa-magnifying-glass fa-2x"></i>
             <p className="text-2xl tracking-widest font-bebas">
