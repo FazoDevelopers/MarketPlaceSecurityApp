@@ -14,7 +14,6 @@ import detectionSound from "../../assets/sounds/detection.mp3";
 import {
   DETECT_SOCKET_URL,
   DETECT_TIMEOUT,
-  EXIST_SOCKET_URL,
   MAP_CONFIG,
 } from "../../utils/constants";
 import { handleError } from "../../utils/globals";
@@ -22,7 +21,6 @@ import CriminalCard from "../MainCards/CriminalCard";
 import DetectHumanCard from "../MainCards/DetectHumanCard";
 import PinnedCards from "../MainCards/PinnedCards";
 import "../MainStyle.css";
-import { api } from "../../services/api";
 function SetViewOnClick({ coords, zoomCustom }) {
   const map = useMap();
   useEffect(() => {
@@ -90,104 +88,67 @@ function CombinedComponent() {
 
   // WebSocket Hook for exist in database
   // FIXME: READ TODOS.TODO 1)
-  setInterval(() => {
-    try {
-      fetch("http://0.0.0.0:8000/api/web-results/", {
-  method: 'GET', // or 'POST' or any other HTTP method you are using
-  headers: {
-    Authorization: `Token ${localStorage.getItem("token")}`,
-    // "Content-Type": "application/x-www-form-urlencoded",
-  },
-})
-  .then(res => res.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
 
-    } catch (error) {
-      handleError("Serverga ulanib bo'lmadi!", error);
-    }
-  }, 500);
+  useEffect(()=>{
+    const fetchDatas = setInterval(async () => {
+      const response = await fetch("http://0.0.0.0:8000/api/web-results/", {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      });
 
-  // useEffect(() => {
-  //   const newSocket = new WebSocket(EXIST_SOCKET_URL);
-  //   if (!isConnected) {
-  //     handleError("WebSocket ulanganiga ishonch hosil qiling!");
-  //   }
-  //   const handleOpen = () => {
-  //     console.log("Connected to the WebSocket");
-  //     newSocket.send(
-  //       JSON.stringify({ state: "web", token: localStorage.getItem("token") })
-  //     );
-  //     setIsConnected(true);
-  //   };
-  //   const handleMessage = (event) => {
-  //     try {
-  //       const data = JSON.parse(event.data);
-  //       console.log(data);
-  //       if (data.camera) {
-  //         const { latitude, longitude, name, image } = data.camera;
-  //         const newPosition = {
-  //           location: [latitude, longitude],
-  //           name,
-  //           photo: image,
-  //           humanDetected: true,
-  //         };
+      response?.data && console.log(response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      data && setIsConnected(true);
+        
+      if (data.camera) {
+        // Process camera data
+      console.log(data);
+        const { latitude, longitude, name, image } = data.camera;
+        const newPosition = {
+          location: [latitude, longitude],
+          name,
+          photo: image,
+          humanDetected: true,
+        };
+  
+        setPositions((prevPositions) => [newPosition, ...prevPositions]);
+        setCenterPositions([latitude, longitude]);
+        playDetectionSound();
 
-  //         setPositions((prevPositions) => [newPosition, ...prevPositions]);
-  //         setCenterPositions([latitude, longitude]);
-  //         playDetectionSound();
-  //       }
-
-  //       setCriminalData((prevData) => {
-  //         return [
-  //           <button
-  //             key={uuidv4()}
-  //             onClick={() => {
-  //               setCenterPositions([
-  //                 data.camera.latitude,
-  //                 data.camera.longitude,
-  //               ]);
-  //               console.log(data);
-  //             }}
-  //             onKeyDown={() => {}}
-  //           >
-  //             <CriminalCard
-  //               setPinnedCriminals={setPinnedCriminals}
-  //               pinnedCriminals={pinnedCriminals}
-  //               data={data}
-  //             />
-  //           </button>,
-  //           ...prevData,
-  //         ];
-  //       });
-  //     } catch (error) {
-  //       console.error("Error while processing JSON data:", error);
-  //     }
-  //   };
-  //   const handleErrorWebSocket = (event) => {
-  //     console.error("WebSocket connection error:", event);
-  //   };
-  //   const handleClose = (event) => {
-  //     console.error("WebSocket connection closed:", event);
-  //   };
-  //   newSocket.addEventListener("open", handleOpen);
-  //   newSocket.addEventListener("message", handleMessage);
-  //   newSocket.addEventListener("error", handleErrorWebSocket);
-  //   newSocket.addEventListener("close", handleClose);
-  //   return () => {
-  //     newSocket.removeEventListener("open", handleOpen);
-  //     newSocket.removeEventListener("message", handleMessage);
-  //     newSocket.removeEventListener("error", handleErrorWebSocket);
-  //     newSocket.removeEventListener("close", handleClose);
-  //     newSocket.close();
-  //   };
-  // }, [
-  //   isConnected,
-  //   setPositions,
-  //   setCenterPositions,
-  //   setCriminalData,
-  //   pinnedCriminals,
-  // ]);
+        setCriminalData((prevData) => {
+          // Process criminal data
+          return [
+            <button
+              key={uuidv4()}
+              onClick={() => {
+                setCenterPositions([data.camera.latitude, data.camera.longitude]);
+                console.log(data);
+              }}
+              onKeyDown={() => {}}
+            >
+              <CriminalCard
+                setPinnedCriminals={setPinnedCriminals}
+                pinnedCriminals={pinnedCriminals}
+                data={data && data}
+              />
+            </button>,
+            ...prevData,
+          ];
+        });
+      }
+  
+      
+  }, 1000);
+  
+  return () => clearInterval(fetchDatas)
+  }, [isConnected])
+  
 
   // WebSocket Hook for detect human
   // FIXME: READ TODOS.TODO 1)

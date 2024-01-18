@@ -42,7 +42,7 @@ export default function Navbar() {
           className="flex items-center w-full px-3 py-2 mb-4 font-extrabold text-white border-8 border-gray-400 md:mb-0 md:w-auto"
         >
           <i className="pr-3 fa-sharp fa-solid fa-user-secret"></i>
-          <p className="text-basis">JINOYATCHILAR</p>
+          <p className="text-basis">HUQUQBUZARLAR</p>
         </Link>
         <Link
           to="/search"

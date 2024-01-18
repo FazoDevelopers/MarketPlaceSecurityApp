@@ -7,7 +7,7 @@ export default function CriminalCard({
   setPinnedCriminals,
   pinnedCriminals,
 }) {
-  console.log(data.identity.first_name);
+  console.log(data);
   const [isPinned, setIsPinned] = useState(false);
 
   if (isPinned) {
@@ -28,7 +28,7 @@ export default function CriminalCard({
   return (
     <div className="w-full p-2 overflow-hidden cursor-pointer criminal_card_wrapper hover:z-20">
       <div className="flex flex-row gap-5 font-extrabold text-white border-lime-500 border-1 bg-lime-600">
-        <img src={data.identity.image} className="object-cover w-[8rem]" />
+        <img src={data.identity.image_url} className="object-cover w-[8rem]" />
         <div className="flex flex-col p-2">
           {!isPinned && (
             <div className="text-end">
@@ -52,7 +52,7 @@ export default function CriminalCard({
       </div>
 
       <div className="w-full p-2 text-gray-400 bg-black border-2 border-gray-400">
-        <p className="text-sm">Sharh: {data.identity.description}</p>
+        <p className="text-sm">Sharh: {data?.identity?.description}</p>
       </div>
     </div>
   );
