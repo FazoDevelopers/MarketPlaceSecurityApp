@@ -17,6 +17,7 @@ export default function MainSearch() {
   const { register, handleSubmit, getValues, reset } = useForm();
   const criminalSearch = useRef();
 
+
   const handleSearch = useMemo(() => {
     return async () => {
       const formData = getValues(); // Get current form data
@@ -44,7 +45,7 @@ export default function MainSearch() {
 
   useEffect(() => {
     handleSearch();
-  }, []);
+  }, [indexPage]);
 
   return (
     <>

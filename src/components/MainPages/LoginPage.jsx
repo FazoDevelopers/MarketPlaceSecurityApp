@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constants";
 import { handleError } from "../../utils/globals";
 
@@ -11,13 +10,11 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate();
   const onSubmit = async (data) => {
-     
     try {
       const response = await axios.post(`${BASE_URL}/auth/token/`, data);
       localStorage.setItem("token", response.data.token);
-      navigate("/home"); // change to login is working -  navigate("/")
+      window.location.href = "/home"
     } catch (err) {
       handleError("Login yoki parolda xatolik!");
     }

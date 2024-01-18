@@ -23,12 +23,14 @@ export const handleError = (msg = "Error") => {
 };
 
 export const decreasePageIndex = (indexPage, prevPage) => {
+  console.log(false);
   if (prevPage) {
     indexPage((prev) => prev - 1);
   }
 };
 
 export const increasePageIndex = (indexPage, nextPage) => {
+  console.log(true);
   if (nextPage) {
     indexPage((prev) => prev + 1);
   }

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import "../MainStyle.css";
 export default function DetectHumanCard({ data }) {
-  console.log("detect human", data);
   return (
     <div className="w-full p-2 overflow-hidden cursor-pointer criminal_card_wrapper hover:z-20 opacity-95">
       <div className="font-extrabold text-white bg-gray-600 border-2 border-gray-500">

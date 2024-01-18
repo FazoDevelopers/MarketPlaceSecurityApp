@@ -55,7 +55,6 @@ function CombinedComponent() {
     detectionAudio.pause();
     detectionAudio.currentTime = 0;
   };
-  console.log("criminalDetectData", criminalDetectData);
 
   useEffect(() => {
     const interval = setInterval(() => {

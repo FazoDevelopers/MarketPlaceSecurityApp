@@ -15,9 +15,9 @@ export default function AdminMain() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // if (!token && !isLoginPage) {
-    //   navigate("/");
-    // }
+    if (!token && !isLoginPage) {
+      navigate("/");
+    }
   }, [navigate, token, isLoginPage]);
 
   return (
