@@ -12,10 +12,7 @@ export default function DelCriminalModal(props) {
   const delData = async (id) => {
     try {
       const response = await api.delete(`/api/criminals/${id}/`);
-       
-
       if (response.status === 204) {
-         
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli o'chirildi!");
       } else {

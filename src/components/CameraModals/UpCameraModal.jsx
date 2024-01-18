@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { isUpCameraModalState, latState, lngState } from "../../recoil/atoms";
-import { api } from "../../services/api.js";
 import { handleError, handleSuccess } from "../../utils/globals.js";
 import UpClickableMap from "../UpClickableMap";
+import { api } from "../../services/api.js";
 
 export default function UpCameraModal(props) {
   const [lat] = useRecoilState(latState);
@@ -18,20 +19,24 @@ export default function UpCameraModal(props) {
     formState: { errors },
   } = useForm();
 
-  // SEND FORMDATA TO BACKEND
-  const onSubmit = async (formData) => {
-    const data = new FormData();
-    data.append("name", formData.cameraName);
-    data.append("url", formData.cameraUrl);
-    data.append("latitude", lat);
-    data.append("longitude", lng);
-    data.append("image", formData.cameraImage[0]);
+  const [placeImg, setPlaceImg] = useState(null);
 
-     
+  // SEND FORMDATA TO BACKEND
+  const onSubmit = async (data) => {
+    const cameraData = new FormData();
+    cameraData.append("name", data.cameraName);
+    cameraData.append("url", data.cameraUrl);
+    cameraData.append("latitude", lat);
+    cameraData.append("longitude", lng);
+
+    if (placeImg) {
+      cameraData.append("image", placeImg);
+    }
+
     try {
       const response = await api.patch(
         `/api/camera/${props.upCamDatas.id}/`,
-        data,
+        cameraData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -39,14 +44,17 @@ export default function UpCameraModal(props) {
         }
       );
 
-       
-
       if (response.status === 200) {
+        console.log(response);
         props.fetch();
         handleSuccess("Kamera muvafaqqiyatli tahrirlandi!");
       } else {
         handleError("Kamera tahrirlanishda xatolik!");
       }
+
+      console.log("Camera data updated:", response.data);
+      console.log("Camera data:", cameraData);
+      console.log(response.status);
       setIsUpCameraModal(false);
     } catch (error) {
       handleError("Serverga ulanib bo'lmadi!");
@@ -63,6 +71,7 @@ export default function UpCameraModal(props) {
               <h1 className="mb-4 text-5xl text-center font-bebas">
                 #{props.upCamDatas.name} TAHRIRLASH
               </h1>
+
               {/* KAMERA NOMI */}
               <div className="mb-5">
                 <span className="px-1 font-extrabold bg-lime-600">
@@ -106,10 +115,12 @@ export default function UpCameraModal(props) {
                 </span>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/png, image/jpeg, image/jpg"
                   className="p-3 border-2 border-lime-600"
-                  {...register("cameraImage", {
-                    required: "Bo'sh bo'lishi mumkin emas",
+                  {...(errors.cameraName && (
+                    <p className="text-red-500">{errors.cameraName.message}</p>
+                  ))}
+                  {...register("criminalImage", {
                     validate: {
                       sizeCheck: (value) => {
                         if (value[0]?.size > 10485760) {
@@ -119,15 +130,16 @@ export default function UpCameraModal(props) {
                       },
                     },
                   })}
-                  {...(errors.cameraName && (
-                    <p className="text-red-500">{errors.cameraName.message}</p>
-                  ))}
+                  onChange={(e) => {
+                    setPlaceImg(e.target.files[0]);
+                  }}
                 />
               </div>
             </div>
 
             <div className="grid content-between">
               <UpClickableMap upCameraData={props.upCamDatas} />
+
               <div className="flex justify-between mt-4">
                 <button
                   type="button"
@@ -138,6 +150,7 @@ export default function UpCameraModal(props) {
                 >
                   <i className="pr-2 fa-solid fa-xmark"></i> BEKOR QILISH
                 </button>
+
                 <button
                   type="submit"
                   className="px-4 py-2 bg-green-800 border-2 border-green-600"

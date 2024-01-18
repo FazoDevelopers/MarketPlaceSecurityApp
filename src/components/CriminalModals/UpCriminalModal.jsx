@@ -1,13 +1,20 @@
-import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
-import { isUpCriminalModalState } from "../../recoil/atoms";
-import { api } from "../../services/api";
+import { isUpCriminalModalState, latState, lngState } from "../../recoil/atoms";
 import { handleError, handleSuccess } from "../../utils/globals";
-export default function UpCriminalModal(props) {
-  const [, setIsUpCriminalModal] = useRecoilState(isUpCriminalModalState);
+import { api } from "../../services/api";
+import { useState } from "react";
+import PropTypes from "prop-types"
 
-  const { handleSubmit, register } = useForm({
+export default function UpCriminalModal(props) {
+  const [lat, setLat] = useRecoilState(latState);
+  const [lng, setLng] = useRecoilState(lngState);
+  const [criminalImg, setCriminalImg] = useState(null);
+  const [isUpCriminalModal, setIsUpCriminalModal] = useRecoilState(
+    isUpCriminalModalState
+  );
+
+  const { handleSubmit, register, errors } = useForm({
     defaultValues: {
       criminalName: props.data.first_name,
       criminalSurname: props.data.last_name,
@@ -20,29 +27,29 @@ export default function UpCriminalModal(props) {
 
   // SEND FORMDATA TO BACKEND
   const onSubmit = async (formData) => {
-    const data = new FormData();
-    data.append("first_name", formData.criminalName);
-    data.append("last_name", formData.criminalSurname);
-    data.append("middle_name", formData.criminalFather);
-    data.append("age", formData.criminalAge);
-    data.append("description", formData.criminalDescription);
-    data.append("image", formData.criminalImage[0]);
-     
+    const criminalData = new FormData();
+    criminalData.append("first_name", formData.criminalName);
+    criminalData.append("last_name", formData.criminalSurname);
+    criminalData.append("middle_name", formData.criminalFather);
+    criminalData.append("age", formData.criminalAge);
+    criminalData.append("description", formData.criminalDescription);
+    if (criminalImg) {
+      criminalData.append("image", criminalImg);
+    }
+
     try {
       const response = await api.patch(
         `/api/criminals/${props.data.id}/`,
-        data,
+        criminalData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-       
       if (response.statusText === "OK") {
         props.fetch();
         handleSuccess("Jinoyatchi muvaffaqiyatli tahrirlandi!");
-         
         setIsUpCriminalModal(false);
       } else if (response.status === 400) {
         console.log(400);
@@ -72,7 +79,7 @@ export default function UpCriminalModal(props) {
                     </span>
                     <input
                       type="text"
-                      {...register("criminalName")}
+                      {...register("criminalName", { required: true })}
                       className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                     />
                   </div>
@@ -82,7 +89,7 @@ export default function UpCriminalModal(props) {
                       JINOYATCHI FAMILIYASI
                     </span>
                     <input
-                      {...register("criminalSurname")}
+                      {...register("criminalSurname", { required: true })}
                       type="text"
                       className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                     />
@@ -94,7 +101,7 @@ export default function UpCriminalModal(props) {
                     </span>
                     <input
                       type="text"
-                      {...register("criminalFather")}
+                      {...register("criminalFather", { required: true })}
                       className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                     />
                   </div>
@@ -105,7 +112,7 @@ export default function UpCriminalModal(props) {
                     </span>
                     <input
                       type="text"
-                      {...register("criminalAge")}
+                      {...register("criminalAge", { required: true })}
                       className="w-full p-3 bg-transparent border-2 outline-none border-lime-600"
                     />
                   </div>
@@ -118,17 +125,9 @@ export default function UpCriminalModal(props) {
                     </span>
                     <input
                       type="file"
-                      {...register("criminalImage", {
-                        required: "Bo'sh bo'lishi mumkin emas",
-                        validate: {
-                          sizeCheck: (value) => {
-                            if (value[0]?.size > 10485760) {
-                              return "Rasm hajmi 10MB dan oshmasligi kerak";
-                            }
-                            return true;
-                          },
-                        },
-                      })}
+                      onChange={(e) => {
+                        setCriminalImg(e.target.files[0]);
+                      }}
                       className="p-3 border-2 border-lime-600"
                     />
                   </div>
@@ -137,8 +136,9 @@ export default function UpCriminalModal(props) {
                     <span className="px-1 font-extrabold bg-lime-600">
                       JINOYATCHI HAQIDA
                     </span>
+
                     <textarea
-                      {...register("criminalDescription")}
+                      {...register("criminalDescription", { required: true })}
                       id=""
                       cols="30"
                       rows="10"
