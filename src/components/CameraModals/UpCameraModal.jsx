@@ -25,10 +25,12 @@ export default function UpCameraModal(props) {
     data.append("url", formData.cameraUrl);
     data.append("latitude", lat);
     data.append("longitude", lng);
-    data.append("image", formData.cameraImage);
+    data.append("image", formData.cameraImage[0]);
+
+    console.log(data);
     try {
       const response = await api.patch(
-        `/api/cameras/${props.upCamDatas.id}/`,
+        `/api/camera/${props.upCamDatas.id}/`,
         data,
         {
           headers: {
@@ -37,8 +39,9 @@ export default function UpCameraModal(props) {
         }
       );
 
+      console.log(response);
+
       if (response.status === 200) {
-        console.log(response);
         props.fetch();
         handleSuccess("Kamera muvafaqqiyatli tahrirlandi!");
       } else {

@@ -5,7 +5,7 @@ export const api = axios.create({
   headers: {
     common: {
       Authorization: `Token ${localStorage.getItem("token")}`,
-      // "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
   },
 });

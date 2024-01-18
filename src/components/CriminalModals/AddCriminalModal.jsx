@@ -144,6 +144,7 @@ export default function AddCriminalModal(props) {
                     JOY RASMI
                   </span>
                   <input
+                  accept="image/*"
                     type="file"
                     {...register("criminalImage", {
                       required: "Bo'sh bo'lishi mumkin emas",

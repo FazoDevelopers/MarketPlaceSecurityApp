@@ -12,6 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import detectionSound from "../../assets/sounds/detection.mp3";
 import {
+  BASE_URL,
   DETECT_SOCKET_URL,
   DETECT_TIMEOUT,
   MAP_CONFIG,
@@ -135,19 +136,19 @@ function CombinedComponent() {
               <CriminalCard
                 setPinnedCriminals={setPinnedCriminals}
                 pinnedCriminals={pinnedCriminals}
-                data={data && data}
+                data={data}
               />
             </button>,
             ...prevData,
           ];
         });
-      }
-  
-      
-  }, 1000);
+      }      
+  }, 500);
   
   return () => clearInterval(fetchDatas)
   }, [isConnected])
+
+  console.log("pinnedCriminals", pinnedCriminals);
   
 
   // WebSocket Hook for detect human
@@ -235,7 +236,7 @@ function CombinedComponent() {
                 icon={
                   new L.DivIcon({
                     className: position.humanDetected ? "marker-icon" : "",
-                    html: `<img src="${position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit:cover" />`,
+                    html: `<img src="${BASE_URL + position.photo}" alt="${position.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit:cover" />`,
                     iconSize: [50, 50],
                     iconAnchor: [25, 25],
                     popupAnchor: [0, -25],
@@ -253,7 +254,7 @@ function CombinedComponent() {
         <div className="text-white fixed bottom-[100px] left-1/2 transform -translate-x-1/2 z-50 flex gap-2">
           {pinnedCriminals.length > 0 &&
             pinnedCriminals.map((criminal) => (
-              <PinnedCards key={criminal.key} data={criminal} />
+              <PinnedCards key={criminal.identity.id} data={criminal} />
             ))}
         </div>
 

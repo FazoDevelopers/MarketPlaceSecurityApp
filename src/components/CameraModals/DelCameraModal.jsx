@@ -13,7 +13,7 @@ export default function DelCameraModal(props) {
   // DELETE CAMERA DATA FROM API
   const delData = async () => {
     try {
-      const response = await api.delete(`/api/cameras/${props.data.id}/`);
+      const response = await api.delete(`/api/camera/${props.data.id}/`);
       if (response.status === 204) {
         console.log(response);
         props.fetch();

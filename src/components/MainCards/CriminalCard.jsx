@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../MainStyle.css";
 
 export default function CriminalCard({
@@ -10,21 +10,24 @@ export default function CriminalCard({
   console.log(data);
   const [isPinned, setIsPinned] = useState(false);
 
-  if (isPinned) {
-    // Check if the data already exists in pinnedCriminals
-    const isDataExists = pinnedCriminals.some(
-      (criminal) => criminal.id === data.identity.id
-    );
+  useEffect(() => {
+    if (isPinned) {
+      // Check if the data already exists in pinnedCriminals
+      const isDataExists = pinnedCriminals.some(
+        (criminal) => criminal.id === data.identity.id
+      );
 
-    // If the data doesn't exist, add it to pinnedCriminals
-    if (!isDataExists) {
-      setPinnedCriminals((prev) => [data, ...prev]);
+      // If the data doesn't exist, add it to pinnedCriminals
+      if (!isDataExists) {
+        setPinnedCriminals((prev) => [data, ...prev]);
+      }
     }
-  }
+  }, [isPinned, data, pinnedCriminals, setPinnedCriminals]);
 
   const pinCriminal = () => {
     setIsPinned(!isPinned);
   };
+
   return (
     <div className="w-full p-2 overflow-hidden cursor-pointer criminal_card_wrapper hover:z-20">
       <div className="flex flex-row gap-5 font-extrabold text-white border-lime-500 border-1 bg-lime-600">
@@ -52,7 +55,7 @@ export default function CriminalCard({
       </div>
 
       <div className="w-full p-2 text-gray-400 bg-black border-2 border-gray-400">
-        <p className="text-sm">Sharh: {data?.identity?.description}</p>
+        <p className="text-sm">Sharh: {data.identity.description}</p>
       </div>
     </div>
   );
@@ -60,6 +63,6 @@ export default function CriminalCard({
 
 CriminalCard.propTypes = {
   data: PropTypes.object.isRequired,
-  setPinnedCriminals: PropTypes.array.isRequired,
+  setPinnedCriminals: PropTypes.func.isRequired,
   pinnedCriminals: PropTypes.array.isRequired,
 };

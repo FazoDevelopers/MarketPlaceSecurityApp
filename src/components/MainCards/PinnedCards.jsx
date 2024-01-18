@@ -18,7 +18,7 @@ export default function PinnedCards({ data }) {
       }`}
     >
       <img
-        src={data.identity.image}
+        src={data.identity.image_url}
         className="w-full object-cover aspect-square"
         alt=""
       />

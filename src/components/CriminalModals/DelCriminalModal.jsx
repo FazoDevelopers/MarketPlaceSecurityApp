@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { isDelCriminalModalState } from "../../recoil/atoms";
 import { api } from "../../services/api";
+import { handleError, handleSuccess } from "../../utils/globals";
 
 export default function DelCriminalModal(props) {
   const [, setIsDelCriminalModal] = useRecoilState(
@@ -17,14 +17,14 @@ export default function DelCriminalModal(props) {
       if (response.status === 204) {
         console.log(response);
         props.fetch();
-        toast.success("Camera deleted successfully");
+        handleSuccess("Jinoyatchi muvaffaqiyatli o'chirildi!");
       } else {
         console.error("Request failed with status:", response.status);
-        toast.error("Failed to delete the camera");
+        handleError("Jinoyatchi o'chirishda xatolik!")
       }
     } catch (error) {
       console.error("delete:", error);
-      toast.error("Failed to delete the camera");
+      handleError("Jinoyatchi o'chirishda xatolik!")
     }
   };
 

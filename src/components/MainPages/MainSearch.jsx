@@ -31,7 +31,7 @@ export default function MainSearch() {
         const response = await api.get(
           `/api/records/?search=${criminalSearch.current.value}&${params}`
         );
-        console.log(response);
+        console.log(response.data);
         setData(response.data.results);
         setNextPageStatus(response.data.next);
         setPrevPageStatus(response.data.previous);

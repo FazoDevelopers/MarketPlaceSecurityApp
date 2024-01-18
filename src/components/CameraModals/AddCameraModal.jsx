@@ -27,7 +27,7 @@ export default function AddCameraModal(props) {
     data.append("image", formData.cameraImage[0]);
     console.log(data);
     try {
-      const response = await api.post(`/api/cameras/`, data, {});
+      const response = await api.post(`/api/camera/`, data, {});
       if (response.status === 201) {
         props.fetch();
         handleSuccess("Kamera muvaqqiyatli qo'shildi!");

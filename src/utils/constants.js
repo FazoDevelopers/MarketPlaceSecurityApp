@@ -1,6 +1,6 @@
-export const BASE_URL = "http://192.168.254.150:8000";
-export const EXIST_SOCKET_URL = "ws://192.168.254.150:5000/";
-export const DETECT_SOCKET_URL = "ws://192.168.254.150:5678/";
+export const BASE_URL = "http://0.0.0.0";
+export const EXIST_SOCKET_URL = "ws://0.0.0.0:5000/";
+export const DETECT_SOCKET_URL = "ws://0.0.0.0:11223/";
 export const DETECT_TIMEOUT = 600000;
 export const MAP_CONFIG = {
   center: [41.00064, 71.67327],
