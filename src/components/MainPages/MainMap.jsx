@@ -99,10 +99,9 @@ function CombinedComponent() {
 
       const data = await response.json();
       data && setIsConnected(true);
-
+      console.log(data);
       if (data.camera) {
-        // Process camera data
-         
+        // Process camera data    
         const { latitude, longitude, name, image } = data.camera;
         const newPosition = {
           location: [latitude, longitude],
@@ -138,6 +137,11 @@ function CombinedComponent() {
             ...prevData,
           ];
         });
+
+        setCriminalDetectData((prevData) => [
+          <DetectHumanCard key={uuidv4()+1} data={data} />,
+          ...prevData,
+        ]);
       }
     }, 500);
 
@@ -145,44 +149,44 @@ function CombinedComponent() {
   }, [isConnected]);
 
   // WebSocket Hook for detect human
-  useEffect(() => {
-    const newSocket = new WebSocket(DETECT_SOCKET_URL);
-    const handleOpen = () => {
-      console.log("Connected to the WebSocket detect");
-      newSocket.send(
-        JSON.stringify({ state: "web", token: localStorage.getItem("token") })
-      );
-      setIsConnected(true);
-    };
-    const handleMessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setCriminalDetectData((prevData) => [
-          <DetectHumanCard key={uuidv4()+1} data={data} />,
-          ...prevData,
-        ]);
-      } catch (error) {
-        console.error("Error while processing JSON data:", error);
-      }
-    };
-    const handleErrorWebSocket = (event) => {
-      console.error("WebSocket connection error:", event);
-    };
-    const handleClose = (event) => {
-      console.error("WebSocket connection closed:", event);
-    };
-    newSocket.addEventListener("open", handleOpen);
-    newSocket.addEventListener("message", handleMessage);
-    newSocket.addEventListener("error", handleErrorWebSocket);
-    newSocket.addEventListener("close", handleClose);
-    return () => {
-      newSocket.removeEventListener("open", handleOpen);
-      newSocket.removeEventListener("message", handleMessage);
-      newSocket.removeEventListener("error", handleErrorWebSocket);
-      newSocket.removeEventListener("close", handleClose);
-      newSocket.close();
-    };
-  }, [setCriminalDetectData]);
+  // useEffect(() => {
+  //   const newSocket = new WebSocket(DETECT_SOCKET_URL);
+  //   const handleOpen = () => {
+  //     console.log("Connected to the WebSocket detect");
+  //     newSocket.send(
+  //       JSON.stringify({ state: "web", token: localStorage.getItem("token") })
+  //     );
+  //     setIsConnected(true);
+  //   };
+  //   const handleMessage = (event) => {
+  //     try {
+  //       const data = JSON.parse(event.data);
+  //       setCriminalDetectData((prevData) => [
+  //         <DetectHumanCard key={uuidv4()+1} data={data} />,
+  //         ...prevData,
+  //       ]);
+  //     } catch (error) {
+  //       console.error("Error while processing JSON data:", error);
+  //     }
+  //   };
+  //   const handleErrorWebSocket = (event) => {
+  //     console.error("WebSocket connection error:", event);
+  //   };
+  //   const handleClose = (event) => {
+  //     console.error("WebSocket connection closed:", event);
+  //   };
+  //   newSocket.addEventListener("open", handleOpen);
+  //   newSocket.addEventListener("message", handleMessage);
+  //   newSocket.addEventListener("error", handleErrorWebSocket);
+  //   newSocket.addEventListener("close", handleClose);
+  //   return () => {
+  //     newSocket.removeEventListener("open", handleOpen);
+  //     newSocket.removeEventListener("message", handleMessage);
+  //     newSocket.removeEventListener("error", handleErrorWebSocket);
+  //     newSocket.removeEventListener("close", handleClose);
+  //     newSocket.close();
+  //   };
+  // }, [setCriminalDetectData]);
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
@@ -205,10 +209,10 @@ function CombinedComponent() {
           </div>
 
           <div
-            className="relative w-full mt-4 overflow-y-scroll border-2 border-gray-500 criminals_sidebar hide-scrollbar"
+            className="relative w-full mt-4 border-2 border-gray-500 criminals_sidebar hide-scrollbar"
             style={{ maxHeight: "80vh" }}
           >
-            {criminalDetectData.length > 1 && criminalDetectData}
+            {criminalDetectData.length > 0 && criminalDetectData}
           </div>
         </div>
 
