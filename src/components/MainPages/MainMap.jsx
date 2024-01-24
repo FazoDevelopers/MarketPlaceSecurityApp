@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from "uuid";
 import detectionSound from "../../assets/sounds/detection.mp3";
 import {
   BASE_URL,
-  DETECT_SOCKET_URL,
   DETECT_TIMEOUT,
   MAP_CONFIG,
 } from "../../utils/constants";

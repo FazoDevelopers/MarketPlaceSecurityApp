@@ -7,7 +7,7 @@ export default function DetectHumanCard({ data }) {
 
   return (
     <div className="relative">
-      <div className="w-[1000px] absolute z-50 -right-[1000px] top-1">
+      <div className="w-[1000px] absolute z-40 -right-[1000px] top-0">
         <img
           src={data?.image}
           alt="Image for detect human"

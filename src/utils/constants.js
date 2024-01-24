@@ -7,7 +7,7 @@ export const MAP_CONFIG = {
   zoom: 15,
   maxZoom: 18,
   minZoom: 12,
-  zoomCustom: 11,
+  zoomCustom: 15,
   zoomControl: true,
   scrollWheelZoom: true,
   tileLayer: {
